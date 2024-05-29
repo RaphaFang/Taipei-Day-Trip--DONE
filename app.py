@@ -14,6 +14,7 @@ db_config = {
     'password': sql_password,
     'database': 'basic_db',
 }
+headers = {"Content-Type": "application/json; charset=utf-8"}
 
 @app.get("/api/attractions")
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
@@ -45,15 +46,15 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
 
         if attract_data:
             each_data_list = [{'id':each[0],"name":each[1],'category':each[2], 'description':each[3],'address':each[4],'transport':each[5],'mrt':each[6],'lat':each[7],'lng':each[8], 'images':json.loads(each[9])} for each in attract_data]
-            return JSONResponse(content={"data": each_data_list, "nextPage":next_page},media_type="application/json")
+            return JSONResponse(content={"data": each_data_list, "nextPage":next_page}, headers=headers)
         else:
-            return JSONResponse(content={"data": [], "nextPage": None},media_type="application/json")
+            return JSONResponse(content={"data": [], "nextPage": None}, headers=headers)
         
     except mysql.connector.Error as err:
         return JSONResponse(    
             status_code=500,
             content={"error": True, "message": str(err)},
-            media_type="application/json"
+            headers=headers
         )
     finally:
         cursor.close()
@@ -61,32 +62,32 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
 
 @app.get("/api/attraction")  
 def api_attractions(attractionId=int): # page:int, keyword:str, 
-    # print(attractionId)
+    print(attractionId)
     try:
         mydb = mysql.connector.connect(**db_config)
         cursor = mydb.cursor()
         cursor.execute("SELECT * FROM processed_data WHERE id = %s", (attractionId,)) 
         attract_data = cursor.fetchone()
-        # print(attract_data)
 
         if attract_data:
             return JSONResponse(content={"data":{'id':attract_data[0],"name":attract_data[1],'category':attract_data[2], 'description':attract_data[3],'address':attract_data[4],'transport':attract_data[5],'mrt':attract_data[6],'lat':attract_data[7],'lng':attract_data[8], 'images':json.loads(attract_data[9])}},
-                         media_type="application/json")
+                        headers=headers)
         else:
             return JSONResponse(    
                 status_code=400,
                 content={"error": True, "message": "inserted id out of range, valid id start from 1 to 58"},
-                media_type="application/json"
+                headers=headers
             )
     except mysql.connector.Error as err:
         return JSONResponse(    
             status_code=500,
             content={"error": True, "message": str(err)},
-            media_type="application/json"
+            headers=headers
         )
     finally:
         cursor.close()
         mydb.close()
+
 
 @app.get("/api/mrts")
 def api_mrts():
@@ -96,12 +97,12 @@ def api_mrts():
         cursor = mydb.cursor()
         cursor.execute("SELECT mrt, COUNT(*) as count FROM processed_data GROUP BY mrt ORDER BY count DESC;") 
         mrts_counted = cursor.fetchall()
-        return JSONResponse(content=[n[0] for n in mrts_counted], media_type="application/json")
+        return JSONResponse(content=[n[0] for n in mrts_counted], headers=headers)
     except mysql.connector.Error as err:
         return JSONResponse(    
             status_code=500,
             content={"error": True, "message": str(err)},
-            media_type="application/json"
+            headers=headers
         )
     finally:
         cursor.close()
