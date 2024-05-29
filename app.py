@@ -81,6 +81,7 @@ def api_attractions(attractionId=int): # page:int, keyword:str,
 
 @app.get("/api/mrts")
 def api_mrts():
+    cursor, mydb = None, None
     try:
         # raise mysql.connector.Error("Manually triggered error for testing")
         mydb = mysql.connector.connect(**db_config)
@@ -94,8 +95,10 @@ def api_mrts():
             content={"error": True, "message": str(err)}
         )
     finally:
-        cursor.close()
-        mydb.close()
+        if cursor is not None:
+            cursor.close()
+        if mydb is not None:
+            mydb.close()
 
 # Static Pages (Never Modify Code in this Block)
 @app.get("/", include_in_schema=False)
