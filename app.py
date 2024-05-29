@@ -60,14 +60,15 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
         cursor.close()
         mydb.close()
 
-@app.get("/api/attraction")  
-def api_attractions(attractionId=int): # page:int, keyword:str, 
-    print(attractionId)
+@app.get("/api/attraction/{id}")  
+def api_attractions(id=int): # page:int, keyword:str, 
+    # print(id)
     try:
         mydb = mysql.connector.connect(**db_config)
         cursor = mydb.cursor()
-        cursor.execute("SELECT * FROM processed_data WHERE id = %s", (attractionId,)) 
+        cursor.execute("SELECT * FROM processed_data WHERE id = %s", (id,)) 
         attract_data = cursor.fetchone()
+        print(attract_data)
 
         if attract_data:
             return JSONResponse(content={"data":{'id':attract_data[0],"name":attract_data[1],'category':attract_data[2], 'description':attract_data[3],'address':attract_data[4],'transport':attract_data[5],'mrt':attract_data[6],'lat':attract_data[7],'lng':attract_data[8], 'images':json.loads(attract_data[9])}},
