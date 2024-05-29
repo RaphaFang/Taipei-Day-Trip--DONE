@@ -9,7 +9,7 @@ import os
 sql_password = os.getenv('SQL_PASSWORD')
 sql_username = os.getenv('SQL_USER')
 db_config = {
-    'host': 'localhost',
+    'host': '107.22.64.25',
     'user': sql_username,
     'password': sql_password,
     'database': 'basic_db',
