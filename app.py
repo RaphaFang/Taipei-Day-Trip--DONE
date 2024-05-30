@@ -96,7 +96,7 @@ def api_mrts():
         # raise mysql.connector.Error("Manually triggered error for testing")
         mydb = mysql.connector.connect(**db_config)
         cursor = mydb.cursor()
-        cursor.execute("SELECT mrt, COUNT(*) as count FROM processed_data GROUP BY mrt ORDER BY count DESC;") 
+        cursor.execute("SELECT mrt, COUNT(name) as count FROM processed_data GROUP BY mrt ORDER BY count DESC;") 
         mrts_counted = cursor.fetchall()
         return JSONResponse(content=[n[0] for n in mrts_counted], headers=headers)
     except mysql.connector.Error as err:
