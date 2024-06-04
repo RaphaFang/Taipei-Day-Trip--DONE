@@ -21,7 +21,7 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
     print(f"page = {page}, keyword = {keyword}")
     try:
-        mydb = mysql.connector.connect(**db_config)
+        mydb = mysql.connector.connect(**db_config, ssl_disabled=True)
         cursor = mydb.cursor()
         offset_num = page*12
         keyword_format = f"%{keyword}%"  # 這邊不四多加上"""
@@ -52,7 +52,7 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
 def api_attractions(id=int): # page:int, keyword:str, 
     # print(id)
     try:
-        mydb = mysql.connector.connect(**db_config)
+        mydb = mysql.connector.connect(**db_config, ssl_disabled=True)
         cursor = mydb.cursor()
         cursor.execute("SELECT * FROM processed_data WHERE id = %s", (id,)) 
         attract_data = cursor.fetchone()
@@ -84,7 +84,7 @@ def api_mrts():
     cursor = None
     try:
         # raise mysql.connector.Error("Manually triggered error for testing")
-        mydb = mysql.connector.connect(**db_config)
+        mydb = mysql.connector.connect(**db_config, ssl_disabled=True)
         cursor = mydb.cursor()
         cursor.execute("SELECT mrt, COUNT(DISTINCT name) as count FROM processed_data WHERE mrt IS NOT NULL GROUP BY mrt ORDER BY count DESC;") 
         mrts_counted = cursor.fetchall()
