@@ -18,7 +18,7 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 
 @app.get("/api/attractions")
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
-    # print(f"page = {page}, keyword = {keyword}")
+    print(f"page = {page}, keyword = {keyword}")
     try:
         mydb = mysql.connector.connect(**db_config)
         cursor = mydb.cursor()
@@ -26,29 +26,16 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
         keyword_format = f"%{keyword}%"  # 這邊不四多加上"""
 
         if keyword==None:
-            cursor.execute("SELECT * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
-            attract_data = cursor.fetchall()
-            cursor.execute("SELECT COUNT(*) FROM processed_data;") 
-            sum_rows = cursor.fetchone()[0]  # 不然出來的值會是turple, --> (58,)
-            if sum_rows-(page+1)*12>0:
-                next_page =  page+1
-            else:
-                next_page =  None
+            cursor.execute("SELECT SQL_CALC_FOUND_ROWS * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
         else:
-            cursor.execute("SELECT * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
-            attract_data = cursor.fetchall()
-            cursor.execute("SELECT COUNT(*) FROM processed_data  WHERE mrt LIKE %s OR name LIKE %s;", (keyword_format, keyword_format,)) 
-            sum_rows = cursor.fetchone()[0] 
-            if sum_rows-(page+1)*12>0:
-                next_page =  page+1
-            else:
-                next_page =  None
+            cursor.execute("SELECT SQL_CALC_FOUND_ROWS * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
+        attract_data = cursor.fetchall()
+        cursor.execute("SELECT FOUND_ROWS();") 
+        sum_rows = cursor.fetchone()[0] 
 
-        if attract_data:
-            each_data_list = [{'id':each[0],"name":each[1],'category':each[2], 'description':each[3],'address':each[4],'transport':each[5],'mrt':each[6],'lat':each[7],'lng':each[8], 'images':json.loads(each[9])} for each in attract_data]
-            return JSONResponse(content={"data": each_data_list, "nextPage":next_page}, headers=headers)
-        else:
-            return JSONResponse(content={"data": [], "nextPage": None}, headers=headers)
+        next_page = page+1 if sum_rows > (page+1)*12 else None
+        each_data_list = [{'id':each[0],"name":each[1],'category':each[2], 'description':each[3],'address':each[4],'transport':each[5],'mrt':each[6],'lat':each[7],'lng':each[8], 'images':json.loads(each[9])} for each in attract_data]
+        return JSONResponse(content={"data": each_data_list, "nextPage":next_page}, headers=headers)
         
     except mysql.connector.Error as err:
         return JSONResponse(    
