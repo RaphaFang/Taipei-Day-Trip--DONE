@@ -1,5 +1,10 @@
 from fastapi import *
+from fastapi.templating import Jinja2Templates
+
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
 import json
 from typing import Optional
 app=FastAPI()
@@ -16,6 +21,26 @@ db_config = {
     'port':3306
 }
 headers = {"Content-Type": "application/json; charset=utf-8"}
+app.mount("/static", StaticFiles(directory="static"), name="static")
+# templates = Jinja2Templates(directory="templates")
+
+
+# uvicorn app:app --reload
+# cd /Users/fangsiyu/Desktop/taipei-day-trip
+origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000" 
+    "http://127.0.0.1:5501",
+    "http://52.4.229.207",
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  
+    allow_credentials=True,  
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
 @app.get("/api/attractions")
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):

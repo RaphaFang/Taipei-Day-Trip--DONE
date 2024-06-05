@@ -228,7 +228,7 @@
 .mrt-bar {
   width: 1200px;
   height: 70px;
-  background: pink;
+  /* background: pink; */
   display: flex;
   padding-bottom: 20px;
 }
@@ -237,7 +237,8 @@
   gap: 4px;
   width: 1106px;
   height: 50px;
-  padding: 13px 10px 13px 10px;
+  margin: 13px 10px 13px 10px;
+  overflow: hidden; /* 隱藏超出容器的內容 */
 }
 .mrt-item {
   padding: 5px 15px 5px 15px;
@@ -247,34 +248,72 @@
   line-height: 13.3px;
   text-align: center;
   color: rgba(102, 102, 102, 1);
+  white-space: nowrap;
 }
 .left-div {
   width: 47px;
   height: 50px;
   padding: 9px 0px 9px 15px;
   gap: 0px;
-  opacity: 1; /* 確保div本身可見 */
+  opacity: 1;
 }
+.right-div {
+  width: 47px;
+  height: 50px;
+  padding: 9px 15px 9px 0px;
+  gap: 0px;
+  opacity: 1;
+}
+
 .right-mrt-btn,
 .left-mrt-btn {
-  height: 32px;
-  width: 32px;
-  opacity: 0.5; /* 初始透明度設置為50% */
-  cursor: pointer;
+  background: none;
   border: none;
-  outline: none;
+  padding: 0;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease, opacity 0.3s ease;
+  border-radius: 50%;
+  outline: none;
+  box-shadow: none;
+}
+.left-mrt-btn img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  opacity: 0.7;
+
+  transition: opacity 0.3s ease;
+}
+.right-mrt-btn img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+.left-mrt-btn:hover img {
+  opacity: 1;
+}
+.right-mrt-btn:hover img {
+  opacity: 1;
 }
 
-.left-mrt-btn:hover {
-  background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明背景 */
-  opacity: 0.7; /* 懸停時透明度設置為70% */
+.left-mrt-btn:focus,
+.right-mrt-btn:focus {
+  outline: none;
+  box-shadow: none;
 }
-/*   padding: 9px 0px 9px 15px; */
-
+.mrt-item {
+  opacity: 0.7;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+  color: inherit;
+}
+.mrt-item:hover {
+  opacity: 1;
+}
 /* ! mrt end */
 
 .attacrions-part {
@@ -292,7 +331,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-  justify-content: center;
+  /* justify-content: center; */
+  justify-content: flex-start;
 }
 .background-image-container {
   position: relative;
@@ -303,19 +343,6 @@
   border: solid rgba(232, 232, 232, 1);
   border-width: 1px 1px 0px 1px;
 }
-
-/* 
-<div class="title-1 background-image-container">
-<div class="first-part">
-  <div class="attraction-pic"></div>
-  <div class="attraction-name"></div>
-</div>
-<div class="third-part">
-  <div class="mrt-name">aaa</div>
-  <div class="tag-name">bbb</div>
-</div>
-</div> 
-*/
 
 .first-part {
   height: 197px;
@@ -346,10 +373,9 @@
   width: 100%;
   height: 40px;
   background-color: rgba(0, 0, 0, 0.6);
-  color: #fff; /* Optional: Set text color */
+  color: #fff;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
 }
 .attraction-name {
   padding-left: 10px;
