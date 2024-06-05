@@ -1,9 +1,10 @@
-const url = `http://52.4.229.207:8000/api/attractions?page=0`;
+"use strict";
 
 document.addEventListener("DOMContentLoaded", async function () {
   console.log("start fetching the first page, fetching start...");
 
   try {
+    const url = `http://52.4.229.207:8000/api/attractions?page=0`;
     console.log("Fetching URL: ", url);
 
     let response = await fetch(url, {
@@ -19,15 +20,30 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
     }
+
     let data = await response.json();
-    console.log("Fetched data: ", data); // 添加调试信息
-    console.log(data["data"][0]["name"]);
-    // displayAttracItem(data["data"]);
+    console.log("Fetched data: ", data);
+    displayData(data);
   } catch (error) {
     console.error("Fetch error: ", error);
   }
   console.log("fetching the first page, fetching end...");
 });
+
+function displayData(data) {
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = "";
+
+  if (data && data.data) {
+    data.data.forEach((item) => {
+      const div = document.createElement("div");
+      div.innerText = `Name: ${item.name}, Category: ${item.category}`;
+      contentDiv.appendChild(div);
+    });
+  } else {
+    contentDiv.innerText = "No data found";
+  }
+}
 
 // function displayAttracItem(data) {
 //   let attracDiv = document.getElementById("attracDiv");
