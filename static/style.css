@@ -8,20 +8,23 @@
 
 .nav-bar {
   position: relative;
-  width: 1920px;
+
   height: 54px;
   /* background: red; */
   background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 .second-nav-bar {
   position: absolute;
   width: 1200px;
   height: 34px;
-  left: 360px;
+  /* left: 360px; */
   top: 10px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   /* background-color: aqua; */
 }
 
@@ -34,6 +37,7 @@
   font-size: 30px;
   line-height: 34px;
   color: #448899;
+  left: 0;
 }
 
 .btn-container {
@@ -116,38 +120,75 @@
 /* !search part */
 
 .search-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 0px;
-
-  width: auto;
-  height: 480px;
+  height: 320px;
+  width: 100%;
 
   background: linear-gradient(135deg, #aaddee 0%, #66aabb 100%);
 
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  z-index: 1;
-  background-image: url("static/pic/101.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-.searching-block {
-  display: block;
-  height: 169px;
-  width: 1200px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  z-index: 10;
-  /* background-color: rgba(255, 255, 255, 0.7); */
+}
+.hero-background-image-container {
+  background-image: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/pic/101.png");
+  background-size: cover;
+  background-position: center center;
+}
+
+.searching-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* display: block; */
+  /* height: 169px; */
+  width: 1200px;
+  height: 169px;
+  /* left: 360px; */
+  /* top: 129px; */
+  padding: 10px;
+}
+
+.search-place {
+  width: 400px;
+  height: 46px;
+
+  filter: drop-shadow(0px 0px 20px #aabbcc);
+  background: #ffffff;
+}
+
+.text-block {
+  height: 78px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.up-welcome-text {
+  font-family: Noto Sans TC;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: left;
+  color: rgba(248, 248, 248, 1);
+  text-shadow: 0px 0px 30px 0px rgba(170, 187, 204, 1);
+  height: 41px;
+}
+.down-welcome-text {
+  font-family: Noto Sans TC;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 13.3px;
+  text-align: left;
+  height: 22px;
+  top: 56px;
+  color: rgba(248, 248, 248, 1);
+}
+.search-place {
+  height: 46px;
+  width: 400px;
+}
+
+.search-btn {
+  height: 46px;
+  width: 60px;
+  background-image: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/pic/101.png");
 }
