@@ -35,8 +35,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.error("Fetch error: ", error);
   }
   console.log(">>>>>>>> first loading fetching end...");
+  waitForMrtLoaded();
 
-  // 建立一個觀察者， IntersectionObserver ，檢測有沒有拱動到特定的 div
+  // 建立一個觀察者， IntersectionObserver ，檢測有沒有rolling到特定的 div
   const observer = new IntersectionObserver(loadMore, {
     root: null, // 視窗
     rootMargin: "0px",
@@ -68,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
       behavior: "smooth",
     });
   });
-
   rightBtn.addEventListener("click", function () {
     secondMrt.scrollBy({
       left: scrollAmount,
@@ -76,6 +76,49 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+function waitForMrtLoaded() {
+  const mrtContainer = document.getElementById("second-mrt");
+  // 這邊的設定太重要了，不能一次聽多個id，是違法的，只能聽多個class，或者是如現在的作法，一次聽這些同樣名稱class的上一個div
+  mrtContainer.addEventListener("click", async function (event) {
+    if (event.target.tagName === "A") {
+      event.preventDefault();
+      let newKeyword = event.target.dataset.keyword;
+      document.getElementById("search-place").value = newKeyword;
+
+      try {
+        let response = await fetch(
+          `http://52.4.229.207:8000/api/attractions?page=0&keyword=${newKeyword}`
+        );
+        console.log("Response status: ", response.status);
+        if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+
+        let data = await response.json();
+        console.log("Keyword Fetched data: ", data["data"]);
+        let attracDiv = document.getElementById("attracDiv");
+        attracDiv.innerHTML = "";
+        displayHtmlAttrac(data["data"]);
+
+        nextKeyword = newKeyword;
+        nextPage = data["nextPage"];
+
+        console.log(nextKeyword);
+        console.log(nextPage);
+
+        const observer = new IntersectionObserver(loadMore, {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
+        });
+        observer.observe(document.getElementById("load-more-trigger")); // 開始觀察
+      } catch (error) {
+        console.error("Fetch error: ", error);
+      }
+    }
+  });
+}
 
 async function startSearch() {
   try {
@@ -100,7 +143,7 @@ async function startSearch() {
     console.log(nextPage);
 
     const observer = new IntersectionObserver(loadMore, {
-      root: null, // 視窗
+      root: null,
       rootMargin: "0px",
       threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
     });
@@ -141,7 +184,7 @@ function displayHtmlMrt(data) {
   // mrtDiv.innerHTML = "";
   for (let n = 0; n < data.length; n++) {
     mrtDiv.innerHTML += `
-    <a href="#" class="mrt-item" id="mrt-keyword">${data[n]}</a>
+    <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
     `;
   }
 }
