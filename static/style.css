@@ -238,7 +238,12 @@
   width: 1106px;
   height: 50px;
   margin: 13px 10px 13px 10px;
-  overflow: hidden; /* 隱藏超出容器的內容 */
+  overflow: hidden;
+
+  /* 設定滾動 */
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  white-space: nowrap;
 }
 .mrt-item {
   padding: 5px 15px 5px 15px;
@@ -256,6 +261,8 @@
   padding: 9px 0px 9px 15px;
   gap: 0px;
   opacity: 1;
+  flex-shrink: 0;
+  /* 這是防止縮小的，用用看 */
 }
 .right-div {
   width: 47px;
@@ -263,6 +270,7 @@
   padding: 9px 15px 9px 0px;
   gap: 0px;
   opacity: 1;
+  flex-shrink: 0;
 }
 
 .right-mrt-btn,

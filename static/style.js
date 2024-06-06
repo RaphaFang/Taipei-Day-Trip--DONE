@@ -1,37 +1,117 @@
 "use strict";
 let nextPage = 0;
+let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
-  console.log(">>>>>>>> fetching start...");
-
+  console.log(">>>>>>>> Attractions, fetching start...");
   try {
-    const url = `http://52.4.229.207:8000/api/attractions?page=0`;
-    let response = await fetch(url);
+    let response = await fetch(
+      `http://52.4.229.207:8000/api/attractions?page=0&keyword=`
+    );
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
     }
     let data = await response.json();
     console.log("Fetched data: ", data["data"]);
-    displayHtml(data["data"]);
+    displayHtmlAttrac(data["data"]);
     nextPage = data["nextPage"];
     console.log(nextPage);
+  } catch (error) {
+    console.error("Fetch error: ", error);
+  }
 
-    // 建立一個觀察者， IntersectionObserver ，檢測有沒有拱動到特定的 div
+  console.log(">>>>>>>> Mrts, fetching start...");
+  try {
+    let response = await fetch("http://52.4.229.207:8000/api/mrts");
+    console.log("Response status: ", response.status);
+    if (!response.ok) {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+    let data = await response.json();
+    console.log("Fetched data: ", data["data"]);
+    displayHtmlMrt(data["data"]);
+    console.log(nextPage);
+  } catch (error) {
+    console.error("Fetch error: ", error);
+  }
+  console.log(">>>>>>>> first loading fetching end...");
+
+  // 建立一個觀察者， IntersectionObserver ，檢測有沒有拱動到特定的 div
+  const observer = new IntersectionObserver(loadMore, {
+    root: null, // 視窗
+    rootMargin: "0px",
+    threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
+  });
+  observer.observe(document.getElementById("load-more-trigger")); // 開始觀察
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("search-btn").addEventListener("click", startSearch);
+  document
+    .getElementById("search-place")
+    .addEventListener("keyup", function (event) {
+      if (event.key === "Enter") {
+        startSearch();
+      }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const secondMrt = document.getElementById("second-mrt");
+  const scrollAmount = 100;
+  const leftBtn = document.getElementById("left-mrt-btn");
+  const rightBtn = document.getElementById("right-mrt-btn");
+
+  leftBtn.addEventListener("click", function () {
+    secondMrt.scrollBy({
+      left: -scrollAmount,
+      behavior: "smooth",
+    });
+  });
+
+  rightBtn.addEventListener("click", function () {
+    secondMrt.scrollBy({
+      left: scrollAmount,
+      behavior: "smooth",
+    });
+  });
+});
+
+async function startSearch() {
+  try {
+    let searchedAttrac = document.getElementById("search-place").value;
+    console.log(searchedAttrac);
+    let response = await fetch(
+      `http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`
+    );
+    console.log("Response status: ", response.status);
+    if (!response.ok) {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+
+    let data = await response.json();
+    console.log("Keyword Fetched data: ", data["data"]);
+    let attracDiv = document.getElementById("attracDiv");
+    attracDiv.innerHTML = "";
+    displayHtmlAttrac(data["data"]);
+    nextKeyword = searchedAttrac;
+    nextPage = data["nextPage"];
+    console.log(nextKeyword);
+    console.log(nextPage);
+
     const observer = new IntersectionObserver(loadMore, {
       root: null, // 視窗
       rootMargin: "0px",
-      threshold: 1.0, // 完全可見時觸發，調用下方的 addUpFetch()
+      threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
     });
     observer.observe(document.getElementById("load-more-trigger")); // 開始觀察
   } catch (error) {
     console.error("Fetch error: ", error);
   }
-  console.log(">>>>>>>> fetching end...");
-});
+}
 
-function displayHtml(data) {
+function displayHtmlAttrac(data) {
   let attracDiv = document.getElementById("attracDiv");
-  // attracDiv.innerHTML = "";
   for (let n = 0; n < data.length; n++) {
     // console.log(`Adding item ${n}: `, data[n]["images"][0]);
     attracDiv.innerHTML += `
@@ -56,9 +136,18 @@ function displayHtml(data) {
     `;
   }
 }
-
+function displayHtmlMrt(data) {
+  let mrtDiv = document.getElementById("second-mrt");
+  // mrtDiv.innerHTML = "";
+  for (let n = 0; n < data.length; n++) {
+    mrtDiv.innerHTML += `
+    <a href="#" class="mrt-item" id="mrt-keyword">${data[n]}</a>
+    `;
+  }
+}
 async function addUpFetch(page) {
-  const url = `http://52.4.229.207:8000/api/attractions?page=${page}`;
+  console.log();
+  const url = `http://52.4.229.207:8000/api/attractions?page=${page}&keyword=${nextKeyword}`;
   let response = await fetch(url);
   console.log("Response status: ", response.status);
   if (!response.ok) {
@@ -66,7 +155,7 @@ async function addUpFetch(page) {
   }
   let data = await response.json();
   console.log("Fetched data: ", data["data"]);
-  displayHtml(data["data"]);
+  displayHtmlAttrac(data["data"]);
   nextPage = data["nextPage"];
   console.log(nextPage);
 }
@@ -75,11 +164,13 @@ function loadMore(entries, observer) {
   entries.forEach(function (entry) {
     if (entry.isIntersecting) {
       observer.unobserve(entry.target); // 停止觀察當前元素
-      addUpFetch(nextPage).then(() => {
-        if (nextPage !== null) {
+      console.log("nextPage at loadMore() :" + nextPage);
+      console.log("nextKeyword at loadMore() :" + nextKeyword);
+      if (nextPage !== null) {
+        addUpFetch(nextPage, nextKeyword).then(() => {
           observer.observe(document.getElementById("load-more-trigger")); // 重新啟動observer，觀察新元素
-        }
-      });
+        });
+      }
     }
   });
 }
