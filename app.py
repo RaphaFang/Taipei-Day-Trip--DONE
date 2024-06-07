@@ -1,5 +1,10 @@
 from fastapi import *
+from fastapi.templating import Jinja2Templates
+
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
 import json
 from typing import Optional
 app=FastAPI()
@@ -9,46 +14,54 @@ import os
 sql_password = os.getenv('SQL_PASSWORD')
 sql_username = os.getenv('SQL_USER')
 db_config = {
-    'host': '107.22.64.25',
+    'host': '52.4.229.207',
     'user': sql_username,
     'password': sql_password,
     'database': 'basic_db',
+    'port':3306
 }
 headers = {"Content-Type": "application/json; charset=utf-8"}
+app.mount("/static", StaticFiles(directory="static"), name="static")
+# templates = Jinja2Templates(directory="templates")
+
+
+# uvicorn app:app --reload
+# cd /Users/fangsiyu/Desktop/taipei-day-trip
+origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000", 
+    "http://127.0.0.1:5501",
+    "http://52.4.229.207",
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  
+    allow_credentials=True,  
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
 @app.get("/api/attractions")
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
-    # print(f"page = {page}, keyword = {keyword}")
+    print(f"page = {page}, keyword = {keyword}")
     try:
-        mydb = mysql.connector.connect(**db_config)
+        mydb = mysql.connector.connect(**db_config, ssl_disabled=True)
         cursor = mydb.cursor()
         offset_num = page*12
         keyword_format = f"%{keyword}%"  # 這邊不四多加上"""
 
         if keyword==None:
-            cursor.execute("SELECT * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
-            attract_data = cursor.fetchall()
-            cursor.execute("SELECT COUNT(*) FROM processed_data;") 
-            sum_rows = cursor.fetchone()[0]  # 不然出來的值會是turple, --> (58,)
-            if sum_rows-(page+1)*12>0:
-                next_page =  page+1
-            else:
-                next_page =  None
+            cursor.execute("SELECT SQL_CALC_FOUND_ROWS * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
         else:
-            cursor.execute("SELECT * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
-            attract_data = cursor.fetchall()
-            cursor.execute("SELECT COUNT(*) FROM processed_data  WHERE mrt LIKE %s OR name LIKE %s;", (keyword_format, keyword_format,)) 
-            sum_rows = cursor.fetchone()[0] 
-            if sum_rows-(page+1)*12>0:
-                next_page =  page+1
-            else:
-                next_page =  None
+            cursor.execute("SELECT SQL_CALC_FOUND_ROWS * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
+        attract_data = cursor.fetchall()
+        cursor.execute("SELECT FOUND_ROWS();") 
+        sum_rows = cursor.fetchone()[0] 
 
-        if attract_data:
-            each_data_list = [{'id':each[0],"name":each[1],'category':each[2], 'description':each[3],'address':each[4],'transport':each[5],'mrt':each[6],'lat':each[7],'lng':each[8], 'images':json.loads(each[9])} for each in attract_data]
-            return JSONResponse(content={"data": each_data_list, "nextPage":next_page}, headers=headers)
-        else:
-            return JSONResponse(content={"data": [], "nextPage": None}, headers=headers)
+        next_page = page+1 if sum_rows > (page+1)*12 else None
+        each_data_list = [{'id':each[0],"name":each[1],'category':each[2], 'description':each[3],'address':each[4],'transport':each[5],'mrt':each[6],'lat':each[7],'lng':each[8], 'images':json.loads(each[9])} for each in attract_data]
+        return JSONResponse(content={"data": each_data_list, "nextPage":next_page}, headers=headers)
         
     except mysql.connector.Error as err:
         return JSONResponse(    
@@ -64,7 +77,7 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
 def api_attractions(id=int): # page:int, keyword:str, 
     # print(id)
     try:
-        mydb = mysql.connector.connect(**db_config)
+        mydb = mysql.connector.connect(**db_config, ssl_disabled=True)
         cursor = mydb.cursor()
         cursor.execute("SELECT * FROM processed_data WHERE id = %s", (id,)) 
         attract_data = cursor.fetchone()
@@ -92,9 +105,11 @@ def api_attractions(id=int): # page:int, keyword:str,
 
 @app.get("/api/mrts")
 def api_mrts():
+    mydb = None
+    cursor = None
     try:
         # raise mysql.connector.Error("Manually triggered error for testing")
-        mydb = mysql.connector.connect(**db_config)
+        mydb = mysql.connector.connect(**db_config, ssl_disabled=True)
         cursor = mydb.cursor()
         cursor.execute("SELECT mrt, COUNT(DISTINCT name) as count FROM processed_data WHERE mrt IS NOT NULL GROUP BY mrt ORDER BY count DESC;") 
         mrts_counted = cursor.fetchall()
@@ -106,8 +121,10 @@ def api_mrts():
             headers=headers
         )
     finally:
-        cursor.close()
-        mydb.close()
+        if cursor:
+            cursor.close()
+        if mydb:
+            mydb.close()
 
 # Static Pages (Never Modify Code in this Block)
 @app.get("/", include_in_schema=False)

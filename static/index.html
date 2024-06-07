@@ -1,11 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <title>Index</title>
+  </head>
+  <body>
+    <div class="nav-bar">
+      <div class="second-nav-bar">
+        <p class="title">台北一日遊</p>
+        <div class="btn-container">
+          <div class="firstbtn">
+            <a href="#" class="first-bar-btn">預定行程</a>
+          </div>
+          <div class="secondbtn">
+            <a href="#" class="second-bar-btn">登入/註冊</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ! navbar part end -->
+
+    <div class="search-bar hero-background-image-container">
+      <div class="searching-block">
+        <div class="text-block">
+          <p class="up-welcome-text">輕鬆享受台北一日悠閒</p>
+          <p class="down-welcome-text">探索每個角落，體驗城市的深度旅遊行程</p>
+        </div>
+        <div class="btn-part">
+          <input
+            class="search-place"
+            id="search-place"
+            type="text"
+            placeholder="輸入景點名稱查詢"
+          />
+          <button class="search-btn" id="search-btn">
+            <img
+              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/pic/search.png"
+              class="pic-btn"
+              alt="Search"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ! search part end -->
+
+    <div class="mrt-bar-container">
+      <div class="mrt-bar">
+        <div class="left-div">
+          <button class="left-mrt-btn" id="left-mrt-btn">
+            <img
+              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/pic/rightbtn.png"
+              alt="left"
+            />
+          </button>
+        </div>
+        <div class="second-mrt" id="second-mrt">
+        </div>
+        <div class="right-div">
+          <button class="right-mrt-btn" id="right-mrt-btn">
+            <img
+              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/pic/leftbtn.png"
+              alt="right"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ! mrt part end -->
+
+    <div class="attacrions-part">
+      <div class="attacrions" id="attracDiv">
+        </div>
+      </div>
+    </div>
+    <div id="load-more-trigger"></div>
+
+    <!-- ! footer part -->
+    <footer class="foot">
+      <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
+    </footer>
+    <script src="/static/style.js"></script>
+    </body>
 </html>
