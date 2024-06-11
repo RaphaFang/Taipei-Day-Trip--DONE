@@ -206,8 +206,6 @@ function loadMore(entries, observer) {
   entries.forEach(function (entry) {
     if (entry.isIntersecting) {
       observer.unobserve(entry.target); // 停止觀察當前元素
-      // console.log("nextPage at loadMore() :" + nextPage);
-      // console.log("nextKeyword at loadMore() :" + nextKeyword);
       if (nextPage !== null) {
         addUpFetch(nextPage, nextKeyword).then(() => {
           observer.observe(document.getElementById("load-more-trigger")); // 重新啟動observer，觀察新元素

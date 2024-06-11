@@ -464,6 +464,7 @@
   color: rgba(255, 255, 255, 1);
 }
 
+/* ! RWD */
 @media (max-width: 1200px) {
   .attacrions {
     justify-content: center;

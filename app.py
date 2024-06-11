@@ -20,9 +20,10 @@ db_config = {
     'database': 'basic_db',
     'port':3306
 }
+# static_dir = "/static/css_js_folder"
+
 headers = {"Content-Type": "application/json; charset=utf-8"}
-app.mount("/static", StaticFiles(directory="static"), name="static")
-# templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory='static'), name="static")
 
 
 # uvicorn app:app --reload
