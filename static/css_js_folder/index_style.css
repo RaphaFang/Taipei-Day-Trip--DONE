@@ -564,3 +564,13 @@
     top: 195px;
   }
 }
+
+.background-image-container {
+  pointer-events: auto;
+}
+.background-image-container {
+  border: 2px solid red; /* 临时边框 */
+  background-color: rgba(255, 0, 0, 0.1); /* 临时背景色 */
+  position: relative; /* 确保位置正确 */
+  z-index: 10; /* 确保在前面 */
+}

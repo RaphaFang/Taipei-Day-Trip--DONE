@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   } catch (error) {
     console.error("Fetch error: ", error);
   }
-
+  waitForDivLoaded();
   // console.log(">>>>>>>> Mrts, fetching start...");
   try {
     let response = await fetch("http://52.4.229.207:8000/api/mrts");
@@ -77,6 +77,20 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// 四到跟先前等待 mrt 載入後才可以點及一樣的問題
+function waitForDivLoaded() {
+  const attractionsContainer = document.getElementById("attracDiv");
+  // 使用事件代理在父容器上监听点击事件
+  attractionsContainer.addEventListener("click", (event) => {
+    // 确保点击的是目标容器或其子元素
+    const container = event.target.closest(".background-image-container");
+    if (container) {
+      const attractionId = container.getAttribute("data-id");
+      console.log("Container clicked, the id: " + attractionId);
+      window.location.href = `http://52.4.229.207:8000/api/attraction/${attractionId}`;
+    }
+  });
+}
 function waitForMrtLoaded() {
   const mrtContainer = document.getElementById("second-mrt");
   // 這邊的設定太重要了，不能一次聽多個id，是違法的，只能聽多個class，或者是如現在的作法，一次聽這些同樣名稱class的上一個div
@@ -158,7 +172,7 @@ function displayHtmlAttrac(data) {
   for (let n = 0; n < data.length; n++) {
     // console.log(`Adding item ${n}: `, data[n]["images"][0]);
     attracDiv.innerHTML += `
-      <div class="background-image-container">
+      <div class="background-image-container" data-id="${data[n]["id"]}">
         <div class="first-part">
           <div class="attraction-pic" id="attraction-pic-${n}">
             <img
