@@ -310,6 +310,13 @@
   margin: 0 10px 80px 10px;
 }
 
+.pic-on-left-bg {
+  background-image: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/test.png");
+  /* background-size: 1920px 534px; */
+  background-repeat: no-repeat;
+  background-position: center 0;
+}
+
 /* ! footer */
 .foot {
   background: rgba(117, 117, 117, 1);
