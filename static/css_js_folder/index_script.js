@@ -2,7 +2,6 @@
 let nextPage = 0;
 let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
-  // console.log(">>>>>>>> Attractions, fetching start...");
   try {
     let response = await fetch(
       `http://52.4.229.207:8000/api/attractions?page=0&keyword=`
@@ -12,15 +11,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       throw new Error("Network response was not ok " + response.statusText);
     }
     let data = await response.json();
-    // console.log("Fetched data: ", data["data"]);
     displayHtmlAttrac(data["data"]);
     nextPage = data["nextPage"];
-    // console.log(nextPage);
   } catch (error) {
     console.error("Fetch error: ", error);
   }
   waitForDivLoaded();
-  // console.log(">>>>>>>> Mrts, fetching start...");
   try {
     let response = await fetch("http://52.4.229.207:8000/api/mrts");
     console.log("Response status: ", response.status);
@@ -28,22 +24,19 @@ document.addEventListener("DOMContentLoaded", async function () {
       throw new Error("Network response was not ok " + response.statusText);
     }
     let data = await response.json();
-    // console.log("Fetched data: ", data["data"]);
     displayHtmlMrt(data["data"]);
-    // console.log(nextPage);
   } catch (error) {
     console.error("Fetch error: ", error);
   }
-  // console.log(">>>>>>>> first loading fetching end...");
   waitForMrtLoaded();
 
   // 建立一個觀察者， IntersectionObserver ，檢測有沒有rolling到特定的 div
   const observer = new IntersectionObserver(loadMore, {
-    root: null, // 視窗
+    root: null,
     rootMargin: "0px",
-    threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
+    threshold: 0.2,
   });
-  observer.observe(document.getElementById("load-more-trigger")); // 開始觀察
+  observer.observe(document.getElementById("load-more-trigger"));
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,20 +70,21 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// 四到跟先前等待 mrt 載入後才可以點及一樣的問題
+// 四到跟先前等待 mrt 載入後才可以點及一樣的問題，一，監聽上一層的div，二，等待載入後再監聽
 function waitForDivLoaded() {
   const attractionsContainer = document.getElementById("attracDiv");
-  // 使用事件代理在父容器上监听点击事件
   attractionsContainer.addEventListener("click", (event) => {
-    // 确保点击的是目标容器或其子元素
     const container = event.target.closest(".background-image-container");
     if (container) {
       const attractionId = container.getAttribute("data-id");
       console.log("Container clicked, the id: " + attractionId);
-      window.location.href = `http://52.4.229.207:8000/api/attraction/${attractionId}`;
+      sessionStorage.setItem("attractionId", attractionId);
+      window.location.href = `/attraction/${attractionId}`;
+      // 我原先是絕對路徑，只會導向api
     }
   });
 }
+//
 function waitForMrtLoaded() {
   const mrtContainer = document.getElementById("second-mrt");
   // 這邊的設定太重要了，不能一次聽多個id，是違法的，只能聽多個class，或者是如現在的作法，一次聽這些同樣名稱class的上一個div
@@ -110,23 +104,17 @@ function waitForMrtLoaded() {
         }
 
         let data = await response.json();
-        // console.log("Keyword Fetched data: ", data["data"]);
         let attracDiv = document.getElementById("attracDiv");
         attracDiv.innerHTML = "";
         displayHtmlAttrac(data["data"]);
-
         nextKeyword = newKeyword;
         nextPage = data["nextPage"];
-
-        // console.log(nextKeyword);
-        // console.log(nextPage);
-
         const observer = new IntersectionObserver(loadMore, {
           root: null,
           rootMargin: "0px",
-          threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
+          threshold: 0.2,
         });
-        observer.observe(document.getElementById("load-more-trigger")); // 開始觀察
+        observer.observe(document.getElementById("load-more-trigger"));
       } catch (error) {
         console.error("Fetch error: ", error);
       }
@@ -137,7 +125,6 @@ function waitForMrtLoaded() {
 async function startSearch() {
   try {
     let searchedAttrac = document.getElementById("search-place").value;
-    // console.log(searchedAttrac);
     let response = await fetch(
       `http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`
     );
@@ -153,15 +140,12 @@ async function startSearch() {
     displayHtmlAttrac(data["data"]);
     nextKeyword = searchedAttrac;
     nextPage = data["nextPage"];
-    // console.log(nextKeyword);
-    // console.log(nextPage);
-
     const observer = new IntersectionObserver(loadMore, {
       root: null,
       rootMargin: "0px",
-      threshold: 0.2, // 完全可見時觸發，調用下方的 addUpFetch()
+      threshold: 0.2,
     });
-    observer.observe(document.getElementById("load-more-trigger")); // 開始觀察
+    observer.observe(document.getElementById("load-more-trigger"));
   } catch (error) {
     console.error("Fetch error: ", error);
   }
@@ -170,7 +154,6 @@ async function startSearch() {
 function displayHtmlAttrac(data) {
   let attracDiv = document.getElementById("attracDiv");
   for (let n = 0; n < data.length; n++) {
-    // console.log(`Adding item ${n}: `, data[n]["images"][0]);
     attracDiv.innerHTML += `
       <div class="background-image-container" data-id="${data[n]["id"]}">
         <div class="first-part">
@@ -195,7 +178,6 @@ function displayHtmlAttrac(data) {
 }
 function displayHtmlMrt(data) {
   let mrtDiv = document.getElementById("second-mrt");
-  // mrtDiv.innerHTML = "";
   for (let n = 0; n < data.length; n++) {
     mrtDiv.innerHTML += `
     <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
@@ -210,10 +192,8 @@ async function addUpFetch(page) {
     throw new Error("Network response was not ok " + response.statusText);
   }
   let data = await response.json();
-  // console.log("Fetched data: ", data["data"]);
   displayHtmlAttrac(data["data"]);
   nextPage = data["nextPage"];
-  // console.log(nextPage);
 }
 
 function loadMore(entries, observer) {
