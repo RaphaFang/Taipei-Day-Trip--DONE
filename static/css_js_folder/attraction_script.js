@@ -58,9 +58,14 @@ function picAndDisplay(currentPic, picDataAll) {
   console.log("The Num:", theNum);
   let describePic = document.getElementById("pic-on-left");
   describePic.style.backgroundImage = `url(${picDataAll[theNum]})`;
-  document.getElementById(`dot-id-${theNum - 1}`).className = "box-1";
-  document.getElementById(`dot-id-${theNum}`).className = "box-2";
-  document.getElementById(`dot-id-${theNum + 1}`).className = "box-1";
+
+  let boxElements = document.querySelectorAll(".choose-all-box");
+  boxElements.forEach(function (boxElements) {
+    boxElements.className = "box-1 choose-all-box";
+  });
+  document.getElementById(`dot-id-${theNum}`).className =
+    "box-2 choose-all-box";
+  //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -115,8 +120,9 @@ function spotDisplay(picDataAll) {
   let indicator = document.getElementById("indicator");
   for (let n = 0; n < lenAll; n++) {
     indicator.innerHTML += `
-    <div class="box-1" id="dot-id-${n}"></div>
+    <div class="box-1 choose-all-box" id="dot-id-${n}"></div>
     `;
   }
-  document.getElementById(`dot-id-0`).className = "box-2";
+  document.getElementById(`dot-id-0`).className = "box-2 choose-all-box";
+  //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
