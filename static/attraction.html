@@ -8,95 +8,104 @@
     <title>Attraction</title>
   </head>
   <body>
-    <div class="nav-bar">
-      <div class="second-nav-bar">
-        <p class="title" id="title">台北一日遊</p>
-        <div class="btn-container">
-          <div class="firstbtn">
-            <a href="#" class="first-bar-btn">預定行程</a>
-          </div>
-          <div class="secondbtn">
-            <a href="#" class="second-bar-btn">登入/註冊</a>
+    <div class="content">
+      <div class="nav-bar">
+        <div class="second-nav-bar">
+          <p class="title" id="title">台北一日遊</p>
+          <div class="btn-container">
+            <div class="firstbtn">
+              <a href="#" class="first-bar-btn">預定行程</a>
+            </div>
+            <div class="secondbtn">
+              <a href="#" class="second-bar-btn">登入/註冊</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- ! navbar part end -->
-    <!-- ! pic and day select -->
-    <div class="pic-day-contain">
-      <div class="pic-day">
-        <div class="pic-on-left attrac-pic-left" id="pic-on-left">
-          <div class="left-div">
-            <button class="left-mrt-btn" id="left-mrt-btn">
-              <img
-                src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png"
-                alt="left"
-              />
-            </button>
-          </div>
-          <div class="right-div">
-            <button class="right-mrt-btn" id="right-mrt-btn">
-              <img
-                src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png"
-                alt="right"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="day-on-right">
-          <div class="title-of-attrac" id="title-of-attrac"></div>
-          <div class="tag-mrt-of-attrac" id="tag-mrt-of-attrac"></div>
-          <div class="grey-box">
-            <div class="grey-box-title">
-              <p class="grey-box-title-p">訂購導覽行程</p>
-            </div>
-            <div class="grey-box-discribe">
-              以此景點為中心的一日行程，帶您探索城市角落故事
-            </div>
-            <div class="grey-box-day">
-              <label for="date" class="grey-box-day-p">選擇日期：</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                class="grey-box-day-date"
-              />
-            </div>
-            <div class="time-selection">
-              <p class="time-selection-p">選擇時間：</p>
-              <label for="morning" class="time-selection-radio-first">
-                <input type="radio" id="morning" name="time" value="morning" />
-                上半天
-              </label>
-              <label for="afternoon" class="time-selection-radio-second">
-                <input
-                  type="radio"
-                  id="afternoon"
-                  name="time"
-                  value="afternoon"
+      <!-- ! navbar part end -->
+      <!-- ! pic and day select -->
+      <div class="pic-day-contain">
+        <div class="pic-day">
+          <div class="pic-on-left attrac-pic-left" id="pic-on-left">
+            <div class="left-div">
+              <button class="left-mrt-btn" id="left-mrt-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png"
+                  alt="left"
                 />
-                下半天
-              </label>
+              </button>
             </div>
-            <div class="charge">
-              <p class="charge-title">導覽費用：</p>
-              <p class="charge-p">新台幣 2000 元</p>
+            <div class="right-div">
+              <button class="right-mrt-btn" id="right-mrt-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png"
+                  alt="right"
+                />
+              </button>
             </div>
-            <div class="start-trip-div">
-              <button class="start-trip">開始預約行程</button>
+            <div class="indicator" id="indicator"></div>
+          </div>
+          <div class="day-on-right">
+            <div class="title-of-attrac" id="title-of-attrac"></div>
+            <div class="tag-mrt-of-attrac" id="tag-mrt-of-attrac"></div>
+            <div class="grey-box">
+              <div class="grey-box-title">
+                <p class="grey-box-title-p">訂購導覽行程</p>
+              </div>
+              <div class="grey-box-discribe">
+                以此景點為中心的一日行程，帶您探索城市角落故事
+              </div>
+              <div class="grey-box-day">
+                <label for="date" class="grey-box-day-p">選擇日期：</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  class="grey-box-day-date"
+                />
+              </div>
+              <div class="time-selection">
+                <p class="time-selection-p">選擇時間：</p>
+                <label for="morning" class="time-selection-radio-first">
+                  <!-- 這個 checked 也找太久...-->
+                  <input
+                    type="radio"
+                    id="morning"
+                    name="time"
+                    value="morning"
+                    checked
+                  />
+                  上半天
+                </label>
+                <label for="afternoon" class="time-selection-radio-second">
+                  <input
+                    type="radio"
+                    id="afternoon"
+                    name="time"
+                    value="afternoon"
+                  />
+                  下半天
+                </label>
+              </div>
+              <div class="charge">
+                <p class="charge-title">導覽費用：</p>
+                <p class="charge-p" id="charge-p">新台幣 2000 元</p>
+              </div>
+              <div class="start-trip-div">
+                <button class="start-trip">開始預約行程</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- ! div line -->
-    <div class="divider-div">
-      <div class="divider"></div>
-    </div>
-    <!-- ! div line -->
-    <div class="discribe-block-div">
-      <div class="describe-block" id="describe-block">
-        <!-- <div class="the-discribe-text">
+      <!-- ! div line -->
+      <div class="divider-div">
+        <div class="divider"></div>
+      </div>
+      <!-- ! div line -->
+      <div class="discribe-block-div">
+        <div class="describe-block" id="describe-block">
+          <!-- <div class="the-discribe-text">
           平安鐘祈求大家的平安，這是為了紀念921地震週年的設計，在喧鬧的廣場上每個小時鳴鐘，保佑平安，祈禱臺灣不會再發生這樣的天災。雙手合十加上108個黃色的琉璃乳丁，隨著緩緩流下的水，在底下的一個小噴泉噴出。雙手合十的意義，一個是祈福，一個是包容，教我們要包容這樣的改變，撫平這樣的傷口。下面的水緩緩流出，代表著人的生命力是不斷地延續下去。緩緩地鐘聲，卻帶來心中的寧靜。
           這個平安鐘是由建築師姚仁喜與琉璃創作家王俠軍共同設計，長6公尺、寬5公尺，以鑄銅製成，由法鼓山文教基金會全額出資。平安鐘點綴都市景觀，不時提醒大家，面對刻骨銘心的災難痛苦，更應該有謙卑的一顆心。
         </div>
@@ -107,9 +116,10 @@
           捷運站名：忠孝復興站4號出口1.公車：204、212、212直、232、232副、262、262(區間)、278、299、521、605、605(副)、605(新台五線)、667、903、忠孝新幹線至頂好市場站
           2.車位：太平洋崇光百貨地下停車場或市民大道附近地下停車場
         </div> -->
+        </div>
       </div>
+      <!-- ! footer part -->
     </div>
-    <!-- ! footer part -->
     <footer class="foot">
       <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
     </footer>

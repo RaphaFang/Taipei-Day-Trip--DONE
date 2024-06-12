@@ -1,24 +1,52 @@
 "use strict";
+
+// 嘗試讀取一次，如果沒有就返回首頁？
+// fetch(`http://52.4.229.207:8000/api/attraction/${urlAttractionId}`).then(
+// 奇怪的是，將fetch放在dom外面作，盡然比放在裡面慢？要多研究
+
 document.addEventListener("DOMContentLoaded", async function () {
-  const attractionId = sessionStorage.getItem("attractionId");
-  console.log(attractionId);
+  let pathname = window.location.pathname;
+  let pathSegments = pathname.split("/");
+  let urlAttractionId = pathSegments[pathSegments.length - 1];
+
   try {
     let response = await fetch(
-      `http://52.4.229.207:8000/api/attraction/${attractionId}`
+      `http://52.4.229.207:8000/api/attraction/${urlAttractionId}`
     );
-    console.log("Response status: ", response.status);
     if (!response.ok) {
-      throw new Error("Network response was not ok " + response.statusText);
+      window.location.href = "/";
+    } else {
+      //   document.getElementById("content").style.display = "block";
+      let data = await response.json();
+      console.log(data["data"]);
+      displayDescribe(data["data"]);
     }
-    let data = await response.json();
-    console.log(data["data"]);
-    displayDescribe(data["data"]);
   } catch (error) {
     console.error("Fetch error: ", error);
+    window.location.href = "/";
   }
   backtoMain();
 });
+document.addEventListener("DOMContentLoaded", function () {
+  const morningRadio = document.getElementById("morning");
+  const afternoonRadio = document.getElementById("afternoon");
+  const chargeP = document.getElementById("charge-p");
 
+  morningRadio.addEventListener("change", function () {
+    if (morningRadio.checked) {
+      chargeP.textContent = "新台幣 2000 元";
+      morningRadio.checked = true;
+      afternoonRadio.checked = false;
+    }
+  });
+  afternoonRadio.addEventListener("change", function () {
+    if (afternoonRadio.checked) {
+      chargeP.textContent = "新台幣 2500 元";
+      morningRadio.checked = false;
+      afternoonRadio.checked = true;
+    }
+  });
+});
 // 左右點及
 document.addEventListener("DOMContentLoaded", function () {
   const secondMrt = document.getElementById("second-mrt");
@@ -59,18 +87,29 @@ function displayDescribe(data) {
   let describeTag = document.getElementById("tag-mrt-of-attrac");
   describeTag.innerHTML = `${data["category"]} at ${data["mrt"]}`;
 }
+
 function backtoMain() {
   let titleElement = document.getElementById("title");
   titleElement.addEventListener("click", function () {
     window.location.href = "/";
   });
 }
-
-function displayHtmlMrt(data) {
-  let mrtDiv = document.getElementById("second-mrt");
-  for (let n = 0; n < data.length; n++) {
+function spotDisplay() {
+  for (let n = 0; n < data["images"].length; n++) {
     mrtDiv.innerHTML += `
-    <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
-    `;
+        <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
+        `;
   }
+  data["images"];
 }
+// function callandDisplay() {
+//   let leftPicDiv = document.getElementById("pic-on-left");
+//   for (let n = 0; n < data.length; n++) {
+//     mrtDiv.innerHTML += `
+//     <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
+//     `;
+//   }
+//   data["images"];
+
+//   //   讀數列的數字，在回教pic
+// }

@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     threshold: 0.2,
   });
   observer.observe(document.getElementById("load-more-trigger"));
+  backtoMain();
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,8 +78,8 @@ function waitForDivLoaded() {
     const container = event.target.closest(".background-image-container");
     if (container) {
       const attractionId = container.getAttribute("data-id");
-      console.log("Container clicked, the id: " + attractionId);
-      sessionStorage.setItem("attractionId", attractionId);
+      // console.log("Container clicked, the id: " + attractionId);
+      // sessionStorage.setItem("attractionId", attractionId);
       window.location.href = `/attraction/${attractionId}`;
       // 我原先是絕對路徑，只會導向api
     }
@@ -206,5 +207,11 @@ function loadMore(entries, observer) {
         });
       }
     }
+  });
+}
+function backtoMain() {
+  let titleElement = document.getElementById("title");
+  titleElement.addEventListener("click", function () {
+    window.location.href = "/";
   });
 }

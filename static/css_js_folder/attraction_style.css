@@ -5,6 +5,16 @@
   font-size: 20px;
   font-family: "Noto Sans TC";
 }
+/* 這方式設置好聰明... */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+.content {
+  flex: 1;
+}
 
 .nav-bar {
   position: relative;
@@ -263,7 +273,7 @@
   font-weight: 700;
   line-height: 13.3px;
   text-align: left;
-  margin: 15px 20px 15px 20px;
+  margin: 25px 20px 15px 20px;
 }
 .grey-box-discribe {
   height: 24px;
@@ -331,7 +341,7 @@
 .time-selection {
   display: flex;
   align-items: center;
-  margin: 0px 20px 15px 20px;
+  margin: 0px 20px 20px 20px;
 }
 
 .time-selection-p {
@@ -366,7 +376,7 @@
 .time-selection-radio-first {
   margin-right: 5px;
 }
-input[type="radio"] {
+.time-selection input[type="radio"] {
   width: 22px; /* 调整圆圈的宽度 */
   height: 22px; /* 调整圆圈的高度 */
 
@@ -381,7 +391,7 @@ input[type="radio"] {
   position: relative;
   margin-right: 4px;
 }
-input[type="radio"]:checked::before {
+.time-selection input[type="radio"]:checked::before {
   content: "";
   display: block;
   width: 18px;

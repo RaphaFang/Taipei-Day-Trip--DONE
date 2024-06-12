@@ -1,14 +1,11 @@
 from fastapi import *
 from fastapi.templating import Jinja2Templates
-
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-
 import json
 from typing import Optional
-app=FastAPI()
-
 import mysql.connector
 import os
 sql_password = os.getenv('SQL_PASSWORD')
@@ -20,10 +17,9 @@ db_config = {
     'database': 'basic_db',
     'port':3306
 }
-# static_dir = "/static/css_js_folder"
-
-headers = {"Content-Type": "application/json; charset=utf-8"}
+app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
+headers = {"Content-Type": "application/json; charset=utf-8"}
 
 
 # uvicorn app:app --reload
@@ -34,7 +30,6 @@ origins = [
     "http://127.0.0.1:5501",
     "http://52.4.229.207",
     ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  
@@ -42,6 +37,16 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"], 
 )
+class AuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path.startswith("/static/") or request.url.path.startswith("/api/attractions") or request.url.path.startswith("/api/attraction") or request.url.path.startswith("/api/mrts"):
+            return await call_next(request)
+        if request.url.path.startswith("/attraction/") :
+            return await call_next(request)
+        if request.url.path not in ["/", "/booking", "/thankyou"]:
+            return RedirectResponse(url='/')
+        return await call_next(request)
+app.add_middleware(AuthMiddleware)
 
 @app.get("/api/attractions")
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
