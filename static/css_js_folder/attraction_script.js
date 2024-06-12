@@ -1,13 +1,14 @@
 "use strict";
-
 // 嘗試讀取一次，如果沒有就返回首頁？
 // fetch(`http://52.4.229.207:8000/api/attraction/${urlAttractionId}`).then(
 // 奇怪的是，將fetch放在dom外面作，盡然比放在裡面慢？要多研究
 
+const picDataAll = [];
 document.addEventListener("DOMContentLoaded", async function () {
   let pathname = window.location.pathname;
   let pathSegments = pathname.split("/");
   let urlAttractionId = pathSegments[pathSegments.length - 1];
+  let picDataAll = []; // 這邊不能用const，很蠢的初級問題，但是真的忘了還找不到錯在哪
 
   try {
     let response = await fetch(
@@ -20,13 +21,48 @@ document.addEventListener("DOMContentLoaded", async function () {
       let data = await response.json();
       console.log(data["data"]);
       displayDescribe(data["data"]);
+      picDataAll = data["data"]["images"];
     }
   } catch (error) {
     console.error("Fetch error: ", error);
     window.location.href = "/";
   }
   backtoMain();
+
+  let currentPic = 0;
+  const leftBtn = document.getElementById("left-mrt-btn");
+  const rightBtn = document.getElementById("right-mrt-btn");
+
+  spotDisplay(picDataAll);
+
+  leftBtn.addEventListener("click", function () {
+    currentPic -= 1;
+    picAndDisplay(currentPic, picDataAll);
+  });
+  rightBtn.addEventListener("click", function () {
+    currentPic += 1;
+    picAndDisplay(currentPic, picDataAll);
+  });
 });
+
+function picAndDisplay(currentPic, picDataAll) {
+  //處理variable傳遞的問題，最快的方式就是丟進()傳遞
+  const theLength = picDataAll.length;
+  console.log("theLength at 48: " + theLength);
+  let theNum = 0;
+  if (currentPic >= 0) {
+    theNum = currentPic % theLength;
+  } else {
+    theNum = (currentPic % theLength) + theLength;
+  }
+  console.log("The Num:", theNum);
+  let describePic = document.getElementById("pic-on-left");
+  describePic.style.backgroundImage = `url(${picDataAll[theNum]})`;
+  document.getElementById(`dot-id-${theNum - 1}`).className = "box-1";
+  document.getElementById(`dot-id-${theNum}`).className = "box-2";
+  document.getElementById(`dot-id-${theNum + 1}`).className = "box-1";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const morningRadio = document.getElementById("morning");
   const afternoonRadio = document.getElementById("afternoon");
@@ -47,28 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-// 左右點及
-document.addEventListener("DOMContentLoaded", function () {
-  const secondMrt = document.getElementById("second-mrt");
-  const scrollAmount = 100;
-  const leftBtn = document.getElementById("left-mrt-btn");
-  const rightBtn = document.getElementById("right-mrt-btn");
 
-  leftBtn.addEventListener("click", function () {
-    secondMrt.scrollBy({
-      left: -scrollAmount,
-      behavior: "smooth",
-    });
-  });
-  rightBtn.addEventListener("click", function () {
-    secondMrt.scrollBy({
-      left: scrollAmount,
-      behavior: "smooth",
-    });
-  });
-});
-
-//!  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 function displayDescribe(data) {
   let describeBlock = document.getElementById("describe-block");
   describeBlock.innerHTML += `
@@ -94,22 +109,14 @@ function backtoMain() {
     window.location.href = "/";
   });
 }
-function spotDisplay() {
-  for (let n = 0; n < data["images"].length; n++) {
-    mrtDiv.innerHTML += `
-        <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
-        `;
-  }
-  data["images"];
-}
-// function callandDisplay() {
-//   let leftPicDiv = document.getElementById("pic-on-left");
-//   for (let n = 0; n < data.length; n++) {
-//     mrtDiv.innerHTML += `
-//     <a href="#" class="mrt-item" id="mrt-keyword" data-keyword=${data[n]}>${data[n]}</a>
-//     `;
-//   }
-//   data["images"];
 
-//   //   讀數列的數字，在回教pic
-// }
+function spotDisplay(picDataAll) {
+  const lenAll = picDataAll.length;
+  let indicator = document.getElementById("indicator");
+  for (let n = 0; n < lenAll; n++) {
+    indicator.innerHTML += `
+    <div class="box-1" id="dot-id-${n}"></div>
+    `;
+  }
+  document.getElementById(`dot-id-0`).className = "box-2";
+}

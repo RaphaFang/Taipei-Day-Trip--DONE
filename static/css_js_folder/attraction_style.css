@@ -134,6 +134,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .left-div,
@@ -176,7 +177,38 @@ body {
 .left-mrt-btn:hover img {
   opacity: 1;
 }
+.indicator {
+  max-width: 540px;
+  width: 100%;
+  height: 12px;
+  /* background: white; */
+  position: absolute;
+  top: 378px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.box-1 {
+  width: 12px;
+  height: 12px;
+  gap: 0px;
+  opacity: 0px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 50%;
+  margin: 0 6px;
+}
+.box-2 {
+  width: 12px;
+  height: 12px;
+  gap: 0px;
+  opacity: 0px;
 
+  background: rgba(0, 0, 0, 1);
+  border-radius: 50%;
+  border: 1px solid;
+  border: 1px solid rgba(255, 255, 255, 1);
+  margin: 0 6px;
+}
 /* !pic */
 .pic-day-contain {
   display: flex;
