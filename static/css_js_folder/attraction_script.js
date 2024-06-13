@@ -90,6 +90,7 @@ function spotsClick() {
         if (spotId) {
           let pathSegments = spotId.split("-");
           let currentPic = Number(pathSegments[pathSegments.length - 1]);
+          //   這裡切開來的東西會是字串，要轉換成num
           console.log(currentPic);
           resolve(currentPic);
         }
