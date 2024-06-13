@@ -3,7 +3,116 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css_js_folder/attraction_style.css" />
+
     <title>Attraction</title>
   </head>
-  <body></body>
+  <body>
+    <div class="content">
+      <div class="nav-bar">
+        <div class="second-nav-bar">
+          <p class="title" id="title">台北一日遊</p>
+          <div class="btn-container">
+            <div class="firstbtn">
+              <a href="#" class="first-bar-btn">預定行程</a>
+            </div>
+            <div class="secondbtn">
+              <a href="#" class="second-bar-btn">登入/註冊</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ! navbar part end -->
+      <!-- ! pic and day select -->
+      <div class="pic-day-contain">
+        <div class="pic-day">
+          <div class="pic-on-left attrac-pic-left" id="pic-on-left">
+            <div class="left-div">
+              <button class="left-mrt-btn" id="left-mrt-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png"
+                  alt="left"
+                />
+              </button>
+            </div>
+            <div class="right-div">
+              <button class="right-mrt-btn" id="right-mrt-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png"
+                  alt="right"
+                />
+              </button>
+            </div>
+            <div class="indicator" id="indicator"></div>
+            <!-- <div class="box-1"></div> -->
+            <!-- <div class="box-2"></div> -->
+          </div>
+          <div class="day-on-right">
+            <div class="title-of-attrac" id="title-of-attrac"></div>
+            <div class="tag-mrt-of-attrac" id="tag-mrt-of-attrac"></div>
+            <div class="grey-box">
+              <div class="grey-box-title">
+                <p class="grey-box-title-p">訂購導覽行程</p>
+              </div>
+              <div class="grey-box-discribe">
+                以此景點為中心的一日行程，帶您探索城市角落故事
+              </div>
+              <div class="grey-box-day">
+                <label for="date" class="grey-box-day-p">選擇日期：</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  class="grey-box-day-date"
+                />
+              </div>
+              <div class="time-selection">
+                <p class="time-selection-p">選擇時間：</p>
+                <label for="morning" class="time-selection-radio-first">
+                  <!-- 這個 checked 也找太久...-->
+                  <input
+                    type="radio"
+                    id="morning"
+                    name="time"
+                    value="morning"
+                    checked
+                  />
+                  上半天
+                </label>
+                <label for="afternoon" class="time-selection-radio-second">
+                  <input
+                    type="radio"
+                    id="afternoon"
+                    name="time"
+                    value="afternoon"
+                  />
+                  下半天
+                </label>
+              </div>
+              <div class="charge">
+                <p class="charge-title">導覽費用：</p>
+                <p class="charge-p" id="charge-p">新台幣 2000 元</p>
+              </div>
+              <div class="start-trip-div">
+                <button class="start-trip">開始預約行程</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ! div line -->
+      <div class="divider-div">
+        <div class="divider"></div>
+      </div>
+      <!-- ! div line -->
+      <div class="discribe-block-div">
+        <div class="describe-block" id="describe-block"></div>
+      </div>
+      <!-- ! footer part -->
+    </div>
+    <footer class="foot">
+      <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
+    </footer>
+    <script src="/static/css_js_folder/attraction_script.js"></script>
+  </body>
 </html>

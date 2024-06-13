@@ -5,6 +5,16 @@
   font-size: 20px;
   font-family: "Noto Sans TC";
 }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.content {
+  flex: 1;
+}
 
 .nav-bar {
   position: relative;
@@ -127,7 +137,7 @@
   align-items: center;
 }
 .hero-background-image-container {
-  background-image: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/pic/101.png");
+  background-image: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/101.png");
   background-size: 1920px 534px;
   background-repeat: no-repeat;
   background-position: center 0;
@@ -355,6 +365,11 @@
   gap: 15px;
   justify-content: center;
 }
+.the-empty-block-for-script {
+  height: 242px;
+  width: 270px;
+  border: 0;
+}
 .background-image-container {
   position: relative;
   height: 242px;
@@ -363,7 +378,6 @@
   background: white;
   border-radius: 5px;
   border: solid 1px rgba(232, 232, 232, 1);
-  /* border: solid 10px rgba(225, 225, 0, 1); */
 }
 
 .first-part {
@@ -464,28 +478,17 @@
   color: rgba(255, 255, 255, 1);
 }
 
+/* ! RWD */
 @media (max-width: 1200px) {
-  .attacrions {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 900px) {
-  .attacrions {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 600px) {
-  .attacrions {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 360px) {
-  .attacrions {
-    justify-content: center;
-  }
   .second-nav-bar {
     width: 100%;
     max-width: 360px;
@@ -562,4 +565,8 @@
     height: 40px;
     top: 195px;
   }
+}
+
+.background-image-container {
+  pointer-events: auto;
 }
