@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   indicatorDivBar.addEventListener("click", async function () {
     currentPic = await spotsClick(); // 等待 spotsClick 的 currentPic 所以這整個函數會是異步的
     console.log("spotsClick func., currentPic value: " + currentPic);
-    picAndDisplay(currentPic, picDataAll);
+    picAndDisplay(Number(currentPic), picDataAll);
   });
 });
 
@@ -65,6 +65,7 @@ function picAndDisplay(currentPic, picDataAll) {
       theNum = 0;
     } // 處理 -6 的於數會是 0 , 這時再加上theLength，theNum會變成6
   }
+  currentPic = theNum;
   console.log("picAndDisplay func. theNum value:", theNum);
   let describePic = document.getElementById("pic-on-left");
   describePic.style.backgroundImage = `url(${picDataAll[theNum]})`;
@@ -88,7 +89,7 @@ function spotsClick() {
         let spotId = event.target.id;
         if (spotId) {
           let pathSegments = spotId.split("-");
-          let currentPic = pathSegments[pathSegments.length - 1];
+          let currentPic = Number(pathSegments[pathSegments.length - 1]);
           console.log(currentPic);
           resolve(currentPic);
         }
