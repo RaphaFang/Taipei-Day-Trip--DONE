@@ -365,6 +365,11 @@ body {
   gap: 15px;
   justify-content: center;
 }
+.the-empty-block-for-script {
+  height: 242px;
+  width: 270px;
+  border: 0;
+}
 .background-image-container {
   position: relative;
   height: 242px;
@@ -373,7 +378,6 @@ body {
   background: white;
   border-radius: 5px;
   border: solid 1px rgba(232, 232, 232, 1);
-  /* border: solid 10px rgba(225, 225, 0, 1); */
 }
 
 .first-part {
@@ -476,27 +480,15 @@ body {
 
 /* ! RWD */
 @media (max-width: 1200px) {
-  .attacrions {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 900px) {
-  .attacrions {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 600px) {
-  .attacrions {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 360px) {
-  .attacrions {
-    justify-content: center;
-  }
   .second-nav-bar {
     width: 100%;
     max-width: 360px;

@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     threshold: 0.2,
   });
   observer.observe(document.getElementById("load-more-trigger"));
+
   backtoMain();
 });
 
@@ -201,14 +202,23 @@ function loadMore(entries, observer) {
   entries.forEach(function (entry) {
     if (entry.isIntersecting) {
       observer.unobserve(entry.target); // 停止觀察當前元素
+      console.log(nextPage);
       if (nextPage !== null) {
         addUpFetch(nextPage, nextKeyword).then(() => {
           observer.observe(document.getElementById("load-more-trigger")); // 重新啟動observer，觀察新元素
         });
+      } else {
+        let attracDiv = document.getElementById("attracDiv");
+        attracDiv.innerHTML += `
+        <div class="the-empty-block-for-script" data-id="the-empty-block-for-script"></div>
+        <div class="the-empty-block-for-script" data-id="the-empty-block-for-script"></div>
+        <div class="the-empty-block-for-script" data-id="the-empty-block-for-script"></div>
+        `;
       }
     }
   });
 }
+
 function backtoMain() {
   let titleElement = document.getElementById("title");
   titleElement.addEventListener("click", function () {
