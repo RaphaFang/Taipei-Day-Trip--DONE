@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!response.ok) {
       window.location.href = "/";
     } else {
-      //   document.getElementById("content").style.display = "block";
       let data = await response.json();
       console.log(data["data"]);
       displayDescribe(data["data"]);
@@ -32,9 +31,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   let currentPic = 0;
   const leftBtn = document.getElementById("left-mrt-btn");
   const rightBtn = document.getElementById("right-mrt-btn");
+  const indicatorDivBar = document.getElementById("indicator");
 
   spotDisplay(picDataAll);
-
   leftBtn.addEventListener("click", function () {
     currentPic -= 1;
     picAndDisplay(currentPic, picDataAll);
@@ -43,19 +42,30 @@ document.addEventListener("DOMContentLoaded", async function () {
     currentPic += 1;
     picAndDisplay(currentPic, picDataAll);
   });
+
+  indicatorDivBar.addEventListener("click", async function () {
+    currentPic = await spotsClick(); // 等待 spotsClick 的 currentPic 所以這整個函數會是異步的
+    console.log("spotsClick func., currentPic value: " + currentPic);
+    picAndDisplay(currentPic, picDataAll);
+  });
 });
 
 function picAndDisplay(currentPic, picDataAll) {
   //處理variable傳遞的問題，最快的方式就是丟進()傳遞
   const theLength = picDataAll.length;
-  console.log("theLength at 48: " + theLength);
+  console.log("picAndDisplay func. theLength value:", theLength);
+  console.log("picAndDisplay func. currentPic value:", currentPic);
+
   let theNum = 0;
   if (currentPic >= 0) {
     theNum = currentPic % theLength;
   } else {
     theNum = (currentPic % theLength) + theLength;
+    if (theNum === 6) {
+      theNum = 0;
+    } // 處理 -6 的於數會是 0 , 這時再加上theLength，theNum會變成6
   }
-  console.log("The Num:", theNum);
+  console.log("picAndDisplay func. theNum value:", theNum);
   let describePic = document.getElementById("pic-on-left");
   describePic.style.backgroundImage = `url(${picDataAll[theNum]})`;
 
@@ -66,6 +76,25 @@ function picAndDisplay(currentPic, picDataAll) {
   document.getElementById(`dot-id-${theNum}`).className =
     "box-2 choose-all-box";
   //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
+}
+
+function spotsClick() {
+  // 形式上，一定要透過 return new Promise 這方式返回 value，因為這個func.的操作都是異步的
+  //   術語上叫做「封裝異步操作」
+  let boxElements = document.querySelectorAll(".choose-all-box");
+  return new Promise((resolve) => {
+    boxElements.forEach((box) => {
+      box.addEventListener("click", function (event) {
+        let spotId = event.target.id;
+        if (spotId) {
+          let pathSegments = spotId.split("-");
+          let currentPic = pathSegments[pathSegments.length - 1];
+          console.log(currentPic);
+          resolve(currentPic);
+        }
+      });
+    });
+  });
 }
 
 document.addEventListener("DOMContentLoaded", function () {

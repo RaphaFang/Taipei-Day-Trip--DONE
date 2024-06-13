@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// 四到跟先前等待 mrt 載入後才可以點及一樣的問題，一，監聽上一層的div，二，等待載入後再監聽
+// 這設定跟先前等待 mrt 載入後才可以點及一樣的問題，一，監聽上一層的div，二，等待載入後再監聽
 function waitForDivLoaded() {
   const attractionsContainer = document.getElementById("attracDiv");
   attractionsContainer.addEventListener("click", (event) => {
