@@ -11,6 +11,8 @@ pool_config = {
     'user': sql_username,
     'password': sql_password,
     'database': 'basic_db',
-    'port':3306
+    'port':3306,
+    'use_pure': True
+
 }
 mydb_pool = mysql.connector.pooling.MySQLConnectionPool(**pool_config)
