@@ -11,6 +11,8 @@ async def api_mrts(request: Request):
     cursor = None
     try:
         db_pool = request.state.db_pool.get("basic_db") # 要透過get()，不然db_pool得到的都會是字典不會是真正的連接
+        print(type(request.state.db_pool))
+        print(request.state.db_pool)
         connection = db_pool.get_connection()
         cursor = connection.cursor()
 
