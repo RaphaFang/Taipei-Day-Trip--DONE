@@ -15,7 +15,7 @@ setup_cors(app)
 
 
 db_pool ={
-    "basic_db":pool_buildup("basic_db"),
+    "basic_db":pool_buildup(),
 }
 @app.middleware("http")
 async def attach_db_connection(request: Request, call_next):
