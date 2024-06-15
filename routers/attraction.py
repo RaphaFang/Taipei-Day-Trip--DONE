@@ -13,7 +13,7 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.get("/api/attraction/{id}")  
 async def api_attractions(request: Request, id=int): 
     try:
-        db_pool = request.state.db_pool['basic_db']
+        db_pool = request.state.db_pool.get("basic_db")
         connection = db_pool.get_connection()
         cursor = connection.cursor(dictionary=True)
 

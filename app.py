@@ -12,8 +12,6 @@ app.mount("/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
 
-
-
 db_pool ={
     "basic_db":pool_buildup(),
 }
@@ -22,16 +20,6 @@ async def attach_db_connection(request: Request, call_next):
     request.state.db_pool = db_pool
     response = await call_next(request)
     return response
-
-# db_pool ={
-#     "spot":pool_buildup("spot"),
-#     # "member":create_db_pool("member"),
-# }
-# @app.middleware("http")
-# async def attach_db_connection(request, call_next):
-#     request.state.db_pool = db_pool
-#     response = await call_next(request)
-#     return response
 
 
 app.include_router(mrts.router)
