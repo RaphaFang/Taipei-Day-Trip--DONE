@@ -1,20 +1,22 @@
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
 import mysql.connector
-from db import get_connection
-
 import json
 from typing import Optional
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
 
-
 @router.get("/api/attractions")
-def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
+async def api_attractions(request: Request, page: int=Query(..., ge=0), keyword: Optional[str] = None):
+    mydb = None
+    cursor = None
     try:
-        mydb_connection = get_connection() 
-        cursor = mydb_connection.cursor(dictionary=True)  # dictionary=True 這個設置就可以不必在69行使用"name":each[1]，而可以直接用
+        db_pool = request.state.db_pool
+        connection = db_pool.get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # cursor = mydb_connection.cursor(dictionary=True)  # dictionary=True 這個設置就可以不必在69行使用"name":each[1]，而可以直接用
         offset_num = page*12
         keyword_format = f"%{keyword}%" 
         if keyword==None:
@@ -36,4 +38,4 @@ def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
         )
     finally:
         cursor.close()
-        mydb_connection.close()
+        connection.close()
