@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 import mysql.connector
-from db import mydb_pool
+from db import get_connection
+
 
 router = APIRouter()
 
@@ -13,7 +14,7 @@ def api_mrts():
     mydb = None
     cursor = None
     try:
-        mydb_connection = mydb_pool.get_connection()  
+        mydb_connection = get_connection() 
         cursor = mydb_connection.cursor()
         cursor.execute("SELECT mrt, COUNT(DISTINCT name) as count FROM processed_data WHERE mrt IS NOT NULL GROUP BY mrt ORDER BY count DESC;") 
         mrts_counted = cursor.fetchall()

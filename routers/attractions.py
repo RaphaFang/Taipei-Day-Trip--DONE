@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
 import mysql.connector
-from db import mydb_pool
+from db import get_connection
 
 import json
 from typing import Optional
@@ -13,7 +13,7 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.get("/api/attractions")
 def api_attractions(page: int=Query(..., ge=0), keyword: Optional[str] = None):
     try:
-        mydb_connection = mydb_pool.get_connection() 
+        mydb_connection = get_connection() 
         cursor = mydb_connection.cursor(dictionary=True)  # dictionary=True 這個設置就可以不必在69行使用"name":each[1]，而可以直接用
         offset_num = page*12
         keyword_format = f"%{keyword}%" 

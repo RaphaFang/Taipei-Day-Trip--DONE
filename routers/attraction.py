@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
 import mysql.connector
-from db import mydb_pool
+from db import get_connection
+
 
 import json
 from typing import Optional
@@ -13,7 +14,7 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.get("/api/attraction/{id}")  
 def api_attractions(id=int): 
     try:
-        mydb_connection = mydb_pool.get_connection() 
+        mydb_connection = get_connection()  # mydb_connection = mydb_pool.get_connection() 
         cursor = mydb_connection.cursor(dictionary=True) 
         cursor.execute("SELECT * FROM processed_data WHERE id = %s", (id,)) 
         attract_data = cursor.fetchone()

@@ -1,6 +1,7 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+
 from routers.auth_middleware import AuthMiddleware 
 from routers.cors import setup_cors 
 from routers import attractions, mrts, attraction

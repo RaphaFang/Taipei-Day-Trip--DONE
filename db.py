@@ -16,3 +16,8 @@ pool_config = {
 
 }
 mydb_pool = mysql.connector.pooling.MySQLConnectionPool(**pool_config)
+
+def get_connection():
+    connection = mydb_pool.get_connection()
+    connection.ssl_disabled = True  # Disable SSL
+    return connection
