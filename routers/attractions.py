@@ -9,14 +9,12 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 
 @router.get("/api/attractions")
 async def api_attractions(request: Request, page: int=Query(..., ge=0), keyword: Optional[str] = None):
-    mydb = None
-    cursor = None
+
     try:
         db_pool = request.state.db_pool
         connection = db_pool.get_connection()
         cursor = connection.cursor(dictionary=True)
 
-        # cursor = mydb_connection.cursor(dictionary=True)  # dictionary=True 這個設置就可以不必在69行使用"name":each[1]，而可以直接用
         offset_num = page*12
         keyword_format = f"%{keyword}%" 
         if keyword==None:

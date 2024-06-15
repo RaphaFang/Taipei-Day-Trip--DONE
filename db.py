@@ -1,7 +1,7 @@
 import os
 import mysql.connector.pooling
 
-def create_db_pool():
+def pool_buildup():
     pool_config = {
         'pool_name': 'day_trip_pool',
         'pool_size': 10,
@@ -14,7 +14,7 @@ def create_db_pool():
     }
     return mysql.connector.pooling.MySQLConnectionPool(**pool_config)
 
-mydb_pool = create_db_pool()
+# mydb_pool = create_db_pool()
 
 # -------------------
 

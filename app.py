@@ -5,23 +5,33 @@ from fastapi.staticfiles import StaticFiles
 from routers.auth_middleware import AuthMiddleware 
 from routers.cors import setup_cors 
 from routers import attractions, mrts, attraction
-from db import mydb_pool
+from db import pool_buildup
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
 
-# db_pool = {
-#     "spot": pool_buildup("spot"),
-#     # "member": create_db_pool("member"), 如果有多個資料庫，可以這樣擴展
-# }
 
+
+db_pool ={
+    "basic_db":pool_buildup("basic_db"),
+}
 @app.middleware("http")
 async def attach_db_connection(request: Request, call_next):
-    request.state.db_pool = mydb_pool
+    request.state.db_pool = db_pool
     response = await call_next(request)
     return response
+
+# db_pool ={
+#     "spot":pool_buildup("spot"),
+#     # "member":create_db_pool("member"),
+# }
+# @app.middleware("http")
+# async def attach_db_connection(request, call_next):
+#     request.state.db_pool = db_pool
+#     response = await call_next(request)
+#     return response
 
 
 app.include_router(mrts.router)
