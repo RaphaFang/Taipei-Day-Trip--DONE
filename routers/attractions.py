@@ -11,7 +11,7 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def api_attractions(request: Request, page: int=Query(..., ge=0), keyword: Optional[str] = None):
 
     try:
-        db_pool = request.state.db_pool
+        db_pool = request.state.db_pool['basic_db']
         connection = db_pool.get_connection()
         cursor = connection.cursor(dictionary=True)
 

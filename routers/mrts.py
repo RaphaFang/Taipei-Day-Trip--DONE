@@ -10,8 +10,8 @@ async def api_mrts(request: Request):
     mydb = None
     cursor = None
     try:
-        db_pool = request.state.db_pool
-        connection = db_pool.get_connection()
+        db_pool = request.state.db_pool['basic_db']
+        connection = db_pool.get_connection()  # 获取连接
         cursor = connection.cursor()
 
         cursor.execute("SELECT mrt, COUNT(DISTINCT name) as count FROM processed_data WHERE mrt IS NOT NULL GROUP BY mrt ORDER BY count DESC;") 
