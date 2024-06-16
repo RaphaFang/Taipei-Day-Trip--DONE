@@ -1,14 +1,11 @@
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
 import mysql.connector
-
-
 import json
 from typing import Optional
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
-
 
 @router.get("/api/attraction/{id}")  
 async def api_attractions(request: Request, id=int): 
