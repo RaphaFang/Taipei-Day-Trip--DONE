@@ -4,7 +4,7 @@ from starlette.responses import RedirectResponse
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path.startswith("/static/") or request.url.path.startswith("/api/attractions") or request.url.path.startswith("/api/attraction") or request.url.path.startswith("/api/mrts"):
+        if request.url.path.startswith("/static/") or request.url.path.startswith("/api") :
             return await call_next(request)
         if request.url.path.startswith("/attraction/") :
             return await call_next(request)

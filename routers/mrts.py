@@ -18,7 +18,8 @@ async def api_mrts(request: Request):
 
         cursor.execute("SELECT mrt, COUNT(DISTINCT name) as count FROM processed_data WHERE mrt IS NOT NULL GROUP BY mrt ORDER BY count DESC;") 
         mrts_counted = cursor.fetchall()
-        return JSONResponse(content={"data":[n[0] for n in mrts_counted]}, headers=headers)
+        content_data = {"data":[n[0] for n in mrts_counted]}
+        return JSONResponse(content=content_data, headers=headers)
     
     except mysql.connector.Error as err:
         return JSONResponse(    

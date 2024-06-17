@@ -225,3 +225,45 @@ function backtoMain() {
     window.location.href = "/";
   });
 }
+
+// ! New week start
+async function submitSigninForm() {
+  const form = document.getElementById("signin-form");
+  const signinFormData = new FormData(form);
+  const response = await fetch("/api/user/auth", {
+    method: "POST",
+    body: signinFormData,
+  });
+  const result = await response.json();
+
+  if (response.ok) {
+    const token = result.access_token;
+    console.log("Token received:", token);
+    localStorage.setItem("authToken", token);
+  } else {
+    console.error("Error:", result.message);
+  }
+}
+
+// ! front-end send a request, with authToken
+async function authTokenRequest() {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.error("No auth token found");
+    return;
+  }
+
+  const response = await fetch("/api/protected/resource", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const result = await response.json();
+
+  if (response.ok) {
+    console.log("Protected resource data:", result);
+  } else {
+    console.error("Error:", result.message);
+  }
+}
