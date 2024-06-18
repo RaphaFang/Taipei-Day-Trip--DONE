@@ -19,12 +19,19 @@ body {
 .nav-bar {
   position: relative;
   height: 54px;
-  /* background: red; */
   background: #ffffff;
   display: flex;
   justify-content: space-around;
   align-items: center;
   border-bottom: 1.5px solid rgba(232, 232, 232, 1);
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.without-nav-bar {
+  margin-top: 54px;
 }
 .second-nav-bar {
   position: absolute;

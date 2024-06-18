@@ -219,7 +219,7 @@ function loadMore(entries, observer) {
   });
 }
 
-function backtoMain() {
+async function backtoMain() {
   let titleElement = document.getElementById("title");
   titleElement.addEventListener("click", function () {
     window.location.href = "/";
@@ -227,43 +227,145 @@ function backtoMain() {
 }
 
 // ! New week start
+// ! New week start
+// ! submitSigninForm
 async function submitSigninForm() {
   const form = document.getElementById("signin-form");
   const signinFormData = new FormData(form);
-  const response = await fetch("/api/user/auth", {
+  let ifSuccessMessage = "Sign in successfully.";
+  let ifErrorMessage =
+    "Invalid user info, please make sure the email and password are correct.";
+  await getToken(signinFormData);
+  await tokenCheck(ifSuccessMessage, ifErrorMessage);
+}
+
+// ! submitSignUpForm
+async function submitSignUpForm() {
+  const form = document.getElementById("signup-form");
+  const signupFormData = new FormData(form);
+  const response = await fetch("/api/user", {
     method: "POST",
-    body: signinFormData,
+    body: signupFormData,
   });
   const result = await response.json();
-
   if (response.ok) {
-    const token = result.access_token;
-    console.log("Token received:", token);
-    localStorage.setItem("authToken", token);
+    console.log("submitSignUpForm() -> user sign-up : ", response);
+    signupFormData.delete("name");
+    let ifSuccessMessage = "Sign up successfully and automatically sign in.";
+    let ifErrorMessage =
+      "Invalid registration, duplicate email or other reasons";
+    await getToken(signupFormData);
+    await tokenCheck(ifSuccessMessage, ifErrorMessage);
   } else {
     console.error("Error:", result.message);
+    displayLoginMessage(result.message);
   }
 }
 
-// ! front-end send a request, with authToken
-async function authTokenRequest() {
+// ! get token
+async function getToken(formDataInput) {
+  const response = await fetch("/api/user/auth", {
+    method: "PUT",
+    body: formDataInput,
+  });
+  const result = await response.json();
+  if (response.ok) {
+    const token = result.access_token;
+    localStorage.setItem("authToken", token);
+    console.log("getToken() -> user sign-in, return encode.token: ", token);
+  } else {
+    console.error("Error:", result.message);
+    displayLoginMessage(result.message);
+  }
+}
+// !  tokenCheck
+async function tokenCheck(successMessage, errorMessage) {
   const token = localStorage.getItem("authToken");
   if (!token) {
-    console.error("No auth token found");
+    console.error("tokenCheck() -> auth token no found");
     return;
   }
-
-  const response = await fetch("/api/protected/resource", {
+  const response = await fetch("/api/user/auth", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   const result = await response.json();
-
   if (response.ok) {
-    console.log("Protected resource data:", result);
+    if (result["data"]) {
+      console.log(
+        "tokenCheck() -> check user token, return user_info :",
+        result
+      );
+      localStorage.setItem("userInfo", result["data"]);
+      displayLoginMessage(successMessage);
+    } else {
+      console.error("Error:", result.message);
+      localStorage.setItem("userInfo", result["data"]);
+      displayLoginMessage(errorMessage);
+    }
+    const event = new Event("userStatusChange");
+    document.dispatchEvent(event);
   } else {
     console.error("Error:", result.message);
+    displayLoginMessage(result.message);
+  }
+}
+// ! displayLoginMessage
+function displayLoginMessage(message) {
+  let errorCatchers = document.querySelectorAll(".error-catcher");
+  errorCatchers.forEach((element) => {
+    element.textContent = message;
+  });
+}
+
+// ! login / logout
+document.addEventListener("userStatusChange", async function () {
+  signinOutSwitch();
+});
+
+function signinOutSwitch() {
+  let userInfo = localStorage.getItem("userInfo");
+  console.log(userInfo);
+  const secondBtn = document.getElementById("secondbtn");
+  if (userInfo) {
+    secondBtn.innerHTML = `
+          <a class="second-bar-btn" id="switch-btn" onclick="signout()">登出系統</a>
+      `;
+  } else {
+    secondBtn.innerHTML = `
+          <a class="second-bar-btn" id="switch-btn">登入/註冊</a>
+      `;
+  }
+}
+
+function signout() {
+  if (
+    confirm("You're about to sign out from this page, do you want to sign out?")
+  ) {
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("authToken");
+    const event = new Event("userStatusChange");
+    document.dispatchEvent(event);
+    window.location.href = "/";
+  } else {
+    console.log("signout() denied -> token and user_info remained");
+  }
+}
+
+function signUpInSwitch() {
+  const signinForm = document.getElementById("signin-form-div");
+  const signupForm = document.getElementById("signup-form-div");
+  if (signupForm.hidden) {
+    console.log("signinForm set hidden");
+    signupForm.hidden = false;
+    signinForm.hidden = true;
+    displayLoginMessage("");
+  } else {
+    console.log("signupForm set hidden");
+    signupForm.hidden = true;
+    signinForm.hidden = false;
+    displayLoginMessage("");
   }
 }

@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 
 from routers.auth_middleware import AuthMiddleware 
 from routers.cors import setup_cors 
-from routers import attractions, mrts, attraction, api_user, api_user_auth
+from routers import attractions, mrts, attraction, api_user, api_user_auth_put, api_user_auth_get
 from db import pool_buildup
 
 app=FastAPI()
@@ -25,9 +25,9 @@ async def attach_db_connection(request: Request, call_next):
 app.include_router(mrts.router)
 app.include_router(attraction.router)
 app.include_router(attractions.router)
-# app.include_router(api_user.router)
-app.include_router(api_user_auth.router)
-
+app.include_router(api_user.router)
+app.include_router(api_user_auth_put.router)
+app.include_router(api_user_auth_get.router)
 
 
 # Static Pages (Never Modify Code in this Block)

@@ -15,143 +15,149 @@
             <div class="firstbtn">
               <a href="#" class="first-bar-btn">預定行程</a>
             </div>
-            <div class="secondbtn">
-              <a href="#" class="second-bar-btn">登入/註冊</a>
+            <div class="secondbtn" id="secondbtn">
+              <a class="second-bar-btn" id="switch-btn">登入/註冊</a>
             </div>
           </div>
         </div>
       </div>
       <!-- ! navbar part end -->
-
-      <div class="search-bar hero-background-image-container">
-        <div class="searching-block">
-          <div class="text-block">
-            <p class="up-welcome-text">輕鬆享受台北一日悠閒</p>
-            <p class="down-welcome-text">
-              探索每個角落，體驗城市的深度旅遊行程
-            </p>
-          </div>
-          <div class="btn-part">
-            <input
-              class="search-place"
-              id="search-place"
-              type="text"
-              placeholder="輸入景點名稱查詢"
-            />
-            <button class="search-btn" id="search-btn">
-              <img
-                src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/search.png"
-                class="pic-btn"
-                alt="Search"
+      <div class="without-nav-bar">
+        <div class="search-bar hero-background-image-container">
+          <div class="searching-block">
+            <div class="text-block">
+              <p class="up-welcome-text">輕鬆享受台北一日悠閒</p>
+              <p class="down-welcome-text">
+                探索每個角落，體驗城市的深度旅遊行程
+              </p>
+            </div>
+            <div class="btn-part">
+              <input
+                class="search-place"
+                id="search-place"
+                type="text"
+                placeholder="輸入景點名稱查詢"
               />
-            </button>
+              <button class="search-btn" id="search-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/search.png"
+                  class="pic-btn"
+                  alt="Search"
+                />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- ! search part end -->
-      <!-- testingggggggg -->
-      <!-- hidden -->
-      <div class="signin-form-div" id="signin-form-div">
-        <p class="text">登入會員帳號</p>
-        <form id="signin-form">
-          <div class="form-group">
-            <input
-              type="email"
-              id="signin_email"
-              name="signin_email"
-              placeholder="輸入電子信箱"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              id="signin_password"
-              name="signin_password"
-              placeholder="輸入密碼"
-            />
-          </div>
-          <div class="form-group-last">
-            <button type="submit" onclick="submitSigninForm()">登入帳戶</button>
-          </div>
-          <div class="switch-form" id="switch-form">
-            <a href="#">還沒有帳戶？點此註冊</a>
-          </div>
-        </form>
-      </div>
-      <!-- testingggggggg -->
-      <div class="signup-form-div" id="signup-form-div">
-        <p class="text">註冊會員帳號</p>
-        <form action="/api/user" method="post" id="signup-form">
-          <div class="form-group">
-            <input
-              type="text"
-              id="signup_username"
-              name="signup_name"
-              placeholder="輸入姓名"
-              pattern="^[A-Za-z0-9!@#$%^&*()]{4,8}$"
-              title="User name must be 4-8 characters long, include only alphabets, numbers, and @#$%^&*()"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="email"
-              id="signup_user_email"
-              name="signup_email"
-              placeholder="輸入電子郵件"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              id="signup_password"
-              name="signup_password"
-              placeholder="輸入密碼"
-              pattern="^[A-Za-z0-9!@#$%^&*()]{4,8}$"
-              title="Password must be 4-8 characters long, include only alphabets, numbers, and @#$%^&*()"
-              required
-            />
-          </div>
-          <div class="form-group-last">
-            <button type="submit">註冊新帳戶</button>
-          </div>
-          <div class="switch-form" id="switch-form">
-            <a href="#">已經有帳戶了？點此登入</a>
-          </div>
-        </form>
-      </div>
-      <!-- testingggggggg -->
+        <!-- ! search part end -->
+        <!-- ! signin-form -->
+        <!-- hidden -->
+        <div class="signin-form-div" id="signin-form-div">
+          <p class="text">登入會員帳號</p>
+          <form
+            id="signin-form"
+            action="javascript:void(0);"
+            onsubmit="submitSigninForm()"
+          >
+            <div class="form-group">
+              <input
+                type="email"
+                id="signin_email"
+                name="email"
+                placeholder="輸入電子信箱"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                id="signin_password"
+                name="password"
+                placeholder="輸入密碼"
+              />
+            </div>
+            <div class="form-group-last">
+              <button type="submit">登入帳戶</button>
+            </div>
+            <div class="switch-form" id="switch-form">
+              <a onclick="signUpInSwitch()">還沒有帳戶？點此註冊</a>
+            </div>
+            <div class="error-catcher" id="error-catcher"></div>
+          </form>
+        </div>
+        <!-- testingggggggg -->
+        <div hidden class="signup-form-div" id="signup-form-div">
+          <p class="text">註冊會員帳號</p>
+          <form
+            id="signup-form"
+            action="javascript:void(0);"
+            onsubmit="submitSignUpForm()"
+          >
+            <div class="form-group">
+              <input
+                type="text"
+                id="signup_username"
+                name="name"
+                placeholder="輸入姓名"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="email"
+                id="signup_user_email"
+                name="email"
+                placeholder="輸入電子郵件"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                id="signup_password"
+                name="password"
+                placeholder="輸入密碼"
+                required
+              />
+            </div>
+            <div class="form-group-last">
+              <button type="submit">註冊新帳戶</button>
+            </div>
+            <div class="switch-form" id="switch-form">
+              <a onclick="signUpInSwitch()">已經有帳戶了？點此登入</a>
+            </div>
+            <div class="error-catcher" id="error-catcher"></div>
+          </form>
+        </div>
+        <!-- testingggggggg -->
 
-      <div class="mrt-bar-container">
-        <div class="mrt-bar">
-          <div class="left-div">
-            <button class="left-mrt-btn" id="left-mrt-btn">
-              <img
-                src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png"
-                alt="left"
-              />
-            </button>
-          </div>
-          <div class="second-mrt" id="second-mrt"></div>
-          <div class="right-div">
-            <button class="right-mrt-btn" id="right-mrt-btn">
-              <img
-                src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png"
-                alt="right"
-              />
-            </button>
+        <div class="mrt-bar-container">
+          <div class="mrt-bar">
+            <div class="left-div">
+              <button class="left-mrt-btn" id="left-mrt-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png"
+                  alt="left"
+                />
+              </button>
+            </div>
+            <div class="second-mrt" id="second-mrt"></div>
+            <div class="right-div">
+              <button class="right-mrt-btn" id="right-mrt-btn">
+                <img
+                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png"
+                  alt="right"
+                />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- ! mrt part end -->
+        <!-- ! mrt part end -->
 
-      <div class="attacrions-part">
-        <div class="attacrions" id="attracDiv"></div>
+        <div class="attacrions-part">
+          <div class="attacrions" id="attracDiv"></div>
+        </div>
       </div>
+      <div id="load-more-trigger"></div>
     </div>
-    <div id="load-more-trigger"></div>
-
     <!-- ! footer part -->
     <footer class="foot">
       <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>

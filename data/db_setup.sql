@@ -31,4 +31,10 @@ SELECT EXISTS (
     FROM user_info 
     WHERE email = 'AAA' AND password = 'BBB'
 ) AS record_exists;
- 
+
+-- 高效的search api_user
+-- 我的版本
+SELECT email FROM user_info WHERE email = %s;
+-- 更有效率版本
+SELECT COUNT(*) FROM user_info WHERE email = %s;
+SELECT EXISTS(SELECT 1 FROM user_info WHERE email = %s);
