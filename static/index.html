@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css_js_folder/css/index_style.css" />
     <title>Index</title>
+    <link
+      rel="stylesheet"
+      href="/static/css_js_folder/css/signin_signout_section.css"
+    />
+
+    <script src="/static/css_js_folder/js/index_script.js" defer></script>
+    <script
+      src="/static/css_js_folder/js/signin_signout_section.js"
+      defer
+    ></script>
   </head>
   <body>
     <div class="content">
+      <div id="overlay" hidden onclick="cancelFormDisplay()"></div>
       <div class="nav-bar">
         <div class="second-nav-bar">
           <p class="title" id="title">台北一日遊</p>
@@ -53,11 +64,19 @@
             </div>
           </div>
         </div>
-        <!-- ! search part end -->
         <!-- ! signin-form -->
-        <!-- hidden -->
         <div hidden class="signin-form-div" id="signin-form-div">
-          <p class="text">登入會員帳號</p>
+          <p class="form-text">登入會員帳號</p>
+          <button
+            class="log-img-button"
+            id="log-in-img-button"
+            onclick="cancelFormDisplay()"
+          >
+            <img
+              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png"
+              alt="Image Button"
+            />
+          </button>
           <form
             id="signin-form"
             action="javascript:void(0);"
@@ -69,6 +88,7 @@
                 id="signin_email"
                 name="email"
                 placeholder="輸入電子信箱"
+                class="for-input-padding"
               />
             </div>
             <div class="form-group">
@@ -77,6 +97,7 @@
                 id="signin_password"
                 name="password"
                 placeholder="輸入密碼"
+                class="for-input-padding"
               />
             </div>
             <div class="form-group-last">
@@ -85,12 +106,22 @@
             <div class="switch-form" id="switch-form">
               <a onclick="signUpInSwitch()">還沒有帳戶？點此註冊</a>
             </div>
-            <div class="error-catcher" id="error-catcher"></div>
+            <div hidden class="error-catcher" id="error-catcher"></div>
           </form>
         </div>
-        <!-- testingggggggg -->
+        <!-- ! signup form -->
         <div hidden class="signup-form-div" id="signup-form-div">
-          <p class="text">註冊會員帳號</p>
+          <p class="form-text">註冊會員帳號</p>
+          <button
+            class="log-img-button"
+            id="log-in-img-button"
+            onclick="cancelFormDisplay()"
+          >
+            <img
+              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png"
+              alt="Image Button"
+            />
+          </button>
           <form
             id="signup-form"
             action="javascript:void(0);"
@@ -103,6 +134,7 @@
                 name="name"
                 placeholder="輸入姓名"
                 required
+                class="for-input-padding"
               />
             </div>
             <div class="form-group">
@@ -112,6 +144,7 @@
                 name="email"
                 placeholder="輸入電子郵件"
                 required
+                class="for-input-padding"
               />
             </div>
             <div class="form-group">
@@ -121,19 +154,19 @@
                 name="password"
                 placeholder="輸入密碼"
                 required
+                class="for-input-padding"
               />
             </div>
             <div class="form-group-last">
-              <button type="submit">註冊新帳戶</button>
+              <button type="submit" class="form-btn">註冊新帳戶</button>
             </div>
             <div class="switch-form" id="switch-form">
               <a onclick="signUpInSwitch()">已經有帳戶了？點此登入</a>
             </div>
-            <div class="error-catcher" id="error-catcher"></div>
+            <div hidden class="error-catcher" id="error-catcher"></div>
           </form>
         </div>
-        <!-- testingggggggg -->
-
+        <!--! mrt bar -->
         <div class="mrt-bar-container">
           <div class="mrt-bar">
             <div class="left-div">
@@ -155,8 +188,7 @@
             </div>
           </div>
         </div>
-        <!-- ! mrt part end -->
-
+        <!-- ! attacritons -->
         <div class="attacrions-part">
           <div class="attacrions" id="attracDiv"></div>
         </div>
@@ -167,6 +199,5 @@
     <footer class="foot">
       <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
     </footer>
-    <script src="/static/css_js_folder/js/index_script.js"></script>
   </body>
 </html>

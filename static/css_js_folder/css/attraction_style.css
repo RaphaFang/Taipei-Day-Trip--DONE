@@ -115,8 +115,8 @@ body {
 .second-bar-btn {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
   gap: 10px;
   width: 92px;

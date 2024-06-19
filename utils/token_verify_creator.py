@@ -24,6 +24,3 @@ def token_verifier(token: str):
             detail="the JWT token could not be validated",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-
-

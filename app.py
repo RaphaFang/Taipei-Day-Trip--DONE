@@ -2,10 +2,10 @@ from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from routers.auth_middleware import AuthMiddleware 
-from routers.cors import setup_cors 
-from routers import attractions, mrts, attraction, api_user, api_user_auth_put, api_user_auth_get
-from db import pool_buildup
+from utils.auth_middleware import AuthMiddleware 
+from utils.cors import setup_cors 
+from routers import api_attraction, api_attractions, api_mrts, api_user, api_user_auth_put, api_user_auth_get
+from utils.db import pool_buildup
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -22,9 +22,9 @@ async def attach_db_connection(request: Request, call_next):
     return response
 
 
-app.include_router(mrts.router)
-app.include_router(attraction.router)
-app.include_router(attractions.router)
+app.include_router(api_mrts.router)
+app.include_router(api_attraction.router)
+app.include_router(api_attractions.router)
 app.include_router(api_user.router)
 app.include_router(api_user_auth_put.router)
 app.include_router(api_user_auth_get.router)
@@ -35,7 +35,7 @@ app.include_router(api_user_auth_get.router)
 async def index(request: Request):
 	return FileResponse("./static/index.html", media_type="text/html")
 @app.get("/attraction/{id}", include_in_schema=False)
-async def attraction(request: Request, id: int):
+async def api_attraction(request: Request, id: int):
 	return FileResponse("./static/attraction.html", media_type="text/html")
 @app.get("/booking", include_in_schema=False)
 async def booking(request: Request):
@@ -46,4 +46,3 @@ async def thankyou(request: Request):
 
 # uvicorn app:app --reload
 # cd /Users/fangsiyu/Desktop/taipei-day-trip
-

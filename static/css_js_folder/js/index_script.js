@@ -3,9 +3,7 @@ let nextPage = 0;
 let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    let response = await fetch(
-      `http://52.4.229.207:8000/api/attractions?page=0&keyword=`
-    );
+    let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -43,13 +41,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("search-btn").addEventListener("click", startSearch);
-  document
-    .getElementById("search-place")
-    .addEventListener("keyup", function (event) {
-      if (event.key === "Enter") {
-        startSearch();
-      }
-    });
+  document.getElementById("search-place").addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
+      startSearch();
+    }
+  });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -79,8 +75,6 @@ function waitForDivLoaded() {
     const container = event.target.closest(".background-image-container");
     if (container) {
       const attractionId = container.getAttribute("data-id");
-      // console.log("Container clicked, the id: " + attractionId);
-      // sessionStorage.setItem("attractionId", attractionId);
       window.location.href = `/attraction/${attractionId}`;
       // 我原先是絕對路徑，只會導向api
     }
@@ -97,9 +91,7 @@ function waitForMrtLoaded() {
       document.getElementById("search-place").value = newKeyword;
 
       try {
-        let response = await fetch(
-          `http://52.4.229.207:8000/api/attractions?page=0&keyword=${newKeyword}`
-        );
+        let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=${newKeyword}`);
         console.log("Response status: ", response.status);
         if (!response.ok) {
           throw new Error("Network response was not ok " + response.statusText);
@@ -127,9 +119,7 @@ function waitForMrtLoaded() {
 async function startSearch() {
   try {
     let searchedAttrac = document.getElementById("search-place").value;
-    let response = await fetch(
-      `http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`
-    );
+    let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -223,160 +213,5 @@ async function backtoMain() {
   let titleElement = document.getElementById("title");
   titleElement.addEventListener("click", function () {
     window.location.href = "/";
-  });
-}
-
-// ! New week start
-// ! New week start
-// ! submitSigninForm
-async function submitSigninForm() {
-  const form = document.getElementById("signin-form");
-  const signinFormData = new FormData(form);
-  let ifSuccessMessage = "Sign in successfully.";
-  let ifErrorMessage =
-    "Invalid user info, please make sure the email and password are correct.";
-  await getToken(signinFormData);
-  await tokenCheck(ifSuccessMessage, ifErrorMessage);
-}
-
-// ! submitSignUpForm
-async function submitSignUpForm() {
-  const form = document.getElementById("signup-form");
-  const signupFormData = new FormData(form);
-  const response = await fetch("/api/user", {
-    method: "POST",
-    body: signupFormData,
-  });
-  const result = await response.json();
-  if (response.ok) {
-    console.log("submitSignUpForm() -> user sign-up : ", response);
-    signupFormData.delete("name");
-    let ifSuccessMessage = "Sign up successfully and automatically sign in.";
-    let ifErrorMessage =
-      "Invalid registration, duplicate email or other reasons";
-    await getToken(signupFormData);
-    await tokenCheck(ifSuccessMessage, ifErrorMessage);
-  } else {
-    console.error("Error:", result.message);
-    displayLoginMessage(result.message);
-  }
-}
-
-// ! get token
-async function getToken(formDataInput) {
-  const response = await fetch("/api/user/auth", {
-    method: "PUT",
-    body: formDataInput,
-  });
-  const result = await response.json();
-  if (response.ok) {
-    const token = result.access_token;
-    localStorage.setItem("authToken", token);
-    console.log("getToken() -> user sign-in, return encode.token: ", token);
-  } else {
-    console.error("Error:", result.message);
-    displayLoginMessage(result.message);
-  }
-}
-// !  tokenCheck
-async function tokenCheck(successMessage, errorMessage) {
-  const token = localStorage.getItem("authToken");
-  if (!token) {
-    console.error("tokenCheck() -> auth token no found");
-    return;
-  }
-  const response = await fetch("/api/user/auth", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const result = await response.json();
-  if (response.ok) {
-    if (result["data"]) {
-      console.log(
-        "tokenCheck() -> check user token, return user_info :",
-        result
-      );
-      localStorage.setItem("userInfo", result["data"]);
-      displayLoginMessage(successMessage);
-    } else {
-      console.error("Error:", result.message);
-      localStorage.setItem("userInfo", result["data"]);
-      displayLoginMessage(errorMessage);
-    }
-    const event = new Event("userStatusChange");
-    document.dispatchEvent(event);
-  } else {
-    console.error("Error:", result.message);
-    displayLoginMessage(result.message);
-  }
-}
-// ! displayLoginMessage
-function displayLoginMessage(message) {
-  let errorCatchers = document.querySelectorAll(".error-catcher");
-  errorCatchers.forEach((element) => {
-    element.textContent = message;
-  });
-}
-
-// ! login / logout
-document.addEventListener("userStatusChange", async function () {
-  signinOutSwitch();
-});
-
-function signinOutSwitch() {
-  let userInfo = localStorage.getItem("userInfo");
-  console.log(userInfo);
-  const secondBtn = document.getElementById("secondbtn");
-  if (userInfo) {
-    secondBtn.innerHTML = `
-          <a class="second-bar-btn" id="switch-btn" onclick="signout()">登出系統</a>
-      `;
-  } else {
-    secondBtn.innerHTML = `
-          <a class="second-bar-btn" id="switch-btn">登入/註冊</a>
-      `;
-  }
-}
-
-function signout() {
-  if (
-    confirm("You're about to sign out from this page, do you want to sign out?")
-  ) {
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("authToken");
-    const event = new Event("userStatusChange");
-    document.dispatchEvent(event);
-    window.location.href = "/";
-  } else {
-    console.log("signout() denied -> token and user_info remained");
-  }
-}
-
-function signUpInSwitch() {
-  const signinForm = document.getElementById("signin-form-div");
-  const signupForm = document.getElementById("signup-form-div");
-  if (signupForm.hidden) {
-    console.log("signinForm set hidden");
-    signupForm.hidden = false;
-    signinForm.hidden = true;
-    displayLoginMessage("");
-  } else {
-    console.log("signupForm set hidden");
-    signupForm.hidden = true;
-    signinForm.hidden = false;
-    displayLoginMessage("");
-  }
-}
-// switch-btn
-document.addEventListener("DOMContentLoaded", function () {
-  displaySignIn();
-});
-function displaySignIn() {
-  const loginBtn = document.getElementById("switch-btn");
-  const signinForm = document.getElementById("signin-form-div");
-  loginBtn.addEventListener("click", async function () {
-    signinForm.hidden = false;
   });
 }
