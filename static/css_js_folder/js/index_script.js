@@ -369,3 +369,14 @@ function signUpInSwitch() {
     displayLoginMessage("");
   }
 }
+// switch-btn
+document.addEventListener("DOMContentLoaded", function () {
+  displaySignIn();
+});
+function displaySignIn() {
+  const loginBtn = document.getElementById("switch-btn");
+  const signinForm = document.getElementById("signin-form-div");
+  loginBtn.addEventListener("click", async function () {
+    signinForm.hidden = false;
+  });
+}
