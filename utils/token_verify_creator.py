@@ -5,8 +5,12 @@ from fastapi import  HTTPException
 
 
 ALGORITHM = "RS256"
-PRIVATE_KEY = os.getenv('PRIVATE_KEY')
-PUBLIC_KEY = os.getenv('PUBLIC_KEY')
+private_key_path = os.getenv("PRIVATE_KEY_PATH")
+with open(private_key_path, 'r') as file:
+    PRIVATE_KEY = file.read()
+public_key_path = os.getenv("PUBLIC_KEY_PATH")
+with open(public_key_path, 'r') as file:
+    PUBLIC_KEY = file.read()
 
 def token_creator(data: dict):
     to_encode = data.copy()

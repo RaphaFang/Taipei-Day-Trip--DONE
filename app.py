@@ -46,3 +46,9 @@ async def thankyou(request: Request):
 
 # uvicorn app:app --reload
 # cd /Users/fangsiyu/Desktop/taipei-day-trip
+# nano ~/.zshrc
+# export SQL_USER='當初設定的使用名稱'
+# export SQL_PASSWORD='當初設定的密碼'
+# 直接離開即可，他會詢問是否儲存？
+# 離開後，到vscode python terminal介面輸入以下：
+# source ~/.zshrc
