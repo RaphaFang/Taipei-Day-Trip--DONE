@@ -3,9 +3,7 @@ let nextPage = 0;
 let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    let response = await fetch(
-      `http://52.4.229.207:8000/api/attractions?page=0&keyword=`
-    );
+    let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -43,13 +41,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("search-btn").addEventListener("click", startSearch);
-  document
-    .getElementById("search-place")
-    .addEventListener("keyup", function (event) {
-      if (event.key === "Enter") {
-        startSearch();
-      }
-    });
+  document.getElementById("search-place").addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
+      startSearch();
+    }
+  });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -79,8 +75,6 @@ function waitForDivLoaded() {
     const container = event.target.closest(".background-image-container");
     if (container) {
       const attractionId = container.getAttribute("data-id");
-      // console.log("Container clicked, the id: " + attractionId);
-      // sessionStorage.setItem("attractionId", attractionId);
       window.location.href = `/attraction/${attractionId}`;
       // 我原先是絕對路徑，只會導向api
     }
@@ -97,9 +91,7 @@ function waitForMrtLoaded() {
       document.getElementById("search-place").value = newKeyword;
 
       try {
-        let response = await fetch(
-          `http://52.4.229.207:8000/api/attractions?page=0&keyword=${newKeyword}`
-        );
+        let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=${newKeyword}`);
         console.log("Response status: ", response.status);
         if (!response.ok) {
           throw new Error("Network response was not ok " + response.statusText);
@@ -127,9 +119,7 @@ function waitForMrtLoaded() {
 async function startSearch() {
   try {
     let searchedAttrac = document.getElementById("search-place").value;
-    let response = await fetch(
-      `http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`
-    );
+    let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -219,7 +209,7 @@ function loadMore(entries, observer) {
   });
 }
 
-function backtoMain() {
+async function backtoMain() {
   let titleElement = document.getElementById("title");
   titleElement.addEventListener("click", function () {
     window.location.href = "/";

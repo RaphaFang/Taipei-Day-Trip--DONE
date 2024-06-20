@@ -11,9 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   let picDataAll = []; // 這邊不能用const，很蠢的初級問題，但是真的忘了還找不到錯在哪
 
   try {
-    let response = await fetch(
-      `http://52.4.229.207:8000/api/attraction/${urlAttractionId}`
-    );
+    let response = await fetch(`http://52.4.229.207:8000/api/attraction/${urlAttractionId}`);
     if (!response.ok) {
       window.location.href = "/";
     } else {
@@ -74,8 +72,7 @@ function picAndDisplay(currentPic, picDataAll) {
   boxElements.forEach(function (boxElements) {
     boxElements.className = "box-1 choose-all-box";
   });
-  document.getElementById(`dot-id-${theNum}`).className =
-    "box-2 choose-all-box";
+  document.getElementById(`dot-id-${theNum}`).className = "box-2 choose-all-box";
   //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
 
