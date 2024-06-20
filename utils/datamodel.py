@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, validator
 import re
 
-class DataModel(BaseModel):
+class SignUpDataModel(BaseModel):
     name: str
     email: str
     password: str
@@ -24,4 +24,15 @@ class DataModel(BaseModel):
 
         # if not re.match(r"^[0-9]{4}-[0-9]{3}-[0-9]{3}$", v):
         #     raise ValueError('signup_password did not match the require')
+        return v
+class SignInDataModel(BaseModel):
+    email: str
+    password: str
+
+    @validator('email')
+    def validate_signin_email(cls, v):
+        return v
+
+    @validator('password')
+    def validate__signin_password(cls, v):
         return v

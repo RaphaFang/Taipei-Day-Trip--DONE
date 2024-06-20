@@ -7,7 +7,8 @@ async function submitSigninForm() {
     const signinFormData = new FormData(form);
     let ifSuccessMessage = "Sign in successfully.";
     let ifErrorMessage = "Invalid user info, please make sure the email and password are correct.";
-    await getToken(signinFormData);
+    const jsonData = convertToJson(signinFormData);
+    await getToken(jsonData);
     await tokenCheck(ifSuccessMessage, ifErrorMessage);
   }
 }
@@ -18,17 +19,20 @@ async function submitSignUpForm() {
   if (!userInfo) {
     const form = document.getElementById("signup-form");
     const signupFormData = new FormData(form);
+    const jsonData = convertToJson(signupFormData);
     const response = await fetch("/api/user", {
       method: "POST",
-      body: signupFormData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
     });
     const result = await response.json();
     if (response.ok) {
       console.log("submitSignUpForm() -> user sign-up : ", response);
-      signupFormData.delete("name");
       let ifSuccessMessage = "Sign up successfully, automatically sign-in.";
       let ifErrorMessage = "Invalid registration, duplicate email or other reasons";
-      await getToken(signupFormData);
+      await getToken({ email: jsonData.email, password: jsonData.password });
       await tokenCheck(ifSuccessMessage, ifErrorMessage);
     } else {
       console.error("Error:", result.message);
@@ -38,10 +42,13 @@ async function submitSignUpForm() {
 }
 
 // ! get token
-async function getToken(formDataInput) {
+async function getToken(inputJsonHere) {
   const response = await fetch("/api/user/auth", {
     method: "PUT",
-    body: formDataInput,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(inputJsonHere),
   });
   const result = await response.json();
   if (response.ok) {
@@ -69,22 +76,28 @@ async function tokenCheck(successMessage, errorMessage) {
   const result = await response.json();
   if (response.ok) {
     if (result["data"]) {
-      console.log("tokenCheck() -> check user token, return user_info :", result);
-      localStorage.setItem("userInfo", JSON.stringify(result.data));
+      console.log("tokenCheck() -> user token checked, return user_info :", result);
       displayLoginMessage(successMessage);
     } else {
-      console.error("Error:", result.message);
-      localStorage.setItem("userInfo", JSON.stringify(result.data));
+      console.error("Error (user_info might be null):", result.message);
       displayLoginMessage(errorMessage);
     }
-    const event = new Event("userStatusChange");
-    document.dispatchEvent(event);
+    localStorage.setItem("userInfo", JSON.stringify(result.data));
   } else {
     console.error("Error:", result.message);
     displayLoginMessage(result.message);
   }
+  const event = new Event("userPassTokenCheck");
+  document.dispatchEvent(event);
 }
-
+// convertToJson(), convert form data to json
+function convertToJson(formDataInput) {
+  const jsonData = {};
+  formDataInput.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+  return jsonData;
+}
 //  displayLoginMessage(), display the correct or error below the form section
 function displayLoginMessage(message) {
   let errorCatchers = document.querySelectorAll(".error-catcher");
@@ -93,14 +106,19 @@ function displayLoginMessage(message) {
     element.textContent = message;
   });
 }
-
 // signinOutSwitch(), switch the btn at the up-right corner, and hide the signUpInSwitch()
-document.addEventListener("DOMContentLoaded", function () {
+// right after user login or sign-up,
+document.addEventListener("userPassTokenCheck", function () {
   signinOutSwitch();
 });
-document.addEventListener("userStatusChange", function () {
-  signinOutSwitch();
+// fetch the user_Api to check token, right after enter any page(e.g. attraction page)
+document.addEventListener("DOMContentLoaded", async function () {
+  await tokenCheck("", ""); // lunch 'userPassTokenCheck' event inside the func.
 });
+// for future user token check
+// document.addEventListener("requireAuthEvent", async function () {
+//   await tokenCheck("", "");
+// });
 function signinOutSwitch() {
   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
   let switchFormDiv = document.querySelectorAll(".switch-form");
@@ -118,15 +136,16 @@ function signinOutSwitch() {
         `;
   }
 }
-
+// if user state wasn't correct
+function deleteUserInfo() {
+  localStorage.removeItem("userInfo");
+  localStorage.removeItem("authToken");
+  window.location.href = "/";
+}
 // userSignOut(), delete all the user info, refresh the page
 function userSignOut() {
   if (confirm("You're about to sign out from this page, do you want to sign out?")) {
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("authToken");
-    const event = new Event("userStatusChange");
-    document.dispatchEvent(event);
-    window.location.href = "/";
+    deleteUserInfo();
   } else {
     console.log("userSignOut() denied -> token and user_info remained");
   }
