@@ -12,7 +12,6 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.put("/api/user/auth")
 async def api_user_put(request: Request, login_data: SignInDataModel): # ,email: str = Form(...), password: str= Form(...)
     try:
-        # data_formate = SignInDataModel(email=email, password=password)
         db_pool = request.state.db_pool.get("basic_db") 
         with db_pool.get_connection() as connection:
             with connection.cursor(dictionary=True) as cursor:
