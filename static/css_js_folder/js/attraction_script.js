@@ -1,6 +1,6 @@
 "use strict";
 // 嘗試讀取一次，如果沒有就返回首頁？
-// fetch(`http://52.4.229.207:8000/api/attraction/${urlAttractionId}`).then(
+// fetch(`/api/attraction/${urlAttractionId}`).then(
 // 奇怪的是，將fetch放在dom外面作，盡然比放在裡面慢？要多研究
 
 const picDataAll = [];
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   let picDataAll = []; // 這邊不能用const，很蠢的初級問題，但是真的忘了還找不到錯在哪
 
   try {
-    let response = await fetch(`http://52.4.229.207:8000/api/attraction/${urlAttractionId}`);
+    let response = await fetch(`/api/attraction/${urlAttractionId}`);
     if (!response.ok) {
       window.location.href = "/";
     } else {

@@ -24,6 +24,13 @@ async def redirect_http_to_https(request: Request, call_next):
         return RedirectResponse(url)
     response = await call_next(request)
     return response
+async def redirect_http_to_https(request: Request, call_next):
+    if request.url.scheme == "http":
+        url = request.url.replace(scheme="https", netloc=f"{request.url.hostname}:{8443}")
+        return RedirectResponse(url)
+    response = await call_next(request)
+    return response
+
 
 @app.middleware("http")
 async def attach_db_connection(request: Request, call_next):
