@@ -6,6 +6,8 @@ from utils.auth_middleware import AuthMiddleware
 from utils.cors import setup_cors 
 from routers import api_attraction, api_attractions, api_mrts, api_user, api_user_auth_put, api_user_auth_get
 from utils.db import pool_buildup
+from starlette.responses import RedirectResponse
+
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -16,11 +18,18 @@ db_pool ={
     "basic_db":pool_buildup(),
 }
 @app.middleware("http")
+async def redirect_http_to_https(request: Request, call_next):
+    if request.url.scheme == "http":
+        url = request.url.replace(scheme="https")
+        return RedirectResponse(url)
+    response = await call_next(request)
+    return response
+
+@app.middleware("http")
 async def attach_db_connection(request: Request, call_next):
     request.state.db_pool = db_pool
     response = await call_next(request)
     return response
-
 
 app.include_router(api_mrts.router)
 app.include_router(api_attraction.router)
@@ -47,8 +56,4 @@ async def thankyou(request: Request):
 # uvicorn app:app --reload
 # cd /Users/fangsiyu/Desktop/taipei-day-trip
 # nano ~/.zshrc
-# export SQL_USER='當初設定的使用名稱'
-# export SQL_PASSWORD='當初設定的密碼'
-# 直接離開即可，他會詢問是否儲存？
-# 離開後，到vscode python terminal介面輸入以下：
 # source ~/.zshrc

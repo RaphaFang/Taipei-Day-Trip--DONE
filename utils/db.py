@@ -5,8 +5,8 @@ def pool_buildup():
     pool_config = {
         'pool_name': 'day_trip_pool',
         'pool_size': 10,
-        # 'host': '52.4.229.207',
-        'host': 'localhost',
+        'host': '52.4.229.207',
+        # 'host': 'localhost',
         'user': os.getenv('SQL_USER'),
         'password': os.getenv('SQL_PASSWORD'),
         'database': 'basic_db',
@@ -14,3 +14,6 @@ def pool_buildup():
         'use_pure': True
     }
     return mysql.connector.pooling.MySQLConnectionPool(**pool_config)
+
+# nano ~/.zshrc
+# source ~/.zshrc

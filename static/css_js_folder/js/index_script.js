@@ -3,7 +3,7 @@ let nextPage = 0;
 let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=`);
+    let response = await fetch(`/api/attractions?page=0&keyword=`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
   waitForDivLoaded();
   try {
-    let response = await fetch("http://52.4.229.207:8000/api/mrts");
+    let response = await fetch("/api/mrts");
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -91,7 +91,7 @@ function waitForMrtLoaded() {
       document.getElementById("search-place").value = newKeyword;
 
       try {
-        let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=${newKeyword}`);
+        let response = await fetch(`/api/attractions?page=0&keyword=${newKeyword}`);
         console.log("Response status: ", response.status);
         if (!response.ok) {
           throw new Error("Network response was not ok " + response.statusText);
@@ -119,7 +119,7 @@ function waitForMrtLoaded() {
 async function startSearch() {
   try {
     let searchedAttrac = document.getElementById("search-place").value;
-    let response = await fetch(`http://52.4.229.207:8000/api/attractions?page=0&keyword=${searchedAttrac}`);
+    let response = await fetch(`/api/attractions?page=0&keyword=${searchedAttrac}`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -177,7 +177,7 @@ function displayHtmlMrt(data) {
   }
 }
 async function addUpFetch(page) {
-  const url = `http://52.4.229.207:8000/api/attractions?page=${page}&keyword=${nextKeyword}`;
+  const url = `/api/attractions?page=${page}&keyword=${nextKeyword}`;
   let response = await fetch(url);
   console.log("Response status: ", response.status);
   if (!response.ok) {
