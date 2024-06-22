@@ -1,13 +1,11 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
-from routers import api_attraction, api_attractions, api_mrts, api_user, api_user_auth_put, api_user_auth_get
 from utils.db import pool_buildup
+from routers import api_attraction, api_attractions, api_mrts, api_user, api_user_auth_put, api_user_auth_get
 from starlette.responses import RedirectResponse
-
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -20,17 +18,10 @@ db_pool ={
 @app.middleware("http")
 async def redirect_http_to_https(request: Request, call_next):
     if request.url.scheme == "http":
-        url = request.url.replace(scheme="https", netloc=f"{request.url.hostname}:{8443}")
+        url = request.url.replace(scheme="https", netloc=request.url.hostname) # 取消掉8443，但奇怪的是8443也可以正常執行?
         return RedirectResponse(url)
     response = await call_next(request)
     return response
-async def redirect_http_to_https(request: Request, call_next):
-    if request.url.scheme == "http":
-        url = request.url.replace(scheme="https", netloc=f"{request.url.hostname}:{8443}")
-        return RedirectResponse(url)
-    response = await call_next(request)
-    return response
-
 
 @app.middleware("http")
 async def attach_db_connection(request: Request, call_next):

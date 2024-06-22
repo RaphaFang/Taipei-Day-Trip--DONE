@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, validator, EmailStr 
 import re
+from typing import Optional
 
 class SignUpDataModel(BaseModel):
     name: str
@@ -33,3 +34,8 @@ class SignInDataModel(BaseModel):
         # if len(v) < 8:
         #     raise ValueError('The password must be at least 8 characters long.')
         return v
+
+class AttractionSearch(BaseModel):
+    page: int=Field(..., ge=0,description="Page number, must be greater than or equal to 0")
+    keyword: Optional[str] = None
+
