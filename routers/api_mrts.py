@@ -20,6 +20,7 @@ async def api_mrts(request: Request):
                 mrts_counted = cursor.fetchall()
                 content_data = {"data":[n[0] for n in mrts_counted]}
                 set_time = time.time() - start_time
+                print(set_time)
                 return JSONResponse(content=content_data, headers=headers)
     except mysql.connector.Error as err:
         return JSONResponse(    
