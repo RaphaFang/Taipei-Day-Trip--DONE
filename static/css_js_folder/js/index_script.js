@@ -3,7 +3,7 @@ let nextPage = 0;
 let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    let response = await fetch(`/api/attractions?page=0&keyword=None`);
+    let response = await fetch(`/api/attractions?page=0&keyword=`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
