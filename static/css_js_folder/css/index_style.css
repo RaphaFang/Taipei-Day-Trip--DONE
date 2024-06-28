@@ -560,3 +560,7 @@ body {
 .background-image-container {
   pointer-events: auto;
 }
+
+[hidden] {
+  display: none;
+}

@@ -365,8 +365,7 @@ body {
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
-  background: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/date.png")
-    no-repeat center center;
+  background: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/date.png") no-repeat center center;
   background-size: contain;
   pointer-events: none;
 }
@@ -691,4 +690,8 @@ body {
     line-height: 23.17px;
     text-align: left;
   }
+}
+
+[hidden] {
+  display: none;
 }

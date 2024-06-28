@@ -10,11 +10,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.get("/api/user/auth")
 async def api_user_get(request: Request,token: str = Depends(oauth2_scheme)):
+    # 目前這作法，除了檢查token，也檢查了token跟SQL的資訊，但是可能非必要
     try:
         token_output = token_verifier(token)
+        print(token_output)
+
         db_pool = request.state.db_pool.get("basic_db") 
         with db_pool.get_connection() as connection:
             with connection.cursor(dictionary=True) as cursor:
+
                 cursor.execute("SELECT id, username, email FROM user_info WHERE id = %s AND email = %s;", (token_output['id'], token_output['email']))
                 user = cursor.fetchone()
                 if user:

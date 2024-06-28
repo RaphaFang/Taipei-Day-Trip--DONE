@@ -3,12 +3,13 @@
 // fetch(`/api/attraction/${urlAttractionId}`).then(
 // 奇怪的是，將fetch放在dom外面作，盡然比放在裡面慢？要多研究
 
-const picDataAll = [];
+let picDataAll = [];
+var urlAttractionId;
 document.addEventListener("DOMContentLoaded", async function () {
   let pathname = window.location.pathname;
   let pathSegments = pathname.split("/");
-  let urlAttractionId = pathSegments[pathSegments.length - 1];
-  let picDataAll = []; // 這邊不能用const，很蠢的初級問題，但是真的忘了還找不到錯在哪
+  urlAttractionId = Number(pathSegments[pathSegments.length - 1]);
+  backtoMain();
 
   try {
     let response = await fetch(`/api/attraction/${urlAttractionId}`);
@@ -24,7 +25,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.error("Fetch error: ", error);
     window.location.href = "/";
   }
-  backtoMain();
 
   let currentPic = 0;
   const leftBtn = document.getElementById("left-mrt-btn");
@@ -122,7 +122,7 @@ function displayDescribe(data) {
   describeBlock.innerHTML += `
     <div class="the-discribe-text">${data["description"]}</div>
     <div class="location-title">景點地址：</div>
-    <div class="location">${data["address"]}</div>
+    <div class="location" id='location-id'>${data["address"]}</div>
     <div class="transport-title">交通方式：</div>
     <div class="transport-text">${data["transport"]}</div>
     `;
@@ -136,13 +136,6 @@ function displayDescribe(data) {
   describeTag.innerHTML = `${data["category"]} at ${data["mrt"]}`;
 }
 
-function backtoMain() {
-  let titleElement = document.getElementById("title");
-  titleElement.addEventListener("click", function () {
-    window.location.href = "/";
-  });
-}
-
 function spotDisplay(picDataAll) {
   const lenAll = picDataAll.length;
   let indicator = document.getElementById("indicator");
@@ -154,3 +147,14 @@ function spotDisplay(picDataAll) {
   document.getElementById(`dot-id-0`).className = "box-2 choose-all-box";
   //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
+window.onload = function () {
+  var today = new Date().toISOString().split("T")[0];
+  document.getElementById("date").value = today;
+};
+
+// function backtoMain() {
+//   let titleElement = document.getElementById("title");
+//   titleElement.addEventListener("click", function () {
+//     window.location.href = "/";
+//   });
+// }

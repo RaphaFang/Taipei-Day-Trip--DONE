@@ -15,8 +15,9 @@ async def api_user_signup(request: Request, signup_data: SignUpDataModel):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT EXISTS(SELECT 1 FROM user_info WHERE email = %s);",(signup_data.email,)) 
                 repeat_TF = cursor.fetchall()[0][0]
+                print(repeat_TF)
 
-                if repeat_TF!=1:
+                if repeat_TF == 0:
                     cursor.execute("INSERT INTO `user_info` (username, password, email) VALUES (%s,%s,%s);",(signup_data.name,signup_data.password,signup_data.email,)) 
                     connection.commit()
                     input_data = { "ok": True }

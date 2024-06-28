@@ -209,9 +209,9 @@ function loadMore(entries, observer) {
   });
 }
 
-async function backtoMain() {
-  let titleElement = document.getElementById("title");
-  titleElement.addEventListener("click", function () {
-    window.location.href = "/";
-  });
-}
+// async function backtoMain() {
+//   let titleElement = document.getElementById("title");
+//   titleElement.addEventListener("click", function () {
+//     window.location.href = "/";
+//   });
+// }

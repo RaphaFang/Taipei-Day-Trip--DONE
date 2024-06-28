@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field, validator, EmailStr 
+from pydantic import BaseModel, Field, validator, EmailStr, HttpUrl
 import re
 from typing import Optional
+from datetime import date
+
 
 class SignUpDataModel(BaseModel):
     name: str
@@ -38,3 +40,15 @@ class SignInDataModel(BaseModel):
 # class AttractionSearch(BaseModel):
 #     page: int=Field(..., ge=0, description="Page number, must be greater than or equal to 0")
 #     keyword: Optional[str] = Field(None, description="Searching keyword")
+    
+class BookingDataMode(BaseModel):
+    attractionId: int
+    date: date
+    time: str
+    price: int
+
+    @validator('date')
+    def validate_date(cls, v):
+        if not v:
+            raise ValueError('The date cannot be left empty.')
+        return v

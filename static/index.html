@@ -3,18 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/css_js_folder/css/index_style.css" />
     <title>Index</title>
-    <link
-      rel="stylesheet"
-      href="/static/css_js_folder/css/signin_signout_section.css"
-    />
+    <link rel="stylesheet" href="/static/css_js_folder/css/index_style.css" />
+    <link rel="stylesheet" href="/static/css_js_folder/css/signin_signout_section.css" />
 
+    <script src="/static/css_js_folder/js/pre_job.js" defer></script>
     <script src="/static/css_js_folder/js/index_script.js" defer></script>
-    <script
-      src="/static/css_js_folder/js/signin_signout_section.js"
-      defer
-    ></script>
+    <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script>
+    <script src="/static/css_js_folder/js/before_booking.js" defer></script>
   </head>
   <body>
     <div class="content">
@@ -24,15 +20,11 @@
           <p class="title" id="title">台北一日遊</p>
           <div class="btn-container">
             <div class="firstbtn">
-              <a href="#" class="first-bar-btn">預定行程</a>
+              <a class="first-bar-btn" id="bookingGet" onclick="stateCheckBeforeBooking()">預定行程</a>
             </div>
             <div class="secondbtn" id="secondbtn">
-              <a
-                class="second-bar-btn"
-                id="switch-btn"
-                onclick=" displaySignIn()"
-                >登入/註冊</a
-              >
+              <a class="second-bar-btn" id="login-btn" onclick=" displaySignIn()">登入/註冊</a>
+              <a class="second-bar-btn" id="logout-btn" onclick="userSignOut()" hidden>登出系統</a>
             </div>
           </div>
         </div>
@@ -43,17 +35,10 @@
           <div class="searching-block">
             <div class="text-block">
               <p class="up-welcome-text">輕鬆享受台北一日悠閒</p>
-              <p class="down-welcome-text">
-                探索每個角落，體驗城市的深度旅遊行程
-              </p>
+              <p class="down-welcome-text">探索每個角落，體驗城市的深度旅遊行程</p>
             </div>
             <div class="btn-part">
-              <input
-                class="search-place"
-                id="search-place"
-                type="text"
-                placeholder="輸入景點名稱查詢"
-              />
+              <input class="search-place" id="search-place" type="text" placeholder="輸入景點名稱查詢" />
               <button class="search-btn" id="search-btn">
                 <img
                   src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/search.png"
@@ -67,38 +52,15 @@
         <!-- ! signin-form -->
         <div hidden class="signin-form-div" id="signin-form-div">
           <p class="form-text">登入會員帳號</p>
-          <button
-            class="log-img-button"
-            id="log-in-img-button"
-            onclick="cancelFormDisplay()"
-          >
-            <img
-              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png"
-              alt="Image Button"
-            />
+          <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
+            <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
           </button>
-          <form
-            id="signin-form"
-            action="javascript:void(0);"
-            onsubmit="submitSigninForm()"
-          >
+          <form id="signin-form" action="javascript:void(0);" onsubmit="submitSigninForm()">
             <div class="form-group">
-              <input
-                type="email"
-                id="signin_email"
-                name="email"
-                placeholder="輸入電子信箱"
-                class="for-input-padding"
-              />
+              <input type="email" id="signin_email" name="email" placeholder="輸入電子信箱" class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input
-                type="password"
-                id="signin_password"
-                name="password"
-                placeholder="輸入密碼"
-                class="for-input-padding"
-              />
+              <input type="password" id="signin_password" name="password" placeholder="輸入密碼" class="for-input-padding" />
             </div>
             <div class="form-group-last">
               <button type="submit">登入帳戶</button>
@@ -112,50 +74,18 @@
         <!-- ! signup form -->
         <div hidden class="signup-form-div" id="signup-form-div">
           <p class="form-text">註冊會員帳號</p>
-          <button
-            class="log-img-button"
-            id="log-in-img-button"
-            onclick="cancelFormDisplay()"
-          >
-            <img
-              src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png"
-              alt="Image Button"
-            />
+          <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
+            <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
           </button>
-          <form
-            id="signup-form"
-            action="javascript:void(0);"
-            onsubmit="submitSignUpForm()"
-          >
+          <form id="signup-form" action="javascript:void(0);" onsubmit="submitSignUpForm()">
             <div class="form-group">
-              <input
-                type="text"
-                id="signup_username"
-                name="name"
-                placeholder="輸入姓名"
-                required
-                class="for-input-padding"
-              />
+              <input type="text" id="signup_username" name="name" placeholder="輸入姓名" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input
-                type="email"
-                id="signup_user_email"
-                name="email"
-                placeholder="輸入電子郵件"
-                required
-                class="for-input-padding"
-              />
+              <input type="email" id="signup_user_email" name="email" placeholder="輸入電子郵件" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input
-                type="password"
-                id="signup_password"
-                name="password"
-                placeholder="輸入密碼"
-                required
-                class="for-input-padding"
-              />
+              <input type="password" id="signup_password" name="password" placeholder="輸入密碼" required class="for-input-padding" />
             </div>
             <div class="form-group-last">
               <button type="submit" class="form-btn">註冊新帳戶</button>
@@ -171,19 +101,13 @@
           <div class="mrt-bar">
             <div class="left-div">
               <button class="left-mrt-btn" id="left-mrt-btn">
-                <img
-                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png"
-                  alt="left"
-                />
+                <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/rightbtn.png" alt="left" />
               </button>
             </div>
             <div class="second-mrt" id="second-mrt"></div>
             <div class="right-div">
               <button class="right-mrt-btn" id="right-mrt-btn">
-                <img
-                  src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png"
-                  alt="right"
-                />
+                <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/leftbtn.png" alt="right" />
               </button>
             </div>
           </div>
