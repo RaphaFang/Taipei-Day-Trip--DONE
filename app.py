@@ -15,13 +15,13 @@ setup_cors(app)
 db_pool ={
     "basic_db":pool_buildup(),
 }
-# @app.middleware("http")
-# async def redirect_http_to_https(request: Request, call_next):
-#     if request.url.scheme == "http":
-#         url = request.url.replace(scheme="https", netloc=request.url.hostname) # 取消掉8443，但奇怪的是8443也可以正常執行?
-#         return RedirectResponse(url)
-#     response = await call_next(request)
-#     return response
+@app.middleware("http")
+async def redirect_http_to_https(request: Request, call_next):
+    if request.url.scheme == "http":
+        url = request.url.replace(scheme="https", netloc=request.url.hostname) # 取消掉8443，但奇怪的是8443也可以正常執行?
+        return RedirectResponse(url)
+    response = await call_next(request)
+    return response
 
 @app.middleware("http")
 async def attach_db_connection(request: Request, call_next):
