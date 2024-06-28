@@ -299,8 +299,11 @@ body {
   .booking-pic,
   .book-pic-div {
     height: 200px;
-    max-width: 340px;
+    /* max-width: 340px; */
     width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .book-info {
     padding: 0;
