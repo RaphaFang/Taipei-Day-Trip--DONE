@@ -1,11 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking</title>
+
+    <link rel="stylesheet" href="/static/css_js_folder/css/attraction_style.css" />
+    <link rel="stylesheet" href="/static/css_js_folder/css/signin_signout_section.css" />
+    <link rel="stylesheet" href="/static/css_js_folder/css/booking_style.css" />
+
+    <script src="/static/css_js_folder/js/pre_job.js" defer></script>
+    <!-- <script src="/static/css_js_folder/js/attraction_script.js" defer></script> -->
+    <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script>
+    <script src="/static/css_js_folder/js/before_booking.js" defer></script>
+    <script src="/static/css_js_folder/js/after_booking.js" defer></script>
+  </head>
+  <body>
+    <div class="content">
+      <div id="overlay" hidden onclick="cancelFormDisplay()"></div>
+      <div class="nav-bar">
+        <div class="second-nav-bar">
+          <p class="title" id="title">台北一日遊</p>
+          <div class="btn-container">
+            <div class="firstbtn">
+              <a class="first-bar-btn" id="bookingGet" onclick="stateCheckBeforeBooking()">預定行程</a>
+            </div>
+            <div class="secondbtn" id="secondbtn">
+              <a class="second-bar-btn" id="login-btn" onclick=" displaySignIn()">登入/註冊</a>
+              <a class="second-bar-btn" id="logout-btn" onclick="userSignOut()" hidden>登出系統</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ! signin-form -->
+      <div hidden class="signin-form-div" id="signin-form-div">
+        <p class="form-text">登入會員帳號</p>
+        <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
+          <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
+        </button>
+        <form id="signin-form" action="javascript:void(0);" onsubmit="submitSigninForm()">
+          <div class="form-group">
+            <input type="email" id="signin_email" name="email" placeholder="輸入電子信箱" class="for-input-padding" />
+          </div>
+          <div class="form-group">
+            <input type="password" id="signin_password" name="password" placeholder="輸入密碼" class="for-input-padding" />
+          </div>
+          <div class="form-group-last">
+            <button type="submit">登入帳戶</button>
+          </div>
+          <div class="switch-form" id="switch-form">
+            <a onclick="signUpInSwitch()">還沒有帳戶？點此註冊</a>
+          </div>
+          <div hidden class="error-catcher" id="error-catcher"></div>
+        </form>
+      </div>
+      <!-- ! signup form -->
+      <div hidden class="signup-form-div" id="signup-form-div">
+        <p class="form-text">註冊會員帳號</p>
+        <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
+          <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
+        </button>
+        <form id="signup-form" action="javascript:void(0);" onsubmit="submitSignUpForm()">
+          <div class="form-group">
+            <input type="text" id="signup_username" name="name" placeholder="輸入姓名" required class="for-input-padding" />
+          </div>
+          <div class="form-group">
+            <input type="email" id="signup_user_email" name="email" placeholder="輸入電子郵件" required class="for-input-padding" />
+          </div>
+          <div class="form-group">
+            <input type="password" id="signup_password" name="password" placeholder="輸入密碼" required class="for-input-padding" />
+          </div>
+          <div class="form-group-last">
+            <button type="submit" class="form-btn">註冊新帳戶</button>
+          </div>
+          <div class="switch-form" id="switch-form">
+            <a onclick="signUpInSwitch()">已經有帳戶了？點此登入</a>
+          </div>
+          <div hidden class="error-catcher" id="error-catcher"></div>
+        </form>
+      </div>
+
+      <div class="without-nav-bar">
+        <!-- ! first -->
+        <div class="discribe-block-div">
+          <div class="describe-block describe-block-c1" id="describe-block">
+            <div class="wel-booking">
+              <p class="wel-booking-p" id="wel-booking-p">您好，&nbsp;&nbsp;&nbsp;&nbsp;，待預訂的行程如下：</p>
+            </div>
+            <div hidden id="prevent-null">
+              <p class="prevent-null-p" id="prevent-null-p"></p>
+            </div>
+            <div hidden class="first-block" id="first-block">
+              <div class="book-pic-div" id="book-info-div-pic"></div>
+              <div class="book-info" id="book-info-div">
+                <p class="book-info-title">台北一日遊：</p>
+                <p class="book-info-text"><span class="custom-bold">日期：</span></p>
+                <p class="book-info-text"><span class="custom-bold">時間：</span></p>
+                <p class="book-info-text"><span class="custom-bold">費用：</span></p>
+                <p class="book-info-text"><span class="custom-bold">地點：</span></p>
+              </div>
+              <div class="delete-pic-div">
+                <img class="delete-pic" src="/static/css_js_folder/pic/delete.png" alt="delete-pic" onclick="bookingDelete()" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="type-1-footer"></div>
+
+        <div hidden id="detect-display">
+          <div class="divider-div">
+            <div class="divider"></div>
+          </div>
+          <!-- ! second -->
+          <div class="discribe-block-div">
+            <div class="describe-block describe-block-c1" id="describe-block">
+              <div class="second-block-input-div">
+                <p class="second-block-input-title">您的聯絡資訊</p>
+                <div class="info-div-for-booking">
+                  <label class="book-personal-label">聯絡姓名：</label>
+                  <input class="book-personal-info-place" id="book-personal-info-place-name" type="text" placeholder="Yakko" />
+                </div>
+                <div class="info-div-for-booking">
+                  <label class="book-personal-label">連絡信箱：</label>
+                  <input class="book-personal-info-place" id="book-personal-info-place-email" type="email" placeholder="wehelp@pada-x.com" />
+                </div>
+                <div class="info-div-for-booking">
+                  <label class="book-personal-label">手機號碼：</label>
+                  <input class="book-personal-info-place" id="book-personal-info-place-tel" type="tel" placeholder="" />
+                </div>
+                <div class="second-last-text">
+                  <p class="second-last-text-p">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="divider-div">
+            <div class="divider"></div>
+          </div>
+          <!-- ! third -->
+
+          <div class="discribe-block-div">
+            <div class="describe-block describe-block-c1" id="describe-block">
+              <div class="third-block-input-div">
+                <p class="second-block-input-title">信用卡付款資訊</p>
+                <div class="info-div-for-booking">
+                  <label class="book-personal-label">卡片號碼：</label>
+                  <input
+                    class="book-personal-info-place"
+                    id="book-personal-info-place-card-number"
+                    type="text"
+                    pattern="\d{4}-?\d{4}-?\d{4}-?\d{4}"
+                    placeholder="**** **** **** ****"
+                    maxlength="19"
+                  />
+                </div>
+                <div class="info-div-for-booking">
+                  <label class="book-personal-label">過期時間：</label>
+                  <input class="book-personal-info-place" id="book-personal-info-place-expiry" type="text" placeholder="MM/YY" />
+                </div>
+                <div class="info-div-for-booking">
+                  <label class="book-personal-label">驗證密碼：</label>
+                  <input class="book-personal-info-place" id="book-personal-info-place-CVV" type="text" placeholder="CVV" pattern="\d{3}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider-div">
+            <div class="divider"></div>
+          </div>
+          <div class="discribe-block-div">
+            <div class="final-div">
+              <p>總價：新台幣 2000 元</p>
+              <button>確認訂購並付款</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ! footer part -->
+    <div id="type-2-footer"></div>
+  </body>
 </html>

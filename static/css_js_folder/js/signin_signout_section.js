@@ -113,6 +113,7 @@ document.addEventListener("userPassTokenCheck", function () {
 });
 // fetch the user_Api to check token, right after enter any page(e.g. attraction page)
 document.addEventListener("DOMContentLoaded", async function () {
+  signinOutSwitch();
   await tokenCheck("", ""); // lunch 'userPassTokenCheck' event inside the func.
 });
 // for future user token check
@@ -122,24 +123,27 @@ document.addEventListener("DOMContentLoaded", async function () {
 function signinOutSwitch() {
   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
   let switchFormDiv = document.querySelectorAll(".switch-form");
-  const secondBtn = document.getElementById("secondbtn");
+  const login = document.getElementById("login-btn");
+  const logout = document.getElementById("logout-btn");
+
   if (userInfo) {
-    secondBtn.innerHTML = `
-            <a class="second-bar-btn" id="switch-btn" onclick="userSignOut()">登出系統</a>
-        `;
+    login.hidden = true;
+    logout.hidden = false;
     switchFormDiv.forEach((element) => {
       element.hidden = true;
     });
   } else {
-    secondBtn.innerHTML = `
-            <a class="second-bar-btn" id="switch-btn">登入/註冊</a>
-        `;
+    login.hidden = false;
+    logout.hidden = true;
   }
 }
 // if user state wasn't correct
 function deleteUserInfo() {
   localStorage.removeItem("userInfo");
   localStorage.removeItem("authToken");
+  localStorage.removeItem("journeyRaw");
+  localStorage.removeItem("journeyVerified");
+
   window.location.href = "/";
 }
 // userSignOut(), delete all the user info, refresh the page
@@ -168,18 +172,19 @@ function signUpInSwitch() {
 }
 // displaySignIn() login btn trigger, display sign in form
 document.addEventListener("DOMContentLoaded", function () {
+  function displaySignIn() {
+    const loginBtn = document.getElementById("login-btn");
+    const signinForm = document.getElementById("signin-form-div");
+    const overlay = document.getElementById("overlay");
+    if (loginBtn) {
+      loginBtn.addEventListener("click", async function () {
+        signinForm.hidden = false;
+        overlay.hidden = false;
+      });
+    }
+  }
   displaySignIn();
 });
-function displaySignIn() {
-  const loginBtn = document.getElementById("switch-btn");
-  const signinForm = document.getElementById("signin-form-div");
-  const overlay = document.getElementById("overlay");
-
-  loginBtn.addEventListener("click", async function () {
-    signinForm.hidden = false;
-    overlay.hidden = false;
-  });
-}
 
 // cancelFormDisplay() close the form and reset the 'error-catcher' to empty
 function cancelFormDisplay() {

@@ -1,11 +1,15 @@
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
+    "https://raphaelfang.com",
+    "http://raphaelfang.com",
+    "https://localhost:8000",
     "http://localhost:8000",
-    "http://127.0.0.1:8000", 
-    "http://127.0.0.1:5501",
+    "https://localhost",
+    "http://localhost",
+    "https://52.4.229.207",
     "http://52.4.229.207",
-    ]
+]
 
 def setup_cors(app):
     app.add_middleware(
