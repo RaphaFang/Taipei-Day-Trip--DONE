@@ -1,7 +1,7 @@
 "use strict";
 function stateCheckBeforeBooking() {
-  const token = localStorage.getItem("authToken");
-  if (token) {
+  const userInfo = localStorage.getItem("userInfo");
+  if (userInfo) {
     window.location.href = "/booking";
   } else {
     bookingDisplaySignIn();

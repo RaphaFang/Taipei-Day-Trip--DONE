@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   } catch (error) {
     console.error("Fetch error: ", error);
   }
+
   waitForMrtLoaded();
 
   // 建立一個觀察者， IntersectionObserver ，檢測有沒有rolling到特定的 div
@@ -208,10 +209,3 @@ function loadMore(entries, observer) {
     }
   });
 }
-
-// async function backtoMain() {
-//   let titleElement = document.getElementById("title");
-//   titleElement.addEventListener("click", function () {
-//     window.location.href = "/";
-//   });
-// }
