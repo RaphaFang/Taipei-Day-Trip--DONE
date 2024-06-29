@@ -1,29 +1,23 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from utils.token_verify_creator import token_verifier
-from fastapi.security import OAuth2PasswordBearer
 from pydantic import ValidationError
 from utils.datamodel import BookingDataMode
 import mysql.connector
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("/api/booking")   
-async def api_booking_post(request: Request, token: str = Depends(oauth2_scheme)):
-    # 如果資料放在 header ，ValidationError 的驗證會搶在所有api運作邏輯之前執行，解決方式是把資料放在body，不放在header
-    # 原先放在header，還是要注意 data 要在 token 前面，因為 token有默認值，前者沒有...
+async def api_booking_post(request: Request, j_data:BookingDataMode): # , token: str = Depends(oauth2_scheme)  # 這裡還有範一個錯 寫成j_data＝BookingDataMode
     try:
-        if token == 'null':
+        token = request.cookies.get("access_token")
+        if not token:
             content_data = {"error": True, "message": "Please log-in to access the booking page."}
             return JSONResponse(status_code=403,content=content_data, headers=headers)
+        
         input_token = token_verifier(token)
         if input_token:
-            body = await request.json()
-            data = BookingDataMode(**body)
-
-        if data:
             db_pool = request.state.db_pool.get("basic_db") 
             with db_pool.get_connection() as connection:
                 with connection.cursor(dictionary=True) as cursor:
@@ -35,21 +29,8 @@ async def api_booking_post(request: Request, token: str = Depends(oauth2_scheme)
                         FROM processed_data
                         WHERE id = %s
                         ON DUPLICATE KEY UPDATE
-                            attraction_id = VALUES(attraction_id),
-                            name = VALUES(name),
-                            address = VALUES(address),
-                            image = VALUES(image),
-                            date = VALUES(date),
-                            time = VALUES(time),
-                            price = VALUES(price);
-                    """, (
-                        input_token['id'],  
-                        body['date'],     
-                        body['time'],       
-                        body['price'],    
-                        body['attractionId'] 
-                    ))
-                    
+                            attraction_id = VALUES(attraction_id),name = VALUES(name),address = VALUES(address),image = VALUES(image),date = VALUES(date),time = VALUES(time),price = VALUES(price);
+                    """, (input_token['id'], j_data.date, j_data.time, j_data.price, j_data.attractionId))
                     connection.commit()
                     content_data={"ok": True}
                     return JSONResponse(status_code=200,content=content_data, headers=headers)
@@ -60,9 +41,17 @@ async def api_booking_post(request: Request, token: str = Depends(oauth2_scheme)
             content={"error": True, "message": str(err)},
             headers=headers
         )
+    except ValidationError as err:
+        return JSONResponse(
+            status_code=422,
+            content={"error": True, "message": err.errors()}, # .errors()可以返回更仔細的資料
+            headers=headers
+        )   
     except (ValueError,Exception) as err:
         return JSONResponse(
             status_code=400,
             content={"error": True, "message": str(err)},
             headers=headers
         )
+    # 如果資料放在 header ，ValidationError 的驗證會搶在所有api運作邏輯之前執行，解決方式是把資料放在body，不放在header
+    # 原先放在header，還是要注意 data 要在 token 前面，因為 token有默認值，前者沒有...

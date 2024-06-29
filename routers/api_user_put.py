@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 import mysql.connector
 from utils.token_verify_creator import token_creator
@@ -17,12 +17,9 @@ async def api_user_put(request: Request, login_data: SignInDataModel):
                 cursor.execute("SELECT * FROM user_info WHERE email = %s AND password = %s;", (login_data.email,login_data.password,)) 
                 data = cursor.fetchone()
 
-
-
                 if data:
                     input_data = {"id": data['id'],'username':data['username'],'email':data['email'], 'password':data['password']}                                        
                     access_token = token_creator(data=input_data)                  
-                    # return JSONResponse(status_code=200,content={"access_token": access_token, "token_type": "bearer"}, headers=headers)
 
                     response = JSONResponse(status_code=200, content={"message": "Login successful"})
                     response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict")

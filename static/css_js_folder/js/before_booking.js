@@ -9,17 +9,16 @@ function stateCheckBeforeBooking() {
 }
 
 async function bookingPost() {
-  const token = localStorage.getItem("authToken");
   const dateInput = document.getElementById("date").value;
   const timeInput = document.querySelector('input[name="time"]:checked').value;
   const charge = timeInput === "morning" ? 2000 : 2500;
   let journeyForm = { attractionId: urlAttractionId, date: dateInput, time: timeInput, price: charge };
 
+  console.log(journeyForm);
   const response = await fetch("/api/booking", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(journeyForm),
   });

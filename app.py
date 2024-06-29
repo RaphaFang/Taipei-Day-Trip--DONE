@@ -4,9 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
 from utils.db import pool_buildup
-from routers import api_attraction, api_attractions, api_mrts, api_user_auth_post, api_user_auth_put, api_user_auth_get, api_booking_get, api_booking_post, api_booking_delete, api_user_auth_logout
+from routers import api_attraction, api_attractions, api_mrts, api_booking_get, api_booking_post, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put
 from starlette.responses import RedirectResponse
-from routers import api_user_auth_post_TESTING, api_user_auth_put_TESTING, api_user_auth_get_TESTING
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -34,18 +33,15 @@ app.include_router(api_mrts.router)
 app.include_router(api_attraction.router)
 app.include_router(api_attractions.router)
 
-# app.include_router(api_user_auth_post.router)
-# app.include_router(api_user_auth_put.router)
-# app.include_router(api_user_auth_get.router)
+app.include_router(api_user_post.router)
+app.include_router(api_user_put.router)
+app.include_router(api_user_get.router)
+app.include_router(api_user_logout.router)
 
 app.include_router(api_booking_get.router)
 app.include_router(api_booking_post.router)
 app.include_router(api_booking_delete.router)
 
-app.include_router(api_user_auth_post_TESTING.router)
-app.include_router(api_user_auth_put_TESTING.router)
-app.include_router(api_user_auth_get_TESTING.router)
-app.include_router(api_user_auth_logout.router)
 
 
 # Static Pages (Never Modify Code in this Block)

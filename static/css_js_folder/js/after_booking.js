@@ -46,16 +46,13 @@ async function renderJourneyVerified() {
 
 // ! bookingGet()
 async function bookingGet() {
-  const token = localStorage.getItem("authToken");
   const response = await fetch("/api/booking", {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: "include",
   });
   const result = await response.json();
   if (response.ok) {
-    localStorage.setItem("journeyVerified", JSON.stringify(result.data)); // 存入格式要是JSON.stringify()
+    localStorage.setItem("journeyVerified", JSON.stringify(result.data));
     if (result.data !== null) {
       return true;
     } else {
@@ -88,12 +85,10 @@ async function footerCreator(typeState) {
 
 // ! deleteCurrentData
 async function bookingDelete() {
-  const token = localStorage.getItem("authToken");
+  // const token = localStorage.getItem("authToken");
   const response = await fetch("/api/booking", {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: "include",
   });
   const result = await response.json();
   if (response.ok) {

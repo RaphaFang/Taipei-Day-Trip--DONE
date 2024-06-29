@@ -6,10 +6,9 @@ async function submitSigninForm() {
     const form = document.getElementById("signin-form");
     const signinFormData = new FormData(form);
     let ifSuccessMessage = "Sign in successfully.";
-    let ifErrorMessage = "Invalid user info, please make sure the email and password are correct.";
     const jsonData = convertToJson(signinFormData);
     await tokenPut(jsonData);
-    await tokenGet(ifSuccessMessage, ifErrorMessage);
+    await tokenGet(ifSuccessMessage);
   }
 }
 
@@ -31,10 +30,7 @@ async function submitSignUpForm() {
     if (response.ok) {
       console.log("submitSignUpForm() -> user sign-up : ", response);
       let ifSuccessMessage = "Sign up successfully, automatically sign-in.";
-      let ifErrorMessage = "Invalid registration, duplicate email or other reasons";
-      // await getToken({ email: jsonData.email, password: jsonData.password }); // 這行被註解掉了
-      // await tokenGet(ifSuccessMessage, ifErrorMessage); // 這行被註解掉了
-      await tokenGet(ifSuccessMessage, ifErrorMessage);
+      await tokenGet(ifSuccessMessage);
       displayLoginMessage(ifSuccessMessage);
     } else {
       console.error("Error:", result.message);
@@ -55,19 +51,15 @@ async function tokenPut(inputJsonHere) {
   });
   const result = await response.json();
   if (response.ok) {
-    // const token = result.access_token;
-    // localStorage.setItem("authToken", token);
     console.log("tokenPut() -> user sign-in, return encode.token");
-    // return result.message;
   } else {
     console.error("Error:", result.message);
     displayLoginMessage(result.message);
-    // return result.message;
   }
 }
 
 // !  tokenGet
-async function tokenGet(successMessage, errorMessage) {
+async function tokenGet(successMessage) {
   const response = await fetch("/api/user/auth", {
     method: "GET",
     credentials: "include",
@@ -77,19 +69,17 @@ async function tokenGet(successMessage, errorMessage) {
     if (result["data"]) {
       console.log("tokenGet() -> user token checked, return user_info :", result);
       displayLoginMessage(successMessage);
+      localStorage.setItem("userInfo", JSON.stringify(result.data));
+    } else {
+      console.log("tokenGet lunched, but there is no token from this user...");
+      localStorage.removeItem("userInfo");
     }
-    // else {
-    //   console.log(result["data"]);
-    //   // console.error("Error (user_info might be null):", result.message);
-    //   displayLoginMessage(errorMessage);
-    // }
-    localStorage.setItem("userInfo", JSON.stringify(result.data));
   } else {
     console.error("Error:", result.message);
     displayLoginMessage(result.message);
+    localStorage.removeItem("userInfo");
   }
-  const event = new Event("userPassTokenGet");
-  document.dispatchEvent(event);
+  signinOutSwitch();
 }
 
 // convertToJson(), convert form data to json
@@ -110,25 +100,15 @@ function displayLoginMessage(message) {
   });
 }
 // signinOutSwitch(), switch the btn at the up-right corner, and hide the signUpInSwitch()
-// right after user login or sign-up,
-document.addEventListener("userPassTokenGet", function () {
-  signinOutSwitch();
-});
-// fetch the user_Api to check token, right after enter any page(e.g. attraction page)
 document.addEventListener("DOMContentLoaded", async function () {
+  await tokenGet("");
   signinOutSwitch();
-  await tokenGet("", ""); // lunch 'userPassTokenGet' event inside the func.
 });
-// for future user token check
-// document.addEventListener("requireAuthEvent", async function () {
-//   await tokenGet("", "");
-// });
 function signinOutSwitch() {
   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
   let switchFormDiv = document.querySelectorAll(".switch-form");
   const login = document.getElementById("login-btn");
   const logout = document.getElementById("logout-btn");
-
   if (userInfo) {
     login.hidden = true;
     logout.hidden = false;
@@ -142,23 +122,20 @@ function signinOutSwitch() {
 }
 // if user state wasn't correct
 async function deleteUserInfo() {
-  try {
-    const response = await fetch("/api/user/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    if (response.ok) {
-      localStorage.removeItem("userInfo");
-      localStorage.removeItem("journeyRaw");
-      localStorage.removeItem("journeyVerified");
-      window.location.href = "/";
-    } else {
-      console.error("Failed to log out:", await response.json());
-    }
-  } catch (error) {
-    console.error("Error logging out:", error);
+  const response = await fetch("/api/user/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+  if (response.ok) {
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("journeyRaw");
+    localStorage.removeItem("journeyVerified");
+    window.location.href = "/";
+  } else {
+    console.error("Failed to log out:", await response.json());
   }
 }
+
 // userSignOut(), delete all the user info, refresh the page
 function userSignOut() {
   if (confirm("You're about to sign out from this page, do you want to sign out?")) {
