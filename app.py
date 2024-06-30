@@ -3,18 +3,18 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
-from utils.db import pool_buildup
-from routers import api_attraction, api_attractions, api_mrts, api_booking_get, api_booking_post, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put
+from utils.db.sql import sql_pool_buildup
+from utils.db.redis import redis_pool_buildup
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_get, api_booking_post, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put
 from starlette.responses import RedirectResponse
+
+from routers import Redis_api_booking_post,Redis_api_booking_get
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
 
-db_pool ={
-    "basic_db":pool_buildup(),
-}
 @app.middleware("http")
 async def redirect_http_to_https(request: Request, call_next):
     if request.url.scheme == "http":
@@ -23,13 +23,25 @@ async def redirect_http_to_https(request: Request, call_next):
     response = await call_next(request)
     return response
 
+sql_db_pool={
+    "default":sql_pool_buildup(),
+}
 @app.middleware("http")
-async def attach_db_connection(request: Request, call_next):
-    request.state.db_pool = db_pool
+async def sql_db_connection(request: Request, call_next):
+    request.state.sql_db_pool = sql_db_pool
+    response = await call_next(request)
+    return response
+redis_db_pool={
+    "default":redis_pool_buildup(),
+}
+@app.middleware("http")
+async def redis_db_connection(request: Request, call_next):
+    request.state.redis_db_pool = redis_db_pool
     response = await call_next(request)
     return response
 
-app.include_router(api_mrts.router)
+
+app.include_router(api_at_mrts.router)
 app.include_router(api_attraction.router)
 app.include_router(api_attractions.router)
 
@@ -38,9 +50,13 @@ app.include_router(api_user_put.router)
 app.include_router(api_user_get.router)
 app.include_router(api_user_logout.router)
 
-app.include_router(api_booking_get.router)
-app.include_router(api_booking_post.router)
+# app.include_router(api_booking_get.router)
+# app.include_router(api_booking_post.router)
 app.include_router(api_booking_delete.router)
+
+app.include_router(Redis_api_booking_post.router)
+app.include_router(Redis_api_booking_get.router)
+
 
 
 

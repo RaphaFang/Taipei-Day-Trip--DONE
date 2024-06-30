@@ -10,8 +10,8 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.get("/api/attractions")
 async def api_attractions(request: Request, page: int=Query(..., ge=0), keyword: Optional[str] = None):
     try:
-        db_pool = request.state.db_pool.get("basic_db") 
-        with db_pool.get_connection() as connection:
+        sql_pool = request.state.sql_db_pool.get("default") 
+        with sql_pool.get_connection() as connection:
             with connection.cursor(dictionary=True) as cursor:
                 offset_num = page*12
                 keyword_format = f"%{keyword}%" 

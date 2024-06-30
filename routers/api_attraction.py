@@ -9,8 +9,8 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.get("/api/attraction/{id}")  
 async def api_attractions(request: Request, id=int): 
     try:
-        db_pool = request.state.db_pool.get("basic_db") 
-        with db_pool.get_connection() as connection:
+        sql_pool = request.state.sql_db_pool.get("default") 
+        with sql_pool.get_connection() as connection:
             with connection.cursor(dictionary=True) as cursor:
                 cursor.execute("SELECT * FROM processed_data WHERE id = %s", (id,)) 
                 attract_data = cursor.fetchone()

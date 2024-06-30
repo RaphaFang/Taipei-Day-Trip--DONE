@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from utils.token_verify_creator import token_verifier
 import mysql.connector
+import time
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
@@ -16,14 +17,18 @@ async def api_booking_get(request: Request):  # ,token: str = Depends(oauth2_sch
         
         token_output = token_verifier(token)
         if token_output:
-            db_pool = request.state.db_pool.get("basic_db") 
-            with db_pool.get_connection() as connection:
+            start_time = time.time() 
+            sql_pool = request.state.sql_db_pool.get("default") 
+            with sql_pool.get_connection() as connection:
                 with connection.cursor(dictionary=True) as cursor:
                     cursor.execute("""
                         SELECT * FROM user_booking_tentative
                         WHERE creator_id = %s
                         ORDER BY created_at DESC LIMIT 1;""", (token_output['id'],))
                     b = cursor.fetchone()
+                    the_time = time.time() - start_time
+                    print('the time cost at sql',the_time)
+
                     if b:
                         b['date'] = b['date'].strftime('%Y-%m-%d')
                         b['price'] = str(b['price']) 

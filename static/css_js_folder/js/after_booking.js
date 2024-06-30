@@ -29,6 +29,7 @@ async function renderUserName() {
 
 // render Journey to page, only if it pass the token check inside the bookingGet()
 async function renderJourneyVerified() {
+  // ! 這部份應該要改成不是存localStorage
   const verData = JSON.parse(localStorage.getItem("journeyVerified"));
   console.log(verData);
   const bookInfoDiv = document.getElementById("book-info-div");
@@ -46,6 +47,24 @@ async function renderJourneyVerified() {
 
 // ! bookingGet()
 async function bookingGet() {
+  // const response = await fetch("/api/booking", {
+  //   method: "GET",
+  //   credentials: "include",
+  // });
+  // const result = await response.json();
+  // if (response.ok) {
+  //   localStorage.setItem("journeyVerified", JSON.stringify(result.data));
+  //   if (result.data !== null) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // } else {
+  //   console.log(result.message);
+  //   window.location.href = "/";
+  //   return false;
+  // }
+
   const response = await fetch("/api/booking", {
     method: "GET",
     credentials: "include",
@@ -53,6 +72,7 @@ async function bookingGet() {
   const result = await response.json();
   if (response.ok) {
     localStorage.setItem("journeyVerified", JSON.stringify(result.data));
+    console.log(111);
     if (result.data !== null) {
       return true;
     } else {
@@ -130,3 +150,23 @@ document.getElementById("book-personal-info-place-CVV").addEventListener("input"
   var value = e.target.value.replace(/\D/g, "").slice(0, 3);
   e.target.value = value;
 });
+
+// async function bookingGet() {
+//   const response = await fetch("/api/booking", {
+//     method: "GET",
+//     credentials: "include",
+//   });
+//   const result = await response.json();
+//   if (response.ok) {
+//     localStorage.setItem("journeyVerified", JSON.stringify(result.data));
+//     if (result.data !== null) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } else {
+//     console.log(result.message);
+//     window.location.href = "/";
+//     return false;
+//   }
+// }

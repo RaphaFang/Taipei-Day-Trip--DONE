@@ -112,12 +112,14 @@ function signinOutSwitch() {
   if (userInfo) {
     login.hidden = true;
     logout.hidden = false;
+    logout.textContent = "登出系統";
     switchFormDiv.forEach((element) => {
       element.hidden = true;
     });
   } else {
     login.hidden = false;
     logout.hidden = true;
+    login.textContent = "登入/註冊";
   }
 }
 // if user state wasn't correct

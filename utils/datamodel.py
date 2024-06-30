@@ -43,12 +43,15 @@ class SignInDataModel(BaseModel):
     
 class BookingDataMode(BaseModel):
     attractionId: int
-    date: date
+    name : str
+    address : str
+    image : str
+    date: str
     time: str
     price: int
 
-    @validator('date')
-    def validate_date(cls, v):
-        if not v:
-            raise ValueError('The date cannot be left empty.')
-        return v
+    # @validator('date')
+    # def validate_date(cls, v):
+    #     if not v:
+    #         raise ValueError('The date cannot be left empty.')
+    #     return v
