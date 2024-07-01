@@ -1,5 +1,5 @@
 from fastapi import *
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
@@ -31,6 +31,7 @@ async def sql_db_connection(request: Request, call_next):
     request.state.sql_db_pool = sql_db_pool
     response = await call_next(request)
     return response
+
 redis_db_pool={
     "default":redis_pool_buildup(),
 }
@@ -39,6 +40,17 @@ async def redis_db_connection(request: Request, call_next):
     request.state.redis_db_pool = redis_db_pool
     response = await call_next(request)
     return response
+
+@app.middleware("http")
+async def redis_db_connection(request: Request, call_next):
+    try:
+        request.state.redis_db_pool = redis_db_pool
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        print(f"Redis connection error: {e}")
+        return JSONResponse(status_code=500, content={"error": "Redis connection error"})
+
 
 
 app.include_router(api_at_mrts.router)

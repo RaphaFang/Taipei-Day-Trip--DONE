@@ -4,7 +4,7 @@ import redis
 def redis_pool_buildup():
     r_pool = redis.ConnectionPool(
         # host='localhost',
-        host='52.4.229.207',
+        host='localhost',
         port=6379,
         db=0,
         password=os.getenv('REDIS_PASSWORD',None),

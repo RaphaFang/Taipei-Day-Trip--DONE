@@ -10,23 +10,22 @@ router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
 
 @router.post("/api/user/logout")
-async def logout(request: Request):  # request: Request 刪除不需要。request.cookies.get("access_token") 所以直接response
+async def logout(request: Request):  
     try:
         token = request.cookies.get("access_token")
         if not token:
-            content_data = {"error": True, "message": "You did not got the token in cookies, how to you even came to the log-out step???"}
-            return JSONResponse(status_code=403,content=content_data, headers=headers)
+            content_data = {"error": True, "message": "You did not get the token in cookies, how did you even come to the log-out step???"}
+            return JSONResponse(status_code=403, content=content_data, headers=headers)
         
         token_output = token_verifier(token)
         if token_output:
             redis_pool = request.state.redis_db_pool.get("default") 
             r = redis.Redis(connection_pool=redis_pool)
             b = r.get(f"user:{token_output['id']}:booking")
-            print(b)
 
             sql_pool = request.state.sql_db_pool.get("default") 
 
-            def db_task(b):
+            async def db_task():
                 with sql_pool.get_connection() as connection:
                     with connection.cursor(dictionary=True) as cursor:
                         if b:
@@ -45,8 +44,7 @@ async def logout(request: Request):  # request: Request 刪除不需要。reques
                             cursor.execute("DELETE FROM user_booking_tentative WHERE creator_id = %s;", (token_output['id'],))
                             connection.commit()
 
-            # 使用 run_in_executor 运行同步操作
-            await asyncio.get_event_loop().run_in_executor(None, db_task, b)
+            await asyncio.get_event_loop().run_in_executor(None, db_task)
 
             redis_key = f"user:{token_output['id']}:booking"
             r.delete(redis_key)
@@ -60,6 +58,6 @@ async def logout(request: Request):  # request: Request 刪除不需要。reques
             return JSONResponse(status_code=403, content=content_data, headers=headers)
  
     except (mysql.connector.Error, redis.RedisError) as err:
-        return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
+        return JSONResponse(status_code=500, content={"error": True, "message": str(err)}, headers=headers)
     except (ValueError, Exception) as err:
-        return JSONResponse(status_code=400,content={"error": True, "message": str(err)},headers=headers)
+        return JSONResponse(status_code=400, content={"error": True, "message": str(err)}, headers=headers)
