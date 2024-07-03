@@ -9,6 +9,7 @@ import redis
 import json
 import aiohttp
 import aiomysql
+import os
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
@@ -30,8 +31,8 @@ async def prime_order(request: Request, cp:ContactAndPrimeDM, bt:BackgroundTasks
                 b = json.loads(b)
 
             async def sending_prime():
-                payload={"prime": cp.prime, "partner_key": 'partner_E6Bsl2R4FnCjBnNNoafMjMc355FuPhGcqgMfdkVPrFuzMwT9w3wa94j0', "merchant_id": "tppf_raphaelfang_GP_POS_2", "details":"TapPay Test", "amount": b['price'], "cardholder": { "phone_number": cp.phone, "name": cp.name, "email": cp.email }, "remember": True}
-                hd = {"Content-Type": "application/json","x-api-key": "partner_E6Bsl2R4FnCjBnNNoafMjMc355FuPhGcqgMfdkVPrFuzMwT9w3wa94j0"}
+                payload={"prime": cp.prime, "partner_key": os.getenv('TAP_PARTNER_KEY'), "merchant_id": os.getenv("MERCHANT_ID"), "details":"TapPay Test", "amount": b['price'], "cardholder": { "phone_number": cp.phone, "name": cp.name, "email": cp.email }, "remember": True}
+                hd = {"Content-Type": "application/json","x-api-key": os.getenv('TAP_PARTNER_KEY')}
                 url = 'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime'
                 async with aiohttp.ClientSession() as session:
                     async with session.post(url, json=payload, headers=hd) as response:
