@@ -1,16 +1,18 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
 import mysql.connector
 from utils.token_verify_creator import token_verifier
 import redis
 import json
+import aiomysql
 import asyncio
+
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
 
 @router.post("/api/user/logout")
-async def logout(request: Request):  # request: Request 刪除不需要。request.cookies.get("access_token") 所以直接response
+async def logout(request: Request, bt:BackgroundTasks):  # request: Request 刪除不需要。request.cookies.get("access_token") 所以直接response
     try:
         token = request.cookies.get("access_token")
         if not token:
@@ -22,16 +24,15 @@ async def logout(request: Request):  # request: Request 刪除不需要。reques
             redis_pool = request.state.redis_db_pool.get("default") 
             r = redis.Redis(connection_pool=redis_pool)
             b = r.get(f"user:{token_output['id']}:booking")
-            print(b)
 
-            sql_pool = request.state.sql_db_pool.get("default") 
 
-            def db_task(b):
-                with sql_pool.get_connection() as connection:
-                    with connection.cursor(dictionary=True) as cursor:
+            async def db_task(b):
+                sql_pool = request.state.async_sql_db_pool 
+                async with sql_pool.acquire() as connection:
+                    async with connection.cursor(aiomysql.DictCursor) as cursor:
                         if b:
                             b = json.loads(b)
-                            cursor.execute("""
+                            await cursor.execute("""
                                 INSERT INTO user_booking_tentative (
                                     creator_id, attraction_id, name, address, image, date, time, price
                                 )
@@ -39,17 +40,13 @@ async def logout(request: Request):  # request: Request 刪除不需要。reques
                                 ON DUPLICATE KEY UPDATE
                                     attraction_id = VALUES(attraction_id), name = VALUES(name), address = VALUES(address), image = VALUES(image), date = VALUES(date), time = VALUES(time), price = VALUES(price);
                             """, (token_output['id'], b['attraction_id'], b['name'], b['address'], b['image'], b['date'], b['time'], b['price']))
-                            connection.commit()
                         else:
                             print('User logout, with nothing to add to sql. Cleaning up sql...')
-                            cursor.execute("DELETE FROM user_booking_tentative WHERE creator_id = %s;", (token_output['id'],))
-                            connection.commit()
+                            await cursor.execute("DELETE FROM user_booking_tentative WHERE creator_id = %s;", (token_output['id'],))
+                        await connection.commit()
+            bt.add_task(db_task, b)
 
-            # 使用 run_in_executor 运行同步操作
-            await asyncio.get_event_loop().run_in_executor(None, db_task, b)
-
-            redis_key = f"user:{token_output['id']}:booking"
-            r.delete(redis_key)
+            r.delete(f"user:{token_output['id']}:booking")
 
             response = JSONResponse(status_code=200, content={"message": "Logged out successfully"})
             response.delete_cookie(key="access_token")

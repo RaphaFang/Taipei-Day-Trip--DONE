@@ -13,7 +13,12 @@
     <!-- <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script> -->
     <script src="/static/css_js_folder/js/signin_signout_section_TESTING.js" defer></script>
     <script src="/static/css_js_folder/js/before_booking.js" defer></script>
-    <script src="/static/css_js_folder/js/after_booking.js" defer></script>
+    <script src="/static/css_js_folder/js/booking_after.js" defer></script>
+    <script src="/static/css_js_folder/js/booking_payment.js" defer></script>
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <script>
+      TPDirect.setupSDK(151765, "app_Y4hb79I5fnESKnvdTwR6JwQoI2ZbdwZVG23EBI8L4VVuyWwERolfviHOdzpm", "sandbox");
+    </script>
   </head>
   <body>
     <div class="content">
@@ -33,7 +38,7 @@
         </div>
       </div>
       <!-- ! signin-form -->
-      <div hidden class="signin-form-div" id="signin-form-div">
+      <!-- <div hidden class="signin-form-div" id="signin-form-div">
         <p class="form-text">登入會員帳號</p>
         <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
           <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
@@ -53,9 +58,9 @@
           </div>
           <div hidden class="error-catcher" id="error-catcher"></div>
         </form>
-      </div>
+      </div> -->
       <!-- ! signup form -->
-      <div hidden class="signup-form-div" id="signup-form-div">
+      <!-- <div hidden class="signup-form-div" id="signup-form-div">
         <p class="form-text">註冊會員帳號</p>
         <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
           <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
@@ -78,7 +83,7 @@
           </div>
           <div hidden class="error-catcher" id="error-catcher"></div>
         </form>
-      </div>
+      </div> -->
 
       <div class="without-nav-bar">
         <!-- ! first -->
@@ -96,7 +101,7 @@
                 <p class="book-info-title">台北一日遊：</p>
                 <p class="book-info-text"><span class="custom-bold">日期：</span></p>
                 <p class="book-info-text"><span class="custom-bold">時間：</span></p>
-                <p class="book-info-text"><span class="custom-bold">費用：</span></p>
+                <p class="book-info-text"><span class="custom-bold">時間：</span></p>
                 <p class="book-info-text"><span class="custom-bold">地點：</span></p>
               </div>
               <div class="delete-pic-div">
@@ -141,28 +146,33 @@
 
           <div class="discribe-block-div">
             <div class="describe-block describe-block-c1" id="describe-block">
-              <div class="third-block-input-div">
-                <p class="second-block-input-title">信用卡付款資訊</p>
-                <div class="info-div-for-booking">
-                  <label class="book-personal-label">卡片號碼：</label>
-                  <input
-                    class="book-personal-info-place"
-                    id="book-personal-info-place-card-number"
-                    type="text"
-                    pattern="\d{4}-?\d{4}-?\d{4}-?\d{4}"
-                    placeholder="**** **** **** ****"
-                    maxlength="19"
-                  />
+              <form id="card-form">
+                <div class="third-block-input-div">
+                  <p class="second-block-input-title">信用卡付款資訊</p>
+                  <style>
+                    .tpfield {
+                      height: 38px;
+                      width: 200px;
+                      border: 1px solid rgba(204, 204, 204, 1);
+                      border-radius: 5px;
+                      margin: 5px 0;
+                      padding-left: 15px;
+                    }
+                  </style>
+                  <div class="info-div-for-booking">
+                    <label class="book-personal-label">卡片號碼：</label>
+                    <div class="tpfield" id="card-number"></div>
+                  </div>
+                  <div class="info-div-for-booking">
+                    <label class="book-personal-label">過期時間：</label>
+                    <div class="tpfield" id="card-expiration-date"></div>
+                  </div>
+                  <div class="info-div-for-booking">
+                    <label class="book-personal-label">驗證密碼：</label>
+                    <div class="tpfield" id="card-ccv"></div>
+                  </div>
                 </div>
-                <div class="info-div-for-booking">
-                  <label class="book-personal-label">過期時間：</label>
-                  <input class="book-personal-info-place" id="book-personal-info-place-expiry" type="text" placeholder="MM/YY" />
-                </div>
-                <div class="info-div-for-booking">
-                  <label class="book-personal-label">驗證密碼：</label>
-                  <input class="book-personal-info-place" id="book-personal-info-place-CVV" type="text" placeholder="CVV" pattern="\d{3}" />
-                </div>
-              </div>
+              </form>
             </div>
           </div>
 
@@ -172,7 +182,7 @@
           <div class="discribe-block-div">
             <div class="final-div">
               <p>總價：新台幣 2000 元</p>
-              <button>確認訂購並付款</button>
+              <button id="submit-button" type="button" disabled>確認訂購並付款</button>
             </div>
           </div>
         </div>

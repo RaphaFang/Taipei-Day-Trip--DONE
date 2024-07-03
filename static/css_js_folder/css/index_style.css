@@ -564,3 +564,13 @@ body {
 [hidden] {
   display: none;
 }
+
+.load-more-trigger {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.load-more-trigger-p {
+  color: #666666;
+}

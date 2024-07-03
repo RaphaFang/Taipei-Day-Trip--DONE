@@ -3,9 +3,9 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
-from utils.db.sql import sql_pool_buildup
+from utils.db.sql import sql_pool_buildup, build_async_sql_pool
 from utils.db.redis import redis_pool_buildup
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_get, api_booking_post, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
 from starlette.responses import RedirectResponse
 
 from routers import Redis_api_booking_post,Redis_api_booking_get
@@ -23,24 +23,31 @@ async def redirect_http_to_https(request: Request, call_next):
     response = await call_next(request)
     return response
 
+# !-----------------------------------------
+@app.on_event("startup")
+async def startup_event():
+    app.state.async_sql_db_pool = await build_async_sql_pool()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    app.state.async_sql_db_pool.close()
+    await app.state.async_sql_db_pool.wait_closed()
+# -----------------------------------------
 sql_db_pool={
     "default":sql_pool_buildup(),
 }
 @app.middleware("http")
 async def sql_db_connection(request: Request, call_next):
-    request.state.sql_db_pool = sql_db_pool
+    request.state.sql_db_pool = sql_db_pool 
+    request.state.async_sql_db_pool = app.state.async_sql_db_pool
     response = await call_next(request)
     return response
-
+# !-----------------------------------------
+# import aioredis
+# -----------------------------------------
 redis_db_pool={
     "default":redis_pool_buildup(),
 }
-@app.middleware("http")
-async def redis_db_connection(request: Request, call_next):
-    request.state.redis_db_pool = redis_db_pool
-    response = await call_next(request)
-    return response
-
 @app.middleware("http")
 async def redis_db_connection(request: Request, call_next):
     try:
@@ -50,7 +57,7 @@ async def redis_db_connection(request: Request, call_next):
     except Exception as e:
         print(f"Redis connection error: {e}")
         return JSONResponse(status_code=500, content={"error": "Redis connection error"})
-
+# -----------------------------------------
 
 
 app.include_router(api_at_mrts.router)
@@ -62,14 +69,16 @@ app.include_router(api_user_put.router)
 app.include_router(api_user_get.router)
 app.include_router(api_user_logout.router)
 
-# app.include_router(api_booking_get.router)
-# app.include_router(api_booking_post.router)
-app.include_router(api_booking_delete.router)
 
 app.include_router(Redis_api_booking_post.router)
 app.include_router(Redis_api_booking_get.router)
+app.include_router(api_booking_delete.router)
 
+# app.include_router(api_booking_get.router)
+# app.include_router(api_booking_post.router)
 
+app.include_router(api_orders_post.router)
+app.include_router(api_order_get.router)
 
 
 # Static Pages (Never Modify Code in this Block)

@@ -47,24 +47,6 @@ async function renderJourneyVerified() {
 
 // ! bookingGet()
 async function bookingGet() {
-  // const response = await fetch("/api/booking", {
-  //   method: "GET",
-  //   credentials: "include",
-  // });
-  // const result = await response.json();
-  // if (response.ok) {
-  //   localStorage.setItem("journeyVerified", JSON.stringify(result.data));
-  //   if (result.data !== null) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // } else {
-  //   console.log(result.message);
-  //   window.location.href = "/";
-  //   return false;
-  // }
-
   const response = await fetch("/api/booking", {
     method: "GET",
     credentials: "include",
@@ -120,36 +102,36 @@ async function bookingDelete() {
   }
 }
 
-document.getElementById("book-personal-info-place-tel").addEventListener("input", function (e) {
-  var value = e.target.value.replace(/\D/g, "");
-  var formattedValue = "";
-  if (value.length > 0) {
-    formattedValue = value.slice(0, 4);
-  }
-  if (value.length > 4) {
-    formattedValue += "-" + value.slice(4, 7);
-  }
-  if (value.length > 7) {
-    formattedValue += "-" + value.slice(7, 10);
-  }
-  e.target.value = formattedValue;
-});
-document.getElementById("book-personal-info-place-card-number").addEventListener("input", function (e) {
-  var value = e.target.value.replace(/\D/g, ""); // 一除非數字的任何字母
-  var formattedValue = value.match(/.{1,4}/g)?.join(" ") || ""; // 確保空字串，跟之前一樣
-  e.target.value = formattedValue;
-});
-document.getElementById("book-personal-info-place-expiry").addEventListener("input", function (e) {
-  var value = e.target.value.replace(/\D/g, "").slice(0, 4);
-  if (value.length > 2) {
-    value = value.slice(0, 2) + "/" + value.slice(2);
-  }
-  e.target.value = value;
-});
-document.getElementById("book-personal-info-place-CVV").addEventListener("input", function (e) {
-  var value = e.target.value.replace(/\D/g, "").slice(0, 3);
-  e.target.value = value;
-});
+// document.getElementById("book-personal-info-place-tel").addEventListener("input", function (e) {
+//   var value = e.target.value.replace(/\D/g, "");
+//   var formattedValue = "";
+//   if (value.length > 0) {
+//     formattedValue = value.slice(0, 4);
+//   }
+//   if (value.length > 4) {
+//     formattedValue += "-" + value.slice(4, 7);
+//   }
+//   if (value.length > 7) {
+//     formattedValue += "-" + value.slice(7, 10);
+//   }
+//   e.target.value = formattedValue;
+// });
+// document.getElementById("book-personal-info-place-card-number").addEventListener("input", function (e) {
+//   var value = e.target.value.replace(/\D/g, ""); // 一除非數字的任何字母
+//   var formattedValue = value.match(/.{1,4}/g)?.join(" ") || ""; // 確保空字串，跟之前一樣
+//   e.target.value = formattedValue;
+// });
+// document.getElementById("book-personal-info-place-expiry").addEventListener("input", function (e) {
+//   var value = e.target.value.replace(/\D/g, "").slice(0, 4);
+//   if (value.length > 2) {
+//     value = value.slice(0, 2) + "/" + value.slice(2);
+//   }
+//   e.target.value = value;
+// });
+// document.getElementById("book-personal-info-place-CVV").addEventListener("input", function (e) {
+//   var value = e.target.value.replace(/\D/g, "").slice(0, 3);
+//   e.target.value = value;
+// });
 
 // async function bookingGet() {
 //   const response = await fetch("/api/booking", {

@@ -55,3 +55,9 @@ class BookingDataMode(BaseModel):
     #     if not v:
     #         raise ValueError('The date cannot be left empty.')
     #     return v
+
+class ContactAndPrimeDM(BaseModel):
+    prime: str
+    name: str
+    email: EmailStr
+    phone: str
