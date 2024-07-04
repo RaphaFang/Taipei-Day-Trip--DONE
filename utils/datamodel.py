@@ -61,3 +61,4 @@ class ContactAndPrimeDM(BaseModel):
     name: str
     email: EmailStr
     phone: str
+    price: int

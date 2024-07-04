@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form, BackgroundTasks
+from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from datetime import datetime
 import mysql.connector
@@ -10,6 +10,8 @@ import json
 import aiohttp
 import aiomysql
 import os
+import redis
+import redis.asyncio as aioredis 
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
@@ -24,23 +26,27 @@ async def prime_order(request: Request, cp:ContactAndPrimeDM, bt:BackgroundTasks
         token_output = token_verifier(token)
 
         if token_output:
-            redis_pool = request.state.redis_db_pool.get("default") 
-            r = redis.Redis(connection_pool=redis_pool)
-            b = r.get(f"user:{token_output['id']}:booking")
-            if b:
-                b = json.loads(b)
 
-            async def sending_prime():
-                payload={"prime": cp.prime, "partner_key": os.getenv('TAP_PARTNER_KEY'), "merchant_id": os.getenv("MERCHANT_ID"), "details":"TapPay Test", "amount": b['price'], "cardholder": { "phone_number": cp.phone, "name": cp.name, "email": cp.email }, "remember": True}
+            async def sending_prime(cp):
+                payload={"prime": cp.prime, "partner_key": os.getenv('TAP_PARTNER_KEY'), "merchant_id": os.getenv("MERCHANT_ID"), "details":"TapPay Test", "amount": cp.price, "cardholder": { "phone_number": cp.phone, "name": cp.name, "email": cp.email }, "remember": True}
                 hd = {"Content-Type": "application/json","x-api-key": os.getenv('TAP_PARTNER_KEY')}
                 url = 'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime'
                 async with aiohttp.ClientSession() as session:
                     async with session.post(url, json=payload, headers=hd) as response:
-                        data = await response.json()
-                        return data
-            
-            async def put_info_in_db(result,SoF,generate_order_id):
-                sql_pool = request.state.async_sql_db_pool 
+                        return await response.json()
+
+            async def post_user_redis(request, id, r_status):
+                redis_pool = request.state.async_redis_pool
+                async with aioredis.Redis(connection_pool=redis_pool) as r:
+                    data = await r.get(f"user:{id}:booking")
+                    if r_status:
+                        await r.delete(f"user:{id}:booking")
+                    if data:
+                        data = json.loads(data)
+                    return  data
+                
+            async def put_info_in_db(request, result, redis_data, cp, SoF, id, generate_order_id):
+                sql_pool = request.state.async_sql_pool 
                 async with sql_pool.acquire() as connection:
                     async with connection.cursor(aiomysql.DictCursor) as cursor:
                         await cursor.execute("""
@@ -50,25 +56,28 @@ async def prime_order(request: Request, cp:ContactAndPrimeDM, bt:BackgroundTasks
                                              contact_name,contact_email,contact_phone,
                                              card_secret,card_info
                                 )SELECT %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s;
-                            """, (generate_order_id,token_output['id'],SoF,result['status'],result['msg'],
-                                   b['price'],b['attraction_id'], b['name'], b['address'], b['image'], b['date'], b['time'],
+                            """, (generate_order_id,id,SoF,result['status'],result['msg'],
+                                   redis_data['price'],redis_data['attraction_id'], redis_data['name'], redis_data['address'], redis_data['image'], redis_data['date'], redis_data['time'],
                                       cp.name, cp.email,cp.phone,
                                       json.dumps(result.get('card_secret')),json.dumps(result.get('card_info'))))
                         await connection.commit()
 
-            result = await sending_prime()
-            generate_order_id = datetime.now().strftime('%Y%m%d%H%M%S%f')
 
+            result = await sending_prime(cp)
+            generate_order_id = datetime.now().strftime('%Y%m%d%H%M%S%f')
             if result.get('status') == 0:
+                redis_data = await post_user_redis(request,token_output['id'],True)
                 SoF = 'PAID'
-                r.delete(f"user:{token_output['id']}:booking")
+                sc=200
                 con = {"data": {"number": generate_order_id,"payment": {"status": 0,"message": "successfully paid"}}}
-                bt.add_task(put_info_in_db, result, SoF, generate_order_id)
-                return JSONResponse(status_code=200, content=con, headers=headers)
+
             else:
+                redis_data = await post_user_redis(request,token_output['id'],False)
                 SoF = 'UNPAID'
-                bt.add_task(put_info_in_db, result, SoF, generate_order_id)
-                return JSONResponse(status_code=400,content={'error':True, "message":result.get('msg')}, headers=headers)
+                sc= 400
+                con = {'error':True, "message":result.get('msg')}
+            bt.add_task(put_info_in_db, request, result, redis_data, cp, SoF, token_output['id'], generate_order_id)
+            return JSONResponse(status_code=sc, content=con, headers=headers)
 
     except (mysql.connector.Error, redis.RedisError) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)

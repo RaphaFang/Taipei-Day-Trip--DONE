@@ -5,7 +5,7 @@ from utils.token_verify_creator import token_verifier
 import redis
 import json
 import aiomysql
-import asyncio
+import redis.asyncio as aioredis 
 
 
 router = APIRouter()
@@ -18,16 +18,20 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request åˆªé
         if not token:
             content_data = {"error": True, "message": "You did not got the token in cookies, how to you even came to the log-out step???"}
             return JSONResponse(status_code=403,content=content_data, headers=headers)
-        
         token_output = token_verifier(token)
+
         if token_output:
-            redis_pool = request.state.redis_db_pool.get("default") 
-            r = redis.Redis(connection_pool=redis_pool)
-            b = r.get(f"user:{token_output['id']}:booking")
 
+            async def delete_user_r(request, id):
+                redis_pool = request.state.async_redis_pool
+                async with aioredis.Redis(connection_pool=redis_pool) as r:
+                    b = await r.get(f"user:{id}:booking")
+                    await r.delete(f"user:{id}:booking")
+                    return b
+            redis_data = await delete_user_r(request,token_output['id'])
 
-            async def db_task(b):
-                sql_pool = request.state.async_sql_db_pool 
+            async def redis_to_sql(request,b):
+                sql_pool = request.state.async_sql_pool 
                 async with sql_pool.acquire() as connection:
                     async with connection.cursor(aiomysql.DictCursor) as cursor:
                         if b:
@@ -44,9 +48,7 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request åˆªé
                             print('User logout, with nothing to add to sql. Cleaning up sql...')
                             await cursor.execute("DELETE FROM user_booking_tentative WHERE creator_id = %s;", (token_output['id'],))
                         await connection.commit()
-            bt.add_task(db_task, b)
-
-            r.delete(f"user:{token_output['id']}:booking")
+            bt.add_task(redis_to_sql, request, redis_data)
 
             response = JSONResponse(status_code=200, content={"message": "Logged out successfully"})
             response.delete_cookie(key="access_token")

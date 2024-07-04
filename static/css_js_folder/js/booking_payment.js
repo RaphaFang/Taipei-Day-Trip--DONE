@@ -96,11 +96,14 @@ async function orderPost(prime) {
   const contactName = document.getElementById("book-personal-info-place-name").value;
   const contactEmail = document.getElementById("book-personal-info-place-email").value;
   const contactTel = document.getElementById("book-personal-info-place-tel").value;
+  const verData = JSON.parse(localStorage.getItem("journeyVerified"));
+
   let contactAndPrimeForm = {
     prime: prime,
     name: contactName,
     email: contactEmail,
     phone: contactTel,
+    price: verData.price,
   };
   console.log(contactAndPrimeForm);
 

@@ -4,11 +4,12 @@ from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
 from utils.db.sql import sql_pool_buildup, build_async_sql_pool
-from utils.db.redis import redis_pool_buildup
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
+from utils.db.redis import redis_pool_buildup, build_async_redis_pool
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
 from starlette.responses import RedirectResponse
 
-from routers import Redis_api_booking_post,Redis_api_booking_get
+from routers import api_booking_post
+import redis.asyncio as aioredis
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -26,37 +27,44 @@ async def redirect_http_to_https(request: Request, call_next):
 # !-----------------------------------------
 @app.on_event("startup")
 async def startup_event():
-    app.state.async_sql_db_pool = await build_async_sql_pool()
+    app.state.async_sql_pool = await build_async_sql_pool()
+    app.state.async_redis_pool = await build_async_redis_pool()
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    app.state.async_sql_db_pool.close()
-    await app.state.async_sql_db_pool.wait_closed()
+    app.state.async_sql_pool.close()
+    await app.state.async_sql_pool.wait_closed()
+    await app.state.async_redis_pool.disconnect()
+    # app.state.async_redis_pool.close()
+    # await app.state.async_redis_pool.wait_closed()
 # -----------------------------------------
 sql_db_pool={
     "default":sql_pool_buildup(),
 }
-@app.middleware("http")
-async def sql_db_connection(request: Request, call_next):
-    request.state.sql_db_pool = sql_db_pool 
-    request.state.async_sql_db_pool = app.state.async_sql_db_pool
-    response = await call_next(request)
-    return response
-# !-----------------------------------------
-# import aioredis
-# -----------------------------------------
 redis_db_pool={
     "default":redis_pool_buildup(),
 }
 @app.middleware("http")
-async def redis_db_connection(request: Request, call_next):
-    try:
-        request.state.redis_db_pool = redis_db_pool
-        response = await call_next(request)
-        return response
-    except Exception as e:
-        print(f"Redis connection error: {e}")
-        return JSONResponse(status_code=500, content={"error": "Redis connection error"})
+async def all_db_connection(request: Request, call_next):
+    request.state.sql_db_pool = sql_db_pool 
+    request.state.async_sql_pool = app.state.async_sql_pool
+
+    request.state.redis_db_pool = redis_db_pool
+    request.state.async_redis_pool = app.state.async_redis_pool
+
+    response = await call_next(request)
+    return response
+# !-----------------------------------------
+# -----------------------------------------
+# @app.middleware("http")
+# async def redis_db_connection(request: Request, call_next):
+#     try:
+#         request.state.redis_db_pool = redis_db_pool
+#         response = await call_next(request)
+#         return response
+#     except Exception as e:
+#         print(f"Redis connection error: {e}")
+#         return JSONResponse(status_code=500, content={"error": "Redis connection error"})
 # -----------------------------------------
 
 
@@ -70,8 +78,8 @@ app.include_router(api_user_get.router)
 app.include_router(api_user_logout.router)
 
 
-app.include_router(Redis_api_booking_post.router)
-app.include_router(Redis_api_booking_get.router)
+app.include_router(api_booking_post.router)
+app.include_router(api_booking_get.router)
 app.include_router(api_booking_delete.router)
 
 # app.include_router(api_booking_get.router)
