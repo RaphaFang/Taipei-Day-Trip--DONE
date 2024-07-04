@@ -18,7 +18,7 @@ setup_cors(app)
 @app.middleware("http")
 async def redirect_http_to_https(request: Request, call_next):
     if request.url.scheme == "http":
-        url = request.url.replace(scheme="https", netloc=request.url.hostname) # 取消掉8443，但奇怪的是8443也可以正常執行?
+        url = request.url.replace(scheme="https", netloc=request.url.hostname)
         return RedirectResponse(url)
     response = await call_next(request)
     return response
@@ -38,7 +38,7 @@ sql_db_pool={
 }
 @app.middleware("http")
 async def sql_db_connection(request: Request, call_next):
-    request.state.sql_db_pool = sql_db_pool 
+    # request.state.sql_db_pool = sql_db_pool 
     request.state.async_sql_db_pool = app.state.async_sql_db_pool
     response = await call_next(request)
     return response

@@ -2,10 +2,8 @@ import os
 import redis
 # import aioredis
 
-
 def redis_pool_buildup():
     r_pool = redis.ConnectionPool(
-        # host='localhost',
         host='localhost',
         port=6379,
         db=0,
