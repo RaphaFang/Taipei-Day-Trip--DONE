@@ -36,7 +36,7 @@ async function bookingPost() {
   console.log(response.ok);
   if (response.ok) {
     console.log("bookingPost() -> success:", result);
-    // window.location.href = "/booking";
+    window.location.href = "/booking";
     console.log("理論上重新導向了");
   } else {
     if (response.status === 403) {
