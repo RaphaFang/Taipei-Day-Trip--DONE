@@ -44,7 +44,7 @@ async function bookingPost() {
   //   console.log(result.message);
   // }
   // //
-  const response2 = await fetch("/api/booking", {
+  const response = await fetch("/api/booking", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,17 +52,18 @@ async function bookingPost() {
     credentials: "include",
     body: JSON.stringify(journeyForm),
   });
-  const result2 = await response2.json();
-  if (response2.ok) {
-    console.log("bookingPost() -> success:", result2);
+  const result = await response.json();
+  if (response.ok) {
+    console.log("bookingPost() -> success:", result);
   } else {
-    if (response2.status === 403) {
+    if (response.status === 403) {
       bookingDisplaySignIn();
-    } else if (response2.status === 400) {
+    } else if (response.status === 400) {
       alert("Facing error booking this trip, please check the submission formate.");
     }
-    console.log(result2.message);
   }
+  stateCheckBeforeBooking();
+  console.log(result.message);
 }
 
 function bookingDisplaySignIn() {
