@@ -24,26 +24,6 @@ async function bookingPost() {
   };
   console.log(journeyForm);
 
-  // const response = await fetch("/api/booking", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   credentials: "include",
-  //   body: JSON.stringify(journeyForm),
-  // });
-  // const result = await response.json();
-  // if (response.ok) {
-  //   console.log("bookingPost() -> success:", result);
-  // } else {
-  //   if (response.status === 403) {
-  //     bookingDisplaySignIn();
-  //   } else if (response.status === 400) {
-  //     alert("Facing error booking this trip, please check the submission formate.");
-  //   }
-  //   console.log(result.message);
-  // }
-  // //
   const response = await fetch("/api/booking", {
     method: "POST",
     headers: {
@@ -53,9 +33,11 @@ async function bookingPost() {
     body: JSON.stringify(journeyForm),
   });
   const result = await response.json();
+  console.log(response.ok);
   if (response.ok) {
     console.log("bookingPost() -> success:", result);
-    window.location.href = "/booking";
+    // window.location.href = "/booking";
+    console.log("理論上重新導向了");
   } else {
     if (response.status === 403) {
       bookingDisplaySignIn();
