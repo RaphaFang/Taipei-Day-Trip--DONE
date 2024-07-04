@@ -17,28 +17,17 @@ async def api_attractions(request: Request, page: int=Query(..., ge=0), keyword:
             sql_pool = request.state.async_sql_db_pool 
             async with sql_pool.acquire() as connection:
                 async with connection.cursor(aiomysql.DictCursor) as cursor:
-                    # if keyword==None:
-                    #     await cursor.execute("SELECT * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
-                    #     attract_data = await cursor.fetchall()
-                    #     await cursor.execute("SELECT COUNT(*) AS total FROM processed_data;") 
-                    # else:
-                    #     await cursor.execute("SELECT * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
-                    #     attract_data = await cursor.fetchall()
-                    #     await cursor.execute("SELECT COUNT(*) AS total FROM processed_data WHERE mrt LIKE %s OR name LIKE %s;", (keyword_format, keyword_format))
-                    # sum_rows = await cursor.fetchone()
-                
                     if keyword==None:
-                        await cursor.execute("SELECT SQL_CALC_FOUND_ROWS * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
+                        await cursor.execute("SELECT  * FROM processed_data LIMIT 12 OFFSET %s;", (offset_num,)) 
+                        attract_data = await cursor.fetchall()
+                        await cursor.execute("SELECT COUNT(*) AS t FROM processed_data;") 
                     else:
-                        await cursor.execute("SELECT SQL_CALC_FOUND_ROWS * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
-                    attract_data = await cursor.fetchall()
-
-                    await cursor.execute("SELECT FOUND_ROWS();") 
+                        await cursor.execute("SELECT  * FROM processed_data WHERE mrt LIKE %s OR name LIKE %s LIMIT 12 OFFSET %s;", (keyword_format, keyword_format, offset_num,)) 
+                        attract_data = await cursor.fetchall()
+                        await cursor.execute("SELECT COUNT(*) AS t FROM processed_data WHERE mrt LIKE %s OR name LIKE %s;", (keyword_format, keyword_format))
                     sum_rows = await cursor.fetchone()
-
-
-
-                    next_page = page+1 if sum_rows['FOUND_ROWS()'] > (page+1)*12 else None
+                    
+                    next_page = page+1 if sum_rows['t'] > (page+1)*12 else None
                     each_data_list = [{'id':each['id'],"name":each["name"],'category':each['category'], 'description':each['description'],'address':each['address'],'transport':each['transport'],'mrt':each['mrt'],'lat':each['lat'],'lng':each['lng'], 'images':json.loads(each['images'])} for each in attract_data]
                     return {"data": each_data_list, "nextPage":next_page}
         result = await search_attr_keyword(keyword,offset_num,keyword_format)

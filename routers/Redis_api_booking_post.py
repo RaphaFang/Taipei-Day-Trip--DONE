@@ -20,6 +20,7 @@ async def api_booking_post_redis(request: Request, j_data:BookingDataMode): # , 
         print('2. the data from booking_redis :: ',j_data)
         input_token = token_verifier(token)
         if input_token:
+            
             redis_pool = request.state.redis_db_pool.get("default") 
             r = redis.Redis(connection_pool=redis_pool)
             booking_data = {
