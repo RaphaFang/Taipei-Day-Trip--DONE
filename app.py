@@ -1,48 +1,85 @@
 from fastapi import *
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
 from utils.cors import setup_cors 
-from utils.db import pool_buildup
-from routers import api_attraction, api_attractions, api_mrts, api_user_auth_post, api_user_auth_put, api_user_auth_get, api_booking_get, api_booking_post, api_booking_delete
+from utils.db.sql import sql_pool_buildup, build_async_sql_pool
+from utils.db.redis import redis_pool_buildup
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_delete, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
 from starlette.responses import RedirectResponse
+
+from routers import Redis_api_booking_post,Redis_api_booking_get
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
 
-db_pool ={
-    "basic_db":pool_buildup(),
-}
 @app.middleware("http")
 async def redirect_http_to_https(request: Request, call_next):
     if request.url.scheme == "http":
-        url = request.url.replace(scheme="https", netloc=request.url.hostname) # 取消掉8443，但奇怪的是8443也可以正常執行?
+        url = request.url.replace(scheme="https", netloc=request.url.hostname)
         return RedirectResponse(url)
     response = await call_next(request)
     return response
 
+# !-----------------------------------------
+@app.on_event("startup")
+async def startup_event():
+    app.state.async_sql_db_pool = await build_async_sql_pool()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    app.state.async_sql_db_pool.close()
+    await app.state.async_sql_db_pool.wait_closed()
+# -----------------------------------------
+sql_db_pool={
+    "default":sql_pool_buildup(),
+}
 @app.middleware("http")
-async def attach_db_connection(request: Request, call_next):
-    request.state.db_pool = db_pool
+async def sql_db_connection(request: Request, call_next):
+    request.state.sql_db_pool = sql_db_pool 
+    request.state.async_sql_db_pool = app.state.async_sql_db_pool
     response = await call_next(request)
     return response
+# !-----------------------------------------
+# import aioredis
+# -----------------------------------------
+redis_db_pool={
+    "default":redis_pool_buildup(),
+}
+@app.middleware("http")
+async def redis_db_connection(request: Request, call_next):
+    try:
+        request.state.redis_db_pool = redis_db_pool
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        print(f"Redis connection error: {e}")
+        return JSONResponse(status_code=500, content={"error": "Redis connection error"})
+# -----------------------------------------
 
-app.include_router(api_mrts.router)
+
+app.include_router(api_at_mrts.router)
 app.include_router(api_attraction.router)
 app.include_router(api_attractions.router)
-app.include_router(api_user_auth_post.router)
-app.include_router(api_user_auth_put.router)
-app.include_router(api_user_auth_get.router)
 
-app.include_router(api_booking_get.router)
-app.include_router(api_booking_post.router)
+app.include_router(api_user_post.router)
+app.include_router(api_user_put.router)
+app.include_router(api_user_get.router)
+app.include_router(api_user_logout.router)
+
+
+app.include_router(Redis_api_booking_post.router)
+app.include_router(Redis_api_booking_get.router)
 app.include_router(api_booking_delete.router)
 
+# app.include_router(api_booking_get.router)
+# app.include_router(api_booking_post.router)
 
+app.include_router(api_orders_post.router)
+app.include_router(api_order_get.router)
 
-# /api/booking
 
 # Static Pages (Never Modify Code in this Block)
 @app.get("/", include_in_schema=False)
@@ -58,7 +95,7 @@ async def booking(request: Request):
 async def thankyou(request: Request):
 	return FileResponse("./static/thankyou.html", media_type="text/html")
 
-# uvicorn app:app --reload
+# uvicorn app:app --host 127.0.0.1 --port 8000 --ssl-keyfile /Users/fangsiyu/Desktop/secrets/privkey.pem --ssl-certfile /Users/fangsiyu/Desktop/secrets/fullchain.pem --reload
 # cd /Users/fangsiyu/Desktop/taipei-day-trip
 # nano ~/.zshrc
 # source ~/.zshrc

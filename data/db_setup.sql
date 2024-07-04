@@ -41,6 +41,7 @@ SELECT EXISTS(SELECT 1 FROM user_info WHERE email = %s);
 
 
 -- -----------------------------------------------------------------------------
+-- CREATE TABLE user_booking_tentative ();
 CREATE TABLE user_booking_tentative (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique ID',
     creator_id INT UNIQUE COMMENT 'User ID who added the attraction',  -- UNIQUE ，唯一的一筆，允許覆蓋
@@ -55,6 +56,41 @@ CREATE TABLE user_booking_tentative (
 
     FOREIGN KEY (creator_id) REFERENCES user_info(id) ON DELETE CASCADE
 );
--- 未來再來建立
--- CREATE TABLE user_booking_finalized ();
 
+
+
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE user_booking_finalized ();
+CREATE TABLE user_booking_finalized (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique ID',
+    order_number VARCHAR(20) NOT NULL UNIQUE COMMENT 'Unique order id',
+    creator_id INT COMMENT 'User ID who added the attraction', 
+    given_status VARCHAR(255) NOT NULL COMMENT 'PAID or UNPAID',
+    bank_status INT NOT NULL COMMENT 'Return status code from bank',
+    bank_msg VARCHAR(255) NOT NULL COMMENT 'Return msg from bank',
+
+
+    price DECIMAL(10) NOT NULL COMMENT 'Attraction price',
+    attr_id INT NOT NULL COMMENT 'Attraction ID',
+    attr_name VARCHAR(255) NOT NULL COMMENT 'Attraction name',
+    attr_address VARCHAR(255) NOT NULL COMMENT 'Attraction address',
+    attr_image VARCHAR(255) NOT NULL COMMENT 'Attraction image URL',
+    attr_date DATE NOT NULL COMMENT 'Attraction date',
+    attr_time VARCHAR(50) NOT NULL COMMENT 'Attraction time period',
+
+    contact_name VARCHAR(255) NOT NULL COMMENT 'Contact name',
+    contact_email VARCHAR(255) NOT NULL COMMENT 'Contact email',
+    contact_phone VARCHAR(255) NOT NULL COMMENT 'Contact tel',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Record creation time',
+
+    card_secret JSON,
+    card_info JSON,
+
+    FOREIGN KEY (creator_id) REFERENCES user_info(id)
+);
+
+
+
+-- -----------------------------------------------------------------------------
+CREATE INDEX order_number_search ON user_booking_finalized(order_number);

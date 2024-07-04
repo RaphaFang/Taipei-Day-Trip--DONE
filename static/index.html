@@ -9,7 +9,8 @@
 
     <script src="/static/css_js_folder/js/pre_job.js" defer></script>
     <script src="/static/css_js_folder/js/index_script.js" defer></script>
-    <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script>
+    <!-- <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script> -->
+    <script src="/static/css_js_folder/js/signin_signout_section_TESTING.js" defer></script>
     <script src="/static/css_js_folder/js/before_booking.js" defer></script>
   </head>
   <body>
@@ -23,8 +24,8 @@
               <a class="first-bar-btn" id="bookingGet" onclick="stateCheckBeforeBooking()">預定行程</a>
             </div>
             <div class="secondbtn" id="secondbtn">
-              <a class="second-bar-btn" id="login-btn" onclick=" displaySignIn()">登入/註冊</a>
-              <a class="second-bar-btn" id="logout-btn" onclick="userSignOut()" hidden>登出系統</a>
+              <a class="second-bar-btn" id="login-btn" onclick=" displaySignIn()"></a>
+              <a class="second-bar-btn" id="logout-btn" onclick="userSignOut()" hidden></a>
             </div>
           </div>
         </div>
@@ -117,7 +118,9 @@
           <div class="attacrions" id="attracDiv"></div>
         </div>
       </div>
-      <div id="load-more-trigger"></div>
+      <div class="load-more-trigger" id="load-more-trigger">
+        <p class="load-more-trigger-p">loading...</p>
+      </div>
     </div>
     <!-- ! footer part -->
     <footer class="foot">

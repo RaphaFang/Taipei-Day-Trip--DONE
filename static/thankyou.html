@@ -1,11 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thank You</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank you</title>
+    <link rel="stylesheet" href="/static/css_js_folder/css/attraction_style.css" />
+    <link rel="stylesheet" href="/static/css_js_folder/css/signin_signout_section.css" />
+    <link rel="stylesheet" href="/static/css_js_folder/css/thankyou_style.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+
+    <script src="/static/css_js_folder/js/pre_job.js" defer></script>
+    <!-- <script src="/static/css_js_folder/js/attraction_script.js" defer></script> -->
+    <!-- <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script> -->
+    <script src="/static/css_js_folder/js/signin_signout_section_TESTING.js" defer></script>
+    <script src="/static/css_js_folder/js/before_booking.js" defer></script>
+    <script src="/static/css_js_folder/js/thankyou.js" defer></script>
+  </head>
+  <body>
+    <div class="content">
+      <div id="overlay" hidden onclick="cancelFormDisplay()"></div>
+      <div class="nav-bar">
+        <div class="second-nav-bar">
+          <p class="title" id="title">台北一日遊</p>
+          <div class="btn-container">
+            <div class="firstbtn">
+              <a class="first-bar-btn" id="bookingGet" onclick=" stateCheckBeforeBooking()">預定行程</a>
+            </div>
+            <div class="secondbtn" id="secondbtn">
+              <a class="second-bar-btn" id="login-btn" onclick=" displaySignIn()"></a>
+              <a class="second-bar-btn" id="logout-btn" onclick="userSignOut()" hidden></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ! signin-form -->
+      <div hidden class="signin-form-div" id="signin-form-div">
+        <p class="form-text">登入會員帳號</p>
+        <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
+          <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
+        </button>
+        <form id="signin-form" action="javascript:void(0);" onsubmit="submitSigninForm()">
+          <div class="form-group">
+            <input type="email" id="signin_email" name="email" placeholder="輸入電子信箱" class="for-input-padding" />
+          </div>
+          <div class="form-group">
+            <input type="password" id="signin_password" name="password" placeholder="輸入密碼" class="for-input-padding" />
+          </div>
+          <div class="form-group-last">
+            <button type="submit">登入帳戶</button>
+          </div>
+          <div class="switch-form" id="switch-form">
+            <a onclick="signUpInSwitch()">還沒有帳戶？點此註冊</a>
+          </div>
+          <div hidden class="error-catcher" id="error-catcher"></div>
+        </form>
+      </div>
+      <!-- ! signup form -->
+      <div hidden class="signup-form-div" id="signup-form-div">
+        <p class="form-text">註冊會員帳號</p>
+        <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
+          <img src="https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/X.png" alt="Image Button" />
+        </button>
+        <form id="signup-form" action="javascript:void(0);" onsubmit="submitSignUpForm()">
+          <div class="form-group">
+            <input type="text" id="signup_username" name="name" placeholder="輸入姓名" required class="for-input-padding" />
+          </div>
+          <div class="form-group">
+            <input type="email" id="signup_user_email" name="email" placeholder="輸入電子郵件" required class="for-input-padding" />
+          </div>
+          <div class="form-group">
+            <input type="password" id="signup_password" name="password" placeholder="輸入密碼" required class="for-input-padding" />
+          </div>
+          <div class="form-group-last">
+            <button type="submit" class="form-btn">註冊新帳戶</button>
+          </div>
+          <div class="switch-form" id="switch-form">
+            <a onclick="signUpInSwitch()">已經有帳戶了？點此登入</a>
+          </div>
+          <div hidden class="error-catcher" id="error-catcher"></div>
+        </form>
+      </div>
+      <div class="without-nav-bar">
+        <div class="result-display-ddiv">
+          <div class="result-display">
+            <div><img class="att-img" src="https://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000340.jpg" /></div>
+            <div class="contain-inf">
+              <div class="ttitle">
+                <p class="sstate">行程預定狀態：</p>
+                <p class="sstate-c" id="thepay"></p>
+              </div>
+              <div class="divider-div">
+                <div class="divider"></div>
+              </div>
+              <div class="">
+                <p class="sstate-2">訂單編碼：</p>
+              </div>
+              <div class="thenumber-div">
+                <p class="thenumber" id="thenumber"></p>
+              </div>
+              <div class="divider-div">
+                <div class="divider"></div>
+              </div>
+              <div class="theattr-div" id="theattr-div"></div>
+              <div class="divider-div">
+                <div class="divider"></div>
+              </div>
+              <div class="theattr-div" id="theattr-div-2"></div>
+              <!-- <div class="divider-div">
+                <div class="divider"></div>
+              </div> -->
+              <div class="final-part">
+                <p class="final-part-p">請記住此訂單編碼，以便未來查詢訂單</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ! footer part -->
+    <footer class="foot">
+      <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
+    </footer>
+  </body>
 </html>
