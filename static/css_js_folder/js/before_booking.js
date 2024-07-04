@@ -36,8 +36,8 @@ async function bookingPost() {
   console.log(response.ok);
   if (response.ok) {
     console.log("bookingPost() -> success:", result);
-    window.location.replace = "/booking";
-    console.log("理論上重新導向了");
+    window.location.href = "/booking";
+    console.log("應該到新的頁面了");
   } else {
     if (response.status === 403) {
       bookingDisplaySignIn();

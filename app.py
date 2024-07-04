@@ -38,7 +38,7 @@ sql_db_pool={
 }
 @app.middleware("http")
 async def sql_db_connection(request: Request, call_next):
-    # request.state.sql_db_pool = sql_db_pool 
+    request.state.sql_db_pool = sql_db_pool 
     request.state.async_sql_db_pool = app.state.async_sql_db_pool
     response = await call_next(request)
     return response
