@@ -55,6 +55,7 @@ async function bookingPost() {
   const result = await response.json();
   if (response.ok) {
     console.log("bookingPost() -> success:", result);
+    window.location.href = "/booking";
   } else {
     if (response.status === 403) {
       bookingDisplaySignIn();
@@ -62,7 +63,7 @@ async function bookingPost() {
       alert("Facing error booking this trip, please check the submission formate.");
     }
   }
-  stateCheckBeforeBooking();
+  // stateCheckBeforeBooking();
   console.log(result.message);
 }
 
