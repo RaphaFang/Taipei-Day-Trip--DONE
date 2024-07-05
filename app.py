@@ -75,20 +75,4 @@ async def thankyou(request: Request):
 # source ~/.zshrc
 
 
-# -----------------------------------------
-# sql_db_pool={
-#     "default":sql_pool_buildup(),
-# }
-# redis_db_pool={
-#     "default":redis_pool_buildup(),
-# }
-# -----------------------------------------
-# @app.middleware("http")
-# async def redis_db_connection(request: Request, call_next):
-#     try:
-#         request.state.redis_db_pool = redis_db_pool
-#         response = await call_next(request)
-#         return response
-#     except Exception as e:
-#         print(f"Redis connection error: {e}")
-#         return JSONResponse(status_code=500, content={"error": "Redis connection error"})
+
