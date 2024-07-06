@@ -1,4 +1,3 @@
-# import mysql.connector.pooling
 import os
 import aiomysql
 import asyncio

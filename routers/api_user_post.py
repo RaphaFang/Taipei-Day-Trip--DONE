@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-import mysql.connector
 from pydantic import ValidationError
 from utils.datamodel import SignUpDataModel
 from utils.token_verify_creator import token_creator
@@ -36,7 +35,7 @@ async def api_user_signup(request: Request, signup_data: SignUpDataModel):
                     return JSONResponse(status_code=400,content=input_data, headers=headers)
         return await search_user_signup(request,signup_data)
             
-    except (mysql.connector.Error) as err:
+    except ( aiomysql.Error) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except ValidationError as err:
         return JSONResponse(status_code=422,content={"error": True, "message": err.errors()},headers=headers)      

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-import mysql.connector
 import aiomysql
 
 router = APIRouter()
@@ -43,7 +42,7 @@ async def prime_order_get(request: Request, orderNum:int):
             con = { "error": True, "message": 'You might enter an invalid order-number, please check again.'}
             return JSONResponse(status_code=400,content=con,headers=headers)
 
-    except (mysql.connector.Error) as err:
+    except (aiomysql.Error) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except KeyError as err:
         return JSONResponse(status_code=400, content={"error": True, "message": f"Missing key: {str(err)}"}, headers=headers)

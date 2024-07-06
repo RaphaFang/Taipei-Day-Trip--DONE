@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
-import mysql.connector
 from utils.token_verify_creator import token_creator
 from utils.datamodel import SignInDataModel
 from pydantic import ValidationError
@@ -57,7 +56,7 @@ async def api_user_put(request: Request, login_data: SignInDataModel,bt:Backgrou
         response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict")
         return response
                 
-    except (mysql.connector.Error, redis.RedisError) as err:
+    except (aiomysql.Error, redis.RedisError) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except ValidationError as err:
         return JSONResponse(status_code=422,content={"error": True, "message": err.errors()},headers=headers)     

@@ -2,7 +2,6 @@ from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from utils.auth_middleware import AuthMiddleware 
-from starlette.responses import RedirectResponse
 from utils.cors import setup_cors 
 from utils.db.sql import  build_async_sql_pool
 from utils.db.redis import  build_async_redis_pool
@@ -12,14 +11,6 @@ app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
-
-@app.middleware("http")
-async def redirect_http_to_https(request: Request, call_next):
-    if request.url.scheme == "http":
-        url = request.url.replace(scheme="https", netloc=request.url.hostname)
-        return RedirectResponse(url)
-    response = await call_next(request)
-    return response
 
 # !-----------------------------------------
 @app.on_event("startup")
@@ -76,3 +67,10 @@ async def thankyou(request: Request):
 
 
 
+# @app.middleware("http")
+# async def redirect_http_to_https(request: Request, call_next):
+#     if request.url.scheme == "http":
+#         url = request.url.replace(scheme="https", netloc=request.url.hostname)
+#         return RedirectResponse(url)
+#     response = await call_next(request)
+#     return response

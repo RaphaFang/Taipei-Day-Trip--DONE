@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
-import mysql.connector
 from utils.token_verify_creator import token_verifier
 import redis
 import json
@@ -58,7 +57,7 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request åˆªé
             content_data = {"error": True, "message": "Token verification failed"}
             return JSONResponse(status_code=403, content=content_data, headers=headers)
  
-    except (mysql.connector.Error, redis.RedisError) as err:
+    except (aiomysql.Error, redis.RedisError) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except (ValueError, Exception) as err:
         return JSONResponse(status_code=400,content={"error": True, "message": str(err)},headers=headers)

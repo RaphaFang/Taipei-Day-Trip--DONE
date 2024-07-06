@@ -15,7 +15,7 @@ async def api_mrts(request: Request):
                 async with connection.cursor() as cursor:
                     await cursor.execute("SELECT mrt, COUNT(DISTINCT name) as count FROM processed_data WHERE mrt IS NOT NULL GROUP BY mrt ORDER BY count DESC;") 
                     mrts_counted = await cursor.fetchall()
-                    return {"data":[n[0] for n in mrts_counted]}
+                    return {"data":[n[0] for n in mrts_counted if not '']}
         result = await search_mrts(request)
         return JSONResponse(status_code=200,content=result, headers=headers)
 

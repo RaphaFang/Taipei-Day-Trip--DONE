@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from datetime import datetime
-import mysql.connector
 from pydantic import ValidationError
 from utils.token_verify_creator import token_verifier
 from utils.datamodel import ContactAndPrimeDM
@@ -79,7 +78,8 @@ async def prime_order(request: Request, cp:ContactAndPrimeDM, bt:BackgroundTasks
             bt.add_task(put_info_in_db, request, result, redis_data, cp, SoF, token_output['id'], generate_order_id)
             return JSONResponse(status_code=sc, content=con, headers=headers)
 
-    except (mysql.connector.Error, redis.RedisError) as err:
+
+    except (aiomysql.Error, redis.RedisError) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except ValidationError as err:
         return JSONResponse(status_code=422,content={"error": True, "message": "Invalid user-info formate detected, please make sure the correct formate."},headers=headers)      

@@ -3,7 +3,6 @@ import re
 from typing import Optional
 from datetime import date
 
-
 class SignUpDataModel(BaseModel):
     name: str
     email: EmailStr
