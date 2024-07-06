@@ -3,6 +3,8 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from utils.datamodel import SignUpDataModel
 from utils.token_verify_creator import token_creator
+import aiomysql 
+
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
