@@ -1,11 +1,11 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from utils.auth_middleware import AuthMiddleware 
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
 from utils.cors import setup_cors 
+from utils.auth_middleware import AuthMiddleware 
 from utils.db.sql import  build_async_sql_pool
 from utils.db.redis import  build_async_redis_pool
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
