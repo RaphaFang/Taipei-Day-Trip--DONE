@@ -70,10 +70,15 @@ jobs:
 
             export SQL_USER=${SQL_USER}
             export SQL_PASSWORD=${SQL_PASSWORD}
+            export REDIS_PASSWORD=${REDIS_PASSWORD}
+
+
+            echo "SQL_USER=$SQL_USER"
+            echo "SQL_PASSWORD=$SQL_PASSWORD"
+            echo "REDIS_PASSWORD=$REDIS_PASSWORD"
 
             docker compose down
             docker compose up --build -d
 
-            echo "SQL_USER=$SQL_USER"
-            echo "SQL_PASSWORD=$SQL_PASSWORD"
+
           EOF
