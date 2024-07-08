@@ -8,8 +8,8 @@ services:
     environment:
       - SQL_USER
       - SQL_PASSWORD
-      - PRIVATE_KEY_PATH
-      - PUBLIC_KEY_PATH
+      - PRIVATE_KEY_PATH=/secrets/private_key.pem
+      - PUBLIC_KEY_PATH=/secrets/public_key.pem
       - REDIS_PASSWORD
       - TAP_PARTNER_KEY
       - MERCHANT_ID
