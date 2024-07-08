@@ -6,13 +6,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SQL_USER
-      - SQL_PASSWORD
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
       - PRIVATE_KEY_PATH=/app/secrets/private_key.pem
       - PUBLIC_KEY_PATH=/app/secrets/public_key.pem
-      - REDIS_PASSWORD
-      - TAP_PARTNER_KEY
-      - MERCHANT_ID
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - TAP_PARTNER_KEY=${TAP_PARTNER_KEY}
+      - MERCHANT_ID=${MERCHANT_ID}
     depends_on:
       - redis
     restart: always
