@@ -23,4 +23,4 @@ services:
       - "6379:6379"
     environment:
       - REDIS_PASSWORD
-    command: ["redis-server", "--requirepass", "Fang!0211"]
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
