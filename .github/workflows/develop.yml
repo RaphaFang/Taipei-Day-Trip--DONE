@@ -27,6 +27,10 @@ jobs:
 
       - name: Build Docker image
         run: |
+          docker build --no-cache -t myapp .
+
+      - name: Build Docker image
+        run: |
           docker build -t myapp .
 
   deploy:
