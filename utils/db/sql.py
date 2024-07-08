@@ -1,6 +1,8 @@
 import os
 import aiomysql
 import asyncio
+print(os.getenv('SQL_USER'))
+print(os.getenv('SQL_PASSWORD'))
 
 async def build_async_sql_pool():
     return await aiomysql.create_pool(
