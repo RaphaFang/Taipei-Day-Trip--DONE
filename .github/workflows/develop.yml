@@ -30,9 +30,6 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: List files for debugging
-        run: ls -al
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -71,14 +68,15 @@ jobs:
             export SQL_USER=${SQL_USER}
             export SQL_PASSWORD=${SQL_PASSWORD}
             export REDIS_PASSWORD=${REDIS_PASSWORD}
-
+            export TAP_PARTNER_KEY=${TAP_PARTNER_KEY}
+            export MERCHANT_ID=${MERCHANT_ID}
 
             echo "SQL_USER=$SQL_USER"
             echo "SQL_PASSWORD=$SQL_PASSWORD"
             echo "REDIS_PASSWORD=$REDIS_PASSWORD"
+            echo "TAP_PARTNER_KEY=$TAP_PARTNER_KEY"
+            echo "MERCHANT_ID=$MERCHANT_ID"
 
             docker compose down
             docker compose up --build -d
-
-
           EOF
