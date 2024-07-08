@@ -139,7 +139,3 @@ cython_debug/
 
 # macOS
 .DS_Store
-
-# Dockerfile
-Dockerfile
-docker-compose.yml

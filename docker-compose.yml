@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SQL_USER
+      - SQL_PASSWORD
+      - PRIVATE_KEY_PATH
+      - PUBLIC_KEY_PATH
+      - REDIS_PASSWORD
+      - TAP_PARTNER_KEY
+      - MERCHANT_ID
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD
+    command: ["redis-server", "--requirepass", "Fang!0211"]
