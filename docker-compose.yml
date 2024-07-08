@@ -25,6 +25,5 @@ services:
       - "6379:6379"
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-    command: >
-      sh -c "echo 'vm.overcommit_memory=1' >> /etc/sysctl.conf && sysctl -p && redis-server --requirepass '${REDIS_PASSWORD}'"
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
     restart: always
