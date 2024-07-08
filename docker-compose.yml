@@ -13,6 +13,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - TAP_PARTNER_KEY=${TAP_PARTNER_KEY}
       - MERCHANT_ID=${MERCHANT_ID}
+    volumes:
+      - /home/ubuntu/WH/TDT/secrets:/app/secrets
     depends_on:
       - redis
     restart: always

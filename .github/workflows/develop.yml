@@ -67,9 +67,13 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@52.4.229.207 << EOF
             cd /home/ubuntu/WH/TDT
-            echo "SQL_USER=$SQL_USER"
-            echo "SQL_PASSWORD=$SQL_PASSWORD"
-            echo "REDIS_PASSWORD=$REDIS_PASSWORD"
+
+            export SQL_USER=${SQL_USER}
+            export SQL_PASSWORD=${SQL_PASSWORD}
+
             docker compose down
             docker compose up --build -d
+
+            echo "SQL_USER=$SQL_USER"
+            echo "SQL_PASSWORD=$SQL_PASSWORD"
           EOF
