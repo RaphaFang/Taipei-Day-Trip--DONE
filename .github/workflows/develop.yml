@@ -12,6 +12,7 @@ jobs:
       - name: pull from github
         run: |
           cd /home/ubuntu/WH/TDT
+          git checkout develop
           git pull origin develop
 
       - name: Checkout code
