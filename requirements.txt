@@ -5,7 +5,5 @@ redis
 python-jose==3.3.0
 pydantic
 aiohttp
-secrets
 authlib
 starlette
-os
