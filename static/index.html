@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/css_js_folder/css/index_style.css" />
     <link rel="stylesheet" href="/static/css_js_folder/css/signin_signout_section.css" />
 
+    <script src="/static/css_js_folder/js/google_login.js" defer></script>
     <script src="/static/css_js_folder/js/pre_job.js" defer></script>
     <script src="/static/css_js_folder/js/index_script.js" defer></script>
     <!-- <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script> -->
@@ -55,13 +56,16 @@
           </button>
           <form id="signin-form" action="javascript:void(0);" onsubmit="submitSigninForm()">
             <div class="form-group">
-              <input type="email" id="signin_email" name="email" placeholder="輸入電子信箱" class="for-input-padding" />
+              <input type="email" id="signin_email" name="email" placeholder="輸入電子信箱" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input type="password" id="signin_password" name="password" placeholder="輸入密碼" class="for-input-padding" />
+              <input type="password" id="signin_password" name="password" placeholder="輸入密碼" required class="for-input-padding" />
             </div>
             <div class="form-group-last">
               <button type="submit">登入帳戶</button>
+            </div>
+            <div class="form-group-last">
+              <button type="submit" onclick="googleLogin()">Google 登入</button>
             </div>
             <div class="switch-form" id="switch-form">
               <a onclick="signUpInSwitch()">還沒有帳戶？點此註冊</a>
@@ -87,6 +91,9 @@
             </div>
             <div class="form-group-last">
               <button type="submit" class="form-btn">註冊新帳戶</button>
+            </div>
+            <div class="form-group-last">
+              <button type="submit" onclick="googleLogin()">Google 登入</button>
             </div>
             <div class="switch-form" id="switch-form">
               <a onclick="signUpInSwitch()">已經有帳戶了？點此登入</a>

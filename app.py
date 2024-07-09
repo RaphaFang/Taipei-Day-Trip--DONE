@@ -1,9 +1,7 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
-
-from routers import auth_google_login
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get,auth_google_login
 
 from utils.cors import setup_cors 
 from utils.auth_middleware import AuthMiddleware 
@@ -58,6 +56,8 @@ app.include_router(api_booking_delete.router)
 
 app.include_router(api_orders_post.router)
 app.include_router(api_order_get.router)
+
+app.include_router(auth_google_login.router)
 
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
