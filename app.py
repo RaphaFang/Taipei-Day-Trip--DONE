@@ -2,10 +2,17 @@ from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
+
+from routers import auth_google_login
+
 from utils.cors import setup_cors 
 from utils.auth_middleware import AuthMiddleware 
 from utils.db.sql import  build_async_sql_pool
 from utils.db.redis import  build_async_redis_pool
+
+from starlette.middleware.sessions import SessionMiddleware
+import os
+
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -30,6 +37,11 @@ async def all_db_connection(request: Request, call_next):
     request.state.async_redis_pool = app.state.async_redis_pool
     response = await call_next(request)
     return response
+
+SECRET_KEY = 'your-static-secret-key'
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, same_site="lax", https_only=False)
+# app.include_router(auth_google_login.router)
+
 # !-----------------------------------------
 app.include_router(api_at_mrts.router)
 app.include_router(api_attraction.router)
