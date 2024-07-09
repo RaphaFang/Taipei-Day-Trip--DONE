@@ -34,7 +34,7 @@ async def auth_login(request: Request):
         state = secrets.token_urlsafe(16)
         request.session.clear()  # 解決CSRF非同源問題，清除掉之前的cookie
         request.session['state'] = state
-        redirect_uri = 'https://raphaelfang/auth/callback'  
+        redirect_uri = 'https://raphaelfang.com/auth/callback'  
         return await oauth.google.authorize_redirect(request, redirect_uri, state=state)
     
     except (ValueError, Exception) as err:
