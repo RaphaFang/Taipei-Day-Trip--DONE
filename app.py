@@ -36,8 +36,8 @@ async def all_db_connection(request: Request, call_next):
     response = await call_next(request)
     return response
 
-SECRET_KEY = 'your-static-secret-key'
-app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, same_site="lax", https_only=False)
+GOOGLE_SESSION_SECRET_KEY= os.getenv('GOOGLE_SESSION_SECRET_KEY')
+app.add_middleware(SessionMiddleware, secret_key=GOOGLE_SESSION_SECRET_KEY, same_site="lax", https_only=False)
 # app.include_router(auth_google_login.router)
 
 # !-----------------------------------------
