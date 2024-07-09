@@ -7,3 +7,4 @@ pydantic
 aiohttp
 authlib
 starlette
+itsdangerous
