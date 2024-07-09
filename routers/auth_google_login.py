@@ -9,6 +9,9 @@ import aiomysql
 import redis.asyncio as aioredis
 import os 
 
+print(os.getenv('GOOGLE_CLIENT_ID'))
+print(os.getenv('GOOGLE_CLIENT_SECRET'))
+
 router = APIRouter()
 
 oauth = OAuth()

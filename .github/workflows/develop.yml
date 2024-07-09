@@ -75,7 +75,6 @@ jobs:
             export REDIS_PASSWORD=${REDIS_PASSWORD}
             export TAP_PARTNER_KEY=${TAP_PARTNER_KEY}
             export MERCHANT_ID=${MERCHANT_ID}
-
             export GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
             export GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
             export GOOGLE_SESSION_SECRET_KEY: ${GOOGLE_SESSION_SECRET_KEY}
@@ -85,6 +84,9 @@ jobs:
             echo "REDIS_PASSWORD=$REDIS_PASSWORD"
             echo "TAP_PARTNER_KEY=$TAP_PARTNER_KEY"
             echo "MERCHANT_ID=$MERCHANT_ID"
+            echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID"            
+            echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET"
+            echo "GOOGLE_SESSION_SECRET_KEY=$GOOGLE_SESSION_SECRET_KEY"
 
             docker compose down
             docker compose up --build -d
