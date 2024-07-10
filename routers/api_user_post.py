@@ -9,7 +9,7 @@ import aiomysql
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
 
-@router.post("/api/user/") 
+@router.post("/api/user") 
 async def api_user_signup(request: Request, signup_data: SignUpDataModel):
     try:
         async def search_user_signup(request,sd):

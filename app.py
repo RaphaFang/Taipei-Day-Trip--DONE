@@ -1,16 +1,13 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get,auth_google_login
-
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_google, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get
 from utils.cors import setup_cors 
 from utils.auth_middleware import AuthMiddleware 
 from utils.db.sql import  build_async_sql_pool
 from utils.db.redis import  build_async_redis_pool
-
 from starlette.middleware.sessions import SessionMiddleware
 import os
-
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -44,20 +41,16 @@ app.add_middleware(SessionMiddleware, secret_key=GOOGLE_SESSION_SECRET_KEY, same
 app.include_router(api_at_mrts.router)
 app.include_router(api_attraction.router)
 app.include_router(api_attractions.router)
-
 app.include_router(api_user_post.router)
 app.include_router(api_user_put.router)
 app.include_router(api_user_get.router)
 app.include_router(api_user_logout.router)
-
 app.include_router(api_booking_post.router)
 app.include_router(api_booking_get.router)
 app.include_router(api_booking_delete.router)
-
 app.include_router(api_orders_post.router)
 app.include_router(api_order_get.router)
-
-app.include_router(auth_google_login.router)
+app.include_router(api_user_google.router)
 
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
@@ -76,13 +69,3 @@ async def thankyou(request: Request):
 # cd /Users/fangsiyu/Desktop/taipei-day-trip
 # nano ~/.zshrc
 # source ~/.zshrc
-
-
-
-# @app.middleware("http")
-# async def redirect_http_to_https(request: Request, call_next):
-#     if request.url.scheme == "http":
-#         url = request.url.replace(scheme="https", netloc=request.url.hostname)
-#         return RedirectResponse(url)
-#     response = await call_next(request)
-#     return response

@@ -1,7 +1,7 @@
 "use strict";
 // ! submitSigninForm
 async function submitSigninForm() {
-  let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   if (!userInfo) {
     const form = document.getElementById("signin-form");
     const signinFormData = new FormData(form);

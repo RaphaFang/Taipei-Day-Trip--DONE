@@ -1,5 +1,8 @@
 function googleLogin() {
-  window.location.href = "https://raphaelfang.com/auth/login";
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (!userInfo) {
+    window.location.href = "https://raphaelfang.com/auth/login";
+  }
 }
 
 window.onload = function () {

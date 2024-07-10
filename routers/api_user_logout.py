@@ -26,6 +26,7 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request åˆªé
                 async with aioredis.Redis(connection_pool=redis_pool) as r:
                     b = await r.get(f"user:{id}:booking")
                     await r.delete(f"user:{id}:booking")
+                    # await r.delete(f"user:{id}:booking_history")
                     return b
             redis_data = await delete_user_r(request,token_output['id'])
 

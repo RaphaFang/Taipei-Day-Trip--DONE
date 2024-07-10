@@ -9,7 +9,6 @@ import aiomysql
 import redis.asyncio as aioredis
 import os 
 
-
 router = APIRouter()
 
 oauth = OAuth()
@@ -40,7 +39,7 @@ async def auth_login(request: Request):
     
     except (ValueError, Exception) as err:
         url = "/?status=error&message=" + str(err)
-        return RedirectResponse(url=url, status_code=400)
+        return RedirectResponse(url=url)
 
 
 @router.get('/auth/callback')
@@ -68,6 +67,10 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
                         access_token = token_creator(data=input_data)
                         await cursor.execute("SELECT * FROM user_booking_tentative WHERE creator_id = %s;", (data['id'],)) 
                         last_d = await cursor.fetchone()
+
+                        # await cursor.execute("SELECT * FROM user_booking_finalized WHERE creator_id = %s AND given_status = 'PAID' ORDER BY created_at LIMIT 10;", (data['id'],))
+                        # history_d = await cursor.fetchall()
+
                         return access_token, last_d
                     else:
                         await cursor.execute("INSERT INTO user_info (provider_id, email, username, auth_provider, profile_picture) VALUES (%s, %s, %s, 'Google', %s)", (sub,email,name,pic)) 
@@ -77,27 +80,54 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
                         input_data = {"id": new_user_id['LAST_INSERT_ID()'],'username':name,'email':email, 'password':''}                                        
                         access_token = token_creator(data=input_data)
                         last_d = None
+
                         return access_token, last_d
                         
         async def booking_data_r(request, last_d):
-            if last_d:
-                redis_pool = request.state.async_redis_pool
-                async with aioredis.Redis(connection_pool=redis_pool) as r:
-                    booking_data = {
-                            "attraction_id": last_d['attraction_id'],
-                            "name": last_d['name'],
-                            "address": last_d['address'],
-                            "image": last_d['image'],
-                            "date": last_d['date'].strftime("%Y-%m-%d"),
-                            "time": last_d['time'],
-                            "price": str(last_d['price'])
+            redis_pool = request.state.async_redis_pool
+            async with aioredis.Redis(connection_pool=redis_pool) as r:
+                if last_d:
+                        booking_data = {
+                        "attraction_id": last_d['attraction_id'],
+                        "name": last_d['name'],
+                        "address": last_d['address'],
+                        "image": last_d['image'],
+                        "date": last_d['date'].strftime("%Y-%m-%d"),
+                        "time": last_d['time'],
+                        "price": str(last_d['price'])
                         }
-                    await r.set(f"user:{last_d['creator_id']}:booking", json.dumps(booking_data))
+                await r.set(f"user:{last_d['creator_id']}:booking", json.dumps(booking_data))
+
+                # if history_d:
+                #     booking_data_history = []
+                #     for n in history_d:
+                #         con = {"data": {
+                #             "number": n['order_number'],
+                #             "price": int(n['price']),
+                #             "trip": {
+                #             "attraction": {
+                #                 "id": n['attr_id'],
+                #                 "name": n['attr_name'],
+                #                 "address": n['attr_address'],
+                #                 "image": n['attr_image']
+                #             },
+                #             "date": n['attr_date'].strftime("%Y-%m-%d"),
+                #             "time":n['attr_time']
+                #             },
+                #             "contact": {
+                #             "name": n['contact_name'],
+                #             "email": n['contact_email'],
+                #             "phone": n['contact_phone']
+                #             },
+                #             "status": 1 if n['given_status']=='PAID' else 0
+                #             }}
+                #         booking_data_history.append(con)
+                #     await r.set(f"user:{last_d['creator_id']}:booking_history", json.dumps(booking_data_history))
+
         
         if user: # 原本一直想不到該怎麼傳遞這部份的資訊，畢竟是直接回到主畫面，但是想到可以打資料加到url送回去
             access_token, last_d = await search_user_login(request,user.get('sub'), user.get('email'), user.get('name'), user.get('picture'))
-            if last_d:
-                bt.add_task(booking_data_r, request, last_d)
+            bt.add_task(booking_data_r, request, last_d)
             response = RedirectResponse(url="/?status=success")
             response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict")
             return response
