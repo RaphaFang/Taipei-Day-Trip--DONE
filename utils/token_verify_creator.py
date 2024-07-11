@@ -1,7 +1,7 @@
 import os
-from jose import JWTError, jwt
+from jose import JWTError, jwt, ExpiredSignatureError
 from datetime import datetime, timedelta
-from fastapi import  HTTPException
+from fastapi.responses import JSONResponse
 
 
 ALGORITHM = "RS256"
@@ -14,17 +14,30 @@ with open(public_key_path, 'r') as file:
 
 def token_creator(data: dict):
     to_encode = data.copy()
-    to_encode.update({"exp": datetime.utcnow() + timedelta(days=7)})
+    to_encode.update({"exp": datetime.utcnow() + timedelta(days=1)})
     encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def token_verifier(token: str):
+    if not token:
+        return JSONResponse(
+            status_code=403,
+            content={"error": True, "message": "Please log-in to access the page."},
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
-        decoded_jwt = jwt.decode(token, PUBLIC_KEY, algorithms=ALGORITHM)
+        decoded_jwt = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
         return decoded_jwt
+    
+    except ExpiredSignatureError:
+        return JSONResponse(
+            status_code=405,
+            content={"error": True, "message": "Token has expired, please login again."},
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     except JWTError:
-        raise HTTPException(
+        return JSONResponse(
             status_code=401,
-            detail="the JWT token could not be validated",
+            content={"error": True, "message": "The JWT token could not be validated."},
             headers={"WWW-Authenticate": "Bearer"},
         )

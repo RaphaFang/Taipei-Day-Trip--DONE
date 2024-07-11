@@ -7,6 +7,7 @@ import redis
 import json
 import aiomysql 
 import redis.asyncio as aioredis 
+from datetime import timedelta
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
@@ -48,6 +49,7 @@ async def api_user_put(request: Request, login_data: SignInDataModel,bt:Backgrou
                         "price": str(last_d['price'])
                         }
                 await r.set(f"user:{last_d['creator_id']}:booking", json.dumps(booking_data))
+                await r.set(f"user:{last_d['creator_id']}:booking_trigger_key", 'trigger_key', ex=86400)
 
                 # if history_d:
                 #     booking_data_history = []
@@ -82,7 +84,7 @@ async def api_user_put(request: Request, login_data: SignInDataModel,bt:Backgrou
 
         bt.add_task(booking_data_r, request, last_d)
         response = JSONResponse(status_code=200, content={"message": "Login successful"})
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict")
+        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict", expires=timedelta(days=1).total_seconds())
         return response
                 
     except (aiomysql.Error, redis.RedisError) as err:

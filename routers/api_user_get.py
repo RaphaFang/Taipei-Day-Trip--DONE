@@ -9,9 +9,10 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def api_user_get(request: Request):
     try:
         token = request.cookies.get("access_token")
-        if not token:       
-            return JSONResponse(status_code=200, content={"data": None}, headers=headers)
-        token_output = token_verifier(token)
+        token_response = token_verifier(token)
+        if isinstance(token_response, JSONResponse):
+            return token_response
+        token_output = token_response
         
         input_data = {"data": {"id": token_output['id'],"name": token_output['username'],"email": token_output['email']}}
         return JSONResponse(status_code=200, content=input_data, headers=headers)

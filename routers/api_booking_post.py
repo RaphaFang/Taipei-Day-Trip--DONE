@@ -14,10 +14,10 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def api_booking_post_redis(request: Request, j_data:BookingDataMode, bt:BackgroundTasks): # , token: str = Depends(oauth2_scheme)  # 這裡還有範一個錯 寫成j_data＝BookingDataMode
     try:
         token = request.cookies.get("access_token")
-        if not token:
-            content_data = {"error": True, "message": "Please log-in to access the booking page."}
-            return JSONResponse(status_code=403,content=content_data, headers=headers)
-        input_token = token_verifier(token)
+        token_response = token_verifier(token)
+        if isinstance(token_response, JSONResponse):
+            return token_response
+        input_token = token_response
 
         if input_token:
             async def post_user_r(request, id, j):
@@ -33,6 +33,7 @@ async def api_booking_post_redis(request: Request, j_data:BookingDataMode, bt:Ba
                         "price": j.price
                     }
                     await r.set(f"user:{id}:booking", json.dumps(booking_data))
+                    # await r.set(f"user:{id}:booking_trigger_key", 'trigger_key', ex=5)
             # await post_user_r(request,input_token['id'], j_data)
             bt.add_task(post_user_r, request, input_token['id'], j_data)
 # 

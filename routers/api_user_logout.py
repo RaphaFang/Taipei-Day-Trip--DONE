@@ -14,10 +14,10 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def logout(request: Request, bt:BackgroundTasks):  # request: Request 刪除不需要。request.cookies.get("access_token") 所以直接response
     try:
         token = request.cookies.get("access_token")
-        if not token:
-            content_data = {"error": True, "message": "You did not got the token in cookies, how to you even came to the log-out step???"}
-            return JSONResponse(status_code=403,content=content_data, headers=headers)
-        token_output = token_verifier(token)
+        token_response = token_verifier(token)
+        if isinstance(token_response, JSONResponse):
+            return token_response
+        token_output = token_response
 
         if token_output:
 
@@ -26,6 +26,7 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request 刪�
                 async with aioredis.Redis(connection_pool=redis_pool) as r:
                     b = await r.get(f"user:{id}:booking")
                     await r.delete(f"user:{id}:booking")
+                    await r.delete(f"user:{id}:booking_trigger_key")
                     # await r.delete(f"user:{id}:booking_history")
                     return b
             redis_data = await delete_user_r(request,token_output['id'])

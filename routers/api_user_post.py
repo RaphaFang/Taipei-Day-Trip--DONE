@@ -1,16 +1,17 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from utils.datamodel import SignUpDataModel
 from utils.token_verify_creator import token_creator
 import aiomysql 
-
+import redis.asyncio as aioredis
+from datetime import timedelta
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
 
 @router.post("/api/user") 
-async def api_user_signup(request: Request, signup_data: SignUpDataModel):
+async def api_user_signup(request: Request, signup_data: SignUpDataModel,bt:BackgroundTasks):
     try:
         async def search_user_signup(request,sd):
             sql_pool = request.state.async_sql_pool 
@@ -30,14 +31,25 @@ async def api_user_signup(request: Request, signup_data: SignUpDataModel):
 
                         access_token = token_creator(data=input_data)    
                         response = JSONResponse(status_code=200, content={"ok":True})
-                        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict")
-                        return response  
-                    
+                        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict",expires=timedelta(days=1).total_seconds())
+                        return response, new_user_id
+
                     input_data = {"error": True,"message": "Invalid registration, duplicate email or other reasons"}
-                    return JSONResponse(status_code=400,content=input_data, headers=headers)
-        return await search_user_signup(request,signup_data)
+                    return JSONResponse(status_code=400,content=input_data, headers=headers), None
+                
+        async def booking_data_r(request, id):
+            if id:
+                redis_pool = request.state.async_redis_pool
+                async with aioredis.Redis(connection_pool=redis_pool) as r:
+                    # await r.set(f"user:{last_d['creator_id']}:booking", json.dumps(booking_data))
+                    await r.set(f"user:{id}:booking_trigger_key", 'trigger_key', ex=86400)
+
+        response, new_user_id = await search_user_signup(request,signup_data)
+        bt.add_task(booking_data_r, request, new_user_id)
+        return response
+    
             
-    except ( aiomysql.Error) as err:
+    except (aiomysql.Error) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except ValidationError as err:
         return JSONResponse(status_code=422,content={"error": True, "message": err.errors()},headers=headers)      

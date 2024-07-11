@@ -8,6 +8,8 @@ from utils.db.sql import  build_async_sql_pool
 from utils.db.redis import  build_async_redis_pool
 from starlette.middleware.sessions import SessionMiddleware
 import os
+from utils.ttl import handle_expired_keys
+import asyncio
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")
@@ -19,12 +21,20 @@ setup_cors(app)
 async def startup_event():
     app.state.async_sql_pool = await build_async_sql_pool()
     app.state.async_redis_pool = await build_async_redis_pool()
+	
+    app.state.handle_expired_keys_task = asyncio.create_task(handle_expired_keys(app.state.async_redis_pool, app.state.async_sql_pool))  # 開啟ttl 監聽
+    # app.state.test_set_key_task = asyncio.create_task(test_set_key(app.state.async_redis_pool))
 
-@app.on_event("shutdown")
+@app.on_event("shutdown")  
 async def shutdown_event():
-    app.state.async_sql_pool.close()
-    await app.state.async_sql_pool.wait_closed()
-    await app.state.async_redis_pool.disconnect()
+	app.state.handle_expired_keys_task.cancel()  # 關閉ttl監聽
+	# app.state.test_set_key_task.cancel()
+	await app.state.handle_expired_keys_task
+	# await app.state.test_set_key_task
+	
+	app.state.async_sql_pool.close()
+	await app.state.async_sql_pool.wait_closed()
+	await app.state.async_redis_pool.disconnect()
 
 @app.middleware("http")
 async def all_db_connection(request: Request, call_next):

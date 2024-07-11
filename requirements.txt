@@ -8,3 +8,4 @@ aiohttp
 authlib
 starlette
 itsdangerous
+asyncio

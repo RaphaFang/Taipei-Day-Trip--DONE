@@ -19,13 +19,12 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def prime_order(request: Request, cp:ContactAndPrimeDM, bt:BackgroundTasks):  # 這邊多試試看BackgroundTasks
     try:
         token = request.cookies.get("access_token")
-        if not token:
-            content_data = {"error": True, "message": "You did not got the token in cookies, how to you even came to the order step???"}
-            return JSONResponse(status_code=403,content=content_data, headers=headers)
-        token_output = token_verifier(token)
+        token_response = token_verifier(token)
+        if isinstance(token_response, JSONResponse):
+            return token_response
+        token_output = token_response
 
         if token_output:
-
             async def sending_prime(cp):
                 payload={"prime": cp.prime, "partner_key": os.getenv('TAP_PARTNER_KEY'), "merchant_id": os.getenv("MERCHANT_ID"), "details":"TapPay Test", "amount": cp.price, "cardholder": { "phone_number": cp.phone, "name": cp.name, "email": cp.email }, "remember": True}
                 hd = {"Content-Type": "application/json","x-api-key": os.getenv('TAP_PARTNER_KEY')}

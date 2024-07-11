@@ -11,10 +11,10 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def prime_order(request: Request):  # 這邊多試試看BackgroundTasks
     try:
         token = request.cookies.get("access_token")
-        if not token:
-            content_data = {"error": True, "message": "You did not got the token in cookies, how to you even came to this step???"}
-            return JSONResponse(status_code=403,content=content_data, headers=headers)
-        token_output = token_verifier(token)
+        token_response = token_verifier(token)
+        if isinstance(token_response, JSONResponse):
+            return token_response
+        token_output = token_response
 
         async def search_user_booking_history(request,id):
             sql_pool = request.state.async_sql_pool 
