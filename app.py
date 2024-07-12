@@ -1,7 +1,7 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_google, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get,api_orders_all
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_google, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get,api_orders_all,api_user_reset_send_email,api_user_reset_url
 from utils.cors import setup_cors 
 from utils.auth_middleware import AuthMiddleware 
 from utils.db.sql import  build_async_sql_pool
@@ -23,14 +23,11 @@ async def startup_event():
     app.state.async_redis_pool = await build_async_redis_pool()
 	
     app.state.handle_expired_keys_task = asyncio.create_task(handle_expired_keys(app.state.async_redis_pool, app.state.async_sql_pool))  # 開啟ttl 監聽
-    # app.state.test_set_key_task = asyncio.create_task(test_set_key(app.state.async_redis_pool))
 
 @app.on_event("shutdown")  
 async def shutdown_event():
 	app.state.handle_expired_keys_task.cancel()  # 關閉ttl監聽
-	# app.state.test_set_key_task.cancel()
 	await app.state.handle_expired_keys_task
-	# await app.state.test_set_key_task
 	
 	app.state.async_sql_pool.close()
 	await app.state.async_sql_pool.wait_closed()
@@ -45,7 +42,6 @@ async def all_db_connection(request: Request, call_next):
 
 GOOGLE_SESSION_SECRET_KEY= os.getenv('GOOGLE_SESSION_SECRET_KEY')
 app.add_middleware(SessionMiddleware, secret_key=GOOGLE_SESSION_SECRET_KEY, same_site="lax", https_only=False)
-# app.include_router(auth_google_login.router)
 
 # !-----------------------------------------
 app.include_router(api_at_mrts.router)
@@ -63,6 +59,8 @@ app.include_router(api_order_get.router)
 app.include_router(api_user_google.router)
 
 app.include_router(api_orders_all.router)
+app.include_router(api_user_reset_send_email.router)
+app.include_router(api_user_reset_url.router)
 
 
 @app.get("/", include_in_schema=False)

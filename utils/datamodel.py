@@ -61,3 +61,9 @@ class ContactAndPrimeDM(BaseModel):
     email: EmailStr
     phone: str
     price: int
+
+class ResetPasswordEmailRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordNewPassword(BaseModel):
+    password: str
