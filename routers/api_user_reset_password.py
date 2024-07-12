@@ -13,14 +13,15 @@ async def reset_password(request: Request, raw_new_p:ResetPasswordNewPassword):
             # 前端檢測這串url代碼，如果是success，才可以跳出修改密碼的彈窗
             # 前端檢測cookie，如果有才可以讓他修改，並且這cookie的期限很短
     try:
+
         token = request.cookies.get("access_token")
         token_response = token_verifier(token)
         if isinstance(token_response, JSONResponse):
             return token_response
         token_output = token_response
-
-        print(token_output)
-
+        print('----------------')           
+        print(raw_new_p.password, token_output['id'], token_output['username'], token_output['email'])
+        print('----------------')
         async def set_new_password(request, new_p, id, name, email):
             sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
@@ -30,6 +31,10 @@ async def reset_password(request: Request, raw_new_p:ResetPasswordNewPassword):
                         (new_p, id, name, email)
                     )
                     await connection.commit()
+                    print('----------------')
+                    print(cursor.rowcount)
+                    print('----------------')
+
                     if cursor.rowcount == 0:
                         return {"status": False, "message": "Password updated failed, please retry the url link from your email."}
                     return {"status": True, "message": "Password updated successfully."}
