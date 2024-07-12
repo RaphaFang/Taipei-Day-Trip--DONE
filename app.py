@@ -1,7 +1,7 @@
 from fastapi import *
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_google, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get,api_orders_all,api_user_reset_send_email,api_user_reset_url
+from routers import api_at_mrts, api_attraction, api_attractions, api_booking_post, api_booking_delete, api_booking_get, api_user_get, api_user_google, api_user_logout, api_user_post, api_user_put, api_orders_post,api_order_get,api_orders_all,api_user_reset_send_email,api_user_reset_url,api_user_reset_password
 from utils.cors import setup_cors 
 from utils.auth_middleware import AuthMiddleware 
 from utils.db.sql import  build_async_sql_pool
@@ -59,6 +59,8 @@ app.include_router(api_order_get.router)
 app.include_router(api_user_google.router)
 
 app.include_router(api_orders_all.router)
+
+app.include_router(api_user_reset_password.router)
 app.include_router(api_user_reset_send_email.router)
 app.include_router(api_user_reset_url.router)
 
