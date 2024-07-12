@@ -29,25 +29,38 @@ async def reset_password(request: Request, e:ResetPasswordEmailRequest, bt:Backg
                         return JSONResponse(status_code=400, content=content_data, headers=headers)
                     
         def send_email(subject, body, to_email):
-            yag = yagmail.SMTP(os.getenv('PERSONAL_GMAIL'), os.getenv('PERSONAL_GMAIL_PASSWORD'))
-            yag.send(
-                to=to_email,
-                subject=subject,
-                contents=body
-            )
+            try:
+                yag = yagmail.SMTP(os.getenv('PERSONAL_GMAIL'), os.getenv('PERSONAL_GMAIL_PASSWORD'))
+                yag.send(
+                    to=to_email,
+                    subject=subject,
+                    contents=body
+                )
+                print("Email sent successfully")
+            except Exception as e:
+                print(f"Failed to send email: {e}")
+                raise e
 
         result =  await check_email_send_url(request, e.email)
         if isinstance(result, JSONResponse):
             return result
         access_token =  result
+        print('48',os.getenv('PERSONAL_GMAIL'))
+        print('49',os.getenv('PERSONAL_GMAIL_PASSWORD'))
 
         if access_token:
             subject = "[Please Don't Reply to This Address] Reset Taipei-Day-Trip Password"
             body = f"Click the link below to reset your password:\n\nhttps://raphaelfang.com/api/user/reset_url_verify?token={access_token}"
-            bt.add_task(send_email, subject, body, e.email)
+            # bt.add_task(send_email, subject, body, e.email)
+            send_email(subject, body, e.email)
 
-        content_data = {"success": True, "message": "The reset password url has send to your email address."}
+
+            content_data = {"success": True, "message": "The reset password url has send to your email address."}
+            return JSONResponse(status_code=200, content=content_data, headers=headers)
+        
+        content_data = {"success": False, "message": "The reset password url has send to your email address."}
         return JSONResponse(status_code=200, content=content_data, headers=headers)
+        
     
     except (yagmail.error.YagMailError) as err:
         return JSONResponse(status_code=400, content={"error": True, "message": str(err)}, headers=headers)
