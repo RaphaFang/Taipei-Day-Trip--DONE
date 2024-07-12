@@ -19,6 +19,8 @@ async def reset_password(request: Request, raw_new_p:ResetPasswordNewPassword):
             return token_response
         token_output = token_response
 
+        print('22',token_output)
+
         async def set_new_password(request, new_p, id, name, email):
             sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
@@ -34,6 +36,7 @@ async def reset_password(request: Request, raw_new_p:ResetPasswordNewPassword):
 
         if token_output: # 這邊需要把東西放到 add_task嗎？ 要想想
             result = await set_new_password(request, raw_new_p.password, token_output['id'], token_output['username'], token_output['email'])
+            print('39',result)
             if result['status'] == True:
                 response = JSONResponse(status_code=200, content={f"message": {result['message']}})
             else:
