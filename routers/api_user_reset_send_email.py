@@ -58,7 +58,7 @@ async def reset_password(request: Request, e:ResetPasswordEmailRequest, bt:Backg
             content_data = {"success": True, "message": "The reset password url has send to your email address."}
             return JSONResponse(status_code=200, content=content_data, headers=headers)
         
-        content_data = {"success": False, "message": "The reset password url has send to your email address."}
+        content_data = {"success": False, "message": "error occur, sth wrong here."}
         return JSONResponse(status_code=200, content=content_data, headers=headers)
         
     
