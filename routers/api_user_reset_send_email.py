@@ -61,9 +61,6 @@ async def reset_password(request: Request, e:ResetPasswordEmailRequest, bt:Backg
         content_data = {"success": False, "message": "error occur, sth wrong here."}
         return JSONResponse(status_code=200, content=content_data, headers=headers)
         
-    
-    except (yagmail.error.YagMailError) as err:
-        return JSONResponse(status_code=400, content={"error": True, "message": str(err)}, headers=headers)
     except (aiomysql.Error) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except (ValueError, Exception) as err:
