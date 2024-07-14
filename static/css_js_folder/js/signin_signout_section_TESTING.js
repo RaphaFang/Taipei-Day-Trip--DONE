@@ -67,6 +67,12 @@ async function tokenGet(successMessage) {
   const result = await response.json();
   if (response.ok) {
     if (result["data"]) {
+      const backHeight = document.getElementById("signin-form-div");
+      backHeight.style.height = "300px";
+      // fieldin-email
+      const emailPart = document.getElementById("fieldin-email");
+      emailPart.hidden = true;
+
       console.log("tokenGet() -> user token checked, return user_info :", result);
       displayLoginMessage(successMessage);
       localStorage.setItem("userInfo", JSON.stringify(result.data));
@@ -226,6 +232,7 @@ function hideErrorCatcher() {
 function forgetPassword() {
   const emailBlock = document.getElementById("fieldin-email");
   const backHeight = document.getElementById("signin-form-div");
+
   const ec = document.getElementById("error-catcher");
   let infoDisplay = document.getElementById("fieldin-email-p");
 
@@ -271,42 +278,49 @@ document.addEventListener("DOMContentLoaded", function () {
   const status = urlParams.get("reset_password_token_status");
   const passForm = document.getElementById("submit-password-div");
   const overlay = document.getElementById("overlay");
-
-  if (status === "success") {
-    overlay.hidden = false;
-    passForm.hidden = false;
-  } else {
-    overlay.hidden = true;
-    passForm.hidden = true;
-
-    alert("The token can't be verified, please re-access the url from your email.");
+  if (status) {
+    if (status === "success") {
+      overlay.hidden = false;
+      passForm.hidden = false;
+    }
+    if (status === "error") {
+      overlay.hidden = true;
+      passForm.hidden = true;
+      alert("The token can't be verified, please re-access the url from your email.");
+    }
   }
 });
 
 async function resetPassword() {
-  const form = document.getElementById("submit-password-form");
-  const signupFormData = new FormData(form);
-  const jsonData = convertToJson(signupFormData);
-  const errorCatcher = document.getElementById("submit-password-error-catcher");
+  const firstPassword = document.getElementById("submit-password-first");
+  const secondPassword = document.getElementById("submit-password-second");
+  if (firstPassword === secondPassword) {
+    const form = document.getElementById("submit-password-form");
+    const changePassFormData = new FormData(form);
+    const jsonData = convertToJson(changePassFormData);
+    const errorCatcher = document.getElementById("submit-password-error-catcher");
 
-  const response = await fetch("/api/user/reset_password", {
-    method: "PUT",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(jsonData),
-  });
-  const result = await response.json();
-  console.log(result);
-  if (response.ok) {
-    errorCatcher.hidden = false;
-    errorCatcher.innerText = result.message;
-    alert(result.message);
-    window.location.href = "/";
+    const response = await fetch("/api/user/reset_password", {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
+    });
+    const result = await response.json();
+    console.log(result);
+    if (response.ok) {
+      errorCatcher.hidden = false;
+      errorCatcher.innerText = result.message;
+      alert(result.message);
+      window.location.href = "/";
+    } else {
+      errorCatcher.hidden = false;
+      errorCatcher.innerText = result.message;
+      console.error("Error:", result.message);
+    }
   } else {
-    errorCatcher.hidden = false;
-    errorCatcher.innerText = result.message;
-    console.error("Error:", result.message);
+    alert("Please make sure the two passwords are the same.");
   }
 }
