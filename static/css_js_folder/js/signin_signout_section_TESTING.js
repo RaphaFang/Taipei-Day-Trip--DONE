@@ -68,11 +68,11 @@ async function tokenGet(successMessage) {
   if (response.ok) {
     if (result["data"]) {
       const backHeight = document.getElementById("signin-form-div");
-      backHeight.style.height = "300px";
-      // fieldin-email
+      backHeight.style.height = "350px";
       const emailPart = document.getElementById("fieldin-email");
-      emailPart.hidden = true;
-
+      if (emailPart) {
+        emailPart.hidden = true;
+      }
       console.log("tokenGet() -> user token checked, return user_info :", result);
       displayLoginMessage(successMessage);
       localStorage.setItem("userInfo", JSON.stringify(result.data));

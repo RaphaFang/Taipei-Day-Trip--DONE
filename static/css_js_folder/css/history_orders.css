@@ -40,3 +40,7 @@
 .result-display-ddiv > :last-child {
   margin-right: 30px;
 }
+
+.att-img {
+  height: 255px;
+}
