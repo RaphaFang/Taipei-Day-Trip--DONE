@@ -8,6 +8,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
         if request.url.path.startswith("/attraction/") or request.url.path.startswith("/auth/") : 
             return await call_next(request)
-        if request.url.path not in ["/", "/booking", "/thankyou"]:
+        if request.url.path not in ["/", "/booking", "/thankyou", '/history_orders']:
             return RedirectResponse(url='/')
         return await call_next(request)

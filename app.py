@@ -59,7 +59,6 @@ app.include_router(api_order_get.router)
 app.include_router(api_user_google.router)
 
 app.include_router(api_orders_all.router)
-
 app.include_router(api_user_reset_password.router)
 app.include_router(api_user_reset_send_email.router)
 app.include_router(api_user_reset_url.router)
@@ -77,6 +76,9 @@ async def booking(request: Request):
 @app.get("/thankyou", include_in_schema=False)
 async def thankyou(request: Request):
 	return FileResponse("./static/thankyou.html", media_type="text/html")
+@app.get("/history_orders", include_in_schema=False)
+async def history_orders(request: Request):
+	return FileResponse("./static/history_orders.html", media_type="text/html")
 
 # uvicorn app:app --host 127.0.0.1 --port 8000 --ssl-keyfile /Users/fangsiyu/Desktop/secrets/privkey.pem --ssl-certfile /Users/fangsiyu/Desktop/secrets/fullchain.pem --reload
 # cd /Users/fangsiyu/Desktop/taipei-day-trip

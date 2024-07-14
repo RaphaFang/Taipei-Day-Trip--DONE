@@ -150,10 +150,20 @@ function userSignOut() {
 function signUpInSwitch() {
   const signinForm = document.getElementById("signin-form-div");
   const signupForm = document.getElementById("signup-form-div");
+  const emailBlock = document.getElementById("fieldin-email");
+  const backHeight = document.getElementById("signin-form-div");
+  const ec = document.getElementById("error-catcher");
+
   if (signupForm.hidden) {
     console.log("signinForm set hidden");
     signupForm.hidden = false;
     signinForm.hidden = true;
+    emailBlock.hidden = true;
+
+    emailBlock.hidden = true;
+    ec.hidden = true;
+    backHeight.style.height = "400px";
+
     hideErrorCatcher();
   } else {
     console.log("signupForm set hidden");
@@ -183,9 +193,27 @@ function cancelFormDisplay() {
   const signinForm = document.getElementById("signin-form-div");
   const signupForm = document.getElementById("signup-form-div");
   const overlay = document.getElementById("overlay");
+
+  const emailBlock = document.getElementById("fieldin-email");
+  const backHeight = document.getElementById("signin-form-div");
+  const ec = document.getElementById("error-catcher");
+  let infoDisplay = document.getElementById("fieldin-email-p");
+
+  const passForm = document.getElementById("submit-password-div");
+  const passFormErrorCatcher = document.getElementById("submit-password-error-catcher");
+
   signupForm.hidden = true;
   signinForm.hidden = true;
   overlay.hidden = true;
+
+  emailBlock.hidden = true;
+  ec.hidden = true;
+  infoDisplay.innerText = "";
+  backHeight.style.height = "400px";
+
+  passForm.hidden = true;
+  passFormErrorCatcher.innerText = "";
+
   hideErrorCatcher();
 }
 function hideErrorCatcher() {
@@ -193,4 +221,92 @@ function hideErrorCatcher() {
   errorCatchers.forEach((element) => {
     element.hidden = true;
   });
+}
+
+function forgetPassword() {
+  const emailBlock = document.getElementById("fieldin-email");
+  const backHeight = document.getElementById("signin-form-div");
+  const ec = document.getElementById("error-catcher");
+  let infoDisplay = document.getElementById("fieldin-email-p");
+
+  if (emailBlock.hidden) {
+    emailBlock.hidden = false;
+    ec.hidden = true;
+    infoDisplay.innerText = "";
+    backHeight.style.height = "520px";
+  } else {
+    emailBlock.hidden = true;
+    ec.hidden = true;
+    infoDisplay.innerText = "";
+
+    backHeight.style.height = "400px";
+  }
+}
+
+async function sendVerifyToken() {
+  let infoDisplay = document.getElementById("fieldin-email-p");
+  const data = {
+    email: document.getElementById("change_password").value,
+  };
+  const response = await fetch("/api/user/reset_request", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+  console.log(result);
+  if (response.ok) {
+    infoDisplay.innerText = "Verify url had send to your address.";
+  } else {
+    infoDisplay.innerText = result.message;
+    console.error("Error:", result.message);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get("reset_password_token_status");
+  const passForm = document.getElementById("submit-password-div");
+  const overlay = document.getElementById("overlay");
+
+  if (status === "success") {
+    overlay.hidden = false;
+    passForm.hidden = false;
+  } else {
+    overlay.hidden = true;
+    passForm.hidden = true;
+
+    alert("The token can't be verified, please re-access the url from your email.");
+  }
+});
+
+async function resetPassword() {
+  const form = document.getElementById("submit-password-form");
+  const signupFormData = new FormData(form);
+  const jsonData = convertToJson(signupFormData);
+  const errorCatcher = document.getElementById("submit-password-error-catcher");
+
+  const response = await fetch("/api/user/reset_password", {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(jsonData),
+  });
+  const result = await response.json();
+  console.log(result);
+  if (response.ok) {
+    errorCatcher.hidden = false;
+    errorCatcher.innerText = result.message;
+    alert(result.message);
+    window.location.href = "/";
+  } else {
+    errorCatcher.hidden = false;
+    errorCatcher.innerText = result.message;
+    console.error("Error:", result.message);
+  }
 }

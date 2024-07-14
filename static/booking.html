@@ -16,6 +16,8 @@
     <script src="/static/css_js_folder/js/booking_after.js" defer></script>
     <script src="/static/css_js_folder/js/booking_payment.js" defer></script>
     <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <script src="/static/css_js_folder/js/history_order_before.js" defer></script>
+
     <script>
       TPDirect.setupSDK(151765, "app_Y4hb79I5fnESKnvdTwR6JwQoI2ZbdwZVG23EBI8L4VVuyWwERolfviHOdzpm", "sandbox");
     </script>
@@ -29,6 +31,9 @@
           <div class="btn-container">
             <div class="firstbtn">
               <a class="first-bar-btn" id="bookingGet" onclick="stateCheckBeforeBooking()">預定行程</a>
+            </div>
+            <div class="firstbtn">
+              <a class="first-bar-btn" id="bookingGetAll" onclick="redirectBookingHistory()">歷史訂單</a>
             </div>
             <div class="secondbtn" id="secondbtn">
               <a class="second-bar-btn" id="login-btn" onclick=" displaySignIn()"></a>
