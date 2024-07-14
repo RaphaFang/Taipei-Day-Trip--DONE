@@ -8,28 +8,25 @@
 
 .result-display-ddiv {
   justify-content: flex-start;
-  max-width: 1200px; /* 设置最大宽度 */
+  max-width: 1200px;
   width: 100%;
-  margin: 0 auto; /* 居中容器 */
-  overflow-x: auto; /* 允许横向滚动 */
-  scrollbar-width: none; /* Firefox */
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
   box-sizing: border-box;
 }
 
 .result-display-ddiv::-webkit-scrollbar {
   display: none;
 }
-
 .result-display {
   height: 792px;
-  /* display: flex; */
   flex-wrap: nowrap;
   margin: 30px 15px;
   width: 100%;
   box-sizing: border-box;
   position: relative;
 }
-
 .final-part {
   position: absolute;
   top: 710px;
@@ -40,7 +37,6 @@
 .result-display-ddiv > :last-child {
   margin-right: 30px;
 }
-
 .att-img {
   min-height: 255px;
 }

@@ -301,7 +301,6 @@ async function resetPassword() {
     const changePassFormData = new FormData(form);
     const jsonData = convertToJson(changePassFormData);
     const errorCatcher = document.getElementById("submit-password-error-catcher");
-
     const response = await fetch("/api/user/reset_password", {
       method: "PUT",
       credentials: "include",
