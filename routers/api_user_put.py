@@ -19,7 +19,7 @@ async def api_user_put(request: Request, login_data: SignInDataModel,bt:Backgrou
             sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
                 async with connection.cursor(aiomysql.DictCursor) as cursor:
-                    await cursor.execute("SELECT * FROM user_info WHERE email = %s AND password = %s;", (e,p,)) 
+                    await cursor.execute("SELECT * FROM user_info WHERE email = %s AND password = %s AND auth_provider IS NULL;", (e,p,)) 
                     data =  await cursor.fetchone()
                     if data:
                         input_data = {"id": data['id'],'username':data['username'],'email':data['email'], 'password':data['password']}                                        

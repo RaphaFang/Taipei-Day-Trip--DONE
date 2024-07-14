@@ -61,7 +61,7 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
             sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
                 async with connection.cursor(aiomysql.DictCursor) as cursor:
-                    await cursor.execute("SELECT * FROM user_info WHERE provider_id = %s AND email = %s AND username = %s;", (sub, email, name))
+                    await cursor.execute("SELECT * FROM user_info WHERE provider_id = %s AND email = %s AND password IS NULL AND auth_provider = 'Google';", (sub, email,))
                     data =  await cursor.fetchone()
 
                     if data:
