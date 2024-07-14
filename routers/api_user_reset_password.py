@@ -13,7 +13,7 @@ async def reset_password(request: Request, raw_new_p:ResetPasswordNewPassword):
             # 前端檢測這串url代碼，如果是success，才可以跳出修改密碼的彈窗
             # 前端檢測cookie，如果有才可以讓他修改，並且這cookie的期限很短
     try:
-        token = request.cookies.get("access_token")
+        token = request.cookies.get("15min_token")
         token_response = token_verifier(token)
         if isinstance(token_response, JSONResponse):
             return JSONResponse(status_code=400, content={"message": "Password updated failed, please retry the url link from your email."})
@@ -40,7 +40,7 @@ async def reset_password(request: Request, raw_new_p:ResetPasswordNewPassword):
                 response = JSONResponse(status_code=200, content={"message": result['message']})
             else:
                 response = JSONResponse(status_code=400, content={"message": result['message']})
-            response.delete_cookie(key="access_token")
+            response.delete_cookie(key="15min_token")
             return response
 
     except (aiomysql.Error) as err:

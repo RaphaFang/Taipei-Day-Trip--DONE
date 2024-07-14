@@ -68,7 +68,9 @@ async function tokenGet(successMessage) {
   if (response.ok) {
     if (result["data"]) {
       const backHeight = document.getElementById("signin-form-div");
-      backHeight.style.height = "350px";
+      if (backHeight) {
+        backHeight.style.height = "350px";
+      }
       const emailPart = document.getElementById("fieldin-email");
       if (emailPart) {
         emailPart.hidden = true;
@@ -292,8 +294,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function resetPassword() {
-  const firstPassword = document.getElementById("submit-password-first");
-  const secondPassword = document.getElementById("submit-password-second");
+  let firstPassword = document.getElementById("submit-password-first").value;
+  let secondPassword = document.getElementById("submit-password-second").value;
   if (firstPassword === secondPassword) {
     const form = document.getElementById("submit-password-form");
     const changePassFormData = new FormData(form);
