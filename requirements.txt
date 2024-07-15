@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+aiomysql
+redis
+python-jose==3.3.0
+pydantic
+aiohttp
+authlib
+starlette
+itsdangerous
+asyncio
+yagmail

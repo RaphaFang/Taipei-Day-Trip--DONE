@@ -9,13 +9,13 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 @router.get("/api/attraction/{id}")  
 async def api_attractions(request: Request, id=int): 
     try:
-        async def search_attr_id(id):
-            sql_pool = request.state.async_sql_db_pool 
+        async def search_attr_id(request,id):
+            sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
                 async with connection.cursor(aiomysql.DictCursor) as cursor:
                     await cursor.execute("SELECT * FROM processed_data WHERE id = %s", (id,)) 
                     return await cursor.fetchone()  
-        result = await search_attr_id(id)
+        result = await search_attr_id(request,id)
 
         if result:
             result['images'] = json.loads(result['images'])

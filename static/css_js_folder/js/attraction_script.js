@@ -1,16 +1,39 @@
 "use strict";
-// 嘗試讀取一次，如果沒有就返回首頁？
-// fetch(`/api/attraction/${urlAttractionId}`).then(
-// 奇怪的是，將fetch放在dom外面作，盡然比放在裡面慢？要多研究
-
 let picDataAll = [];
 var urlAttractionId;
+let currentPic = 0;
+const leftBtn = document.getElementById("left-mrt-btn");
+const rightBtn = document.getElementById("right-mrt-btn");
+const indicatorDivBar = document.getElementById("indicator");
+let pathname = window.location.pathname;
+let pathSegments = pathname.split("/");
+
 document.addEventListener("DOMContentLoaded", async function () {
-  let pathname = window.location.pathname;
-  let pathSegments = pathname.split("/");
-  urlAttractionId = Number(pathSegments[pathSegments.length - 1]);
+  await firstVisitPageCheck();
+
   backtoMain();
 
+  spotDisplay(picDataAll);
+
+  leftBtn.addEventListener("click", function () {
+    currentPic -= 1;
+    picAndDisplay(currentPic, picDataAll);
+  });
+
+  rightBtn.addEventListener("click", function () {
+    currentPic += 1;
+    picAndDisplay(currentPic, picDataAll);
+  });
+
+  indicatorDivBar.addEventListener("click", async function () {
+    currentPic = await spotsClick(); // 等待 spotsClick 的 currentPic 所以這整個函數會是異步的
+    console.log("spotsClick func., currentPic value: " + currentPic);
+    picAndDisplay(Number(currentPic), picDataAll);
+  });
+});
+
+async function firstVisitPageCheck() {
+  urlAttractionId = Number(pathSegments[pathSegments.length - 1]);
   try {
     let response = await fetch(`/api/attraction/${urlAttractionId}`);
     if (!response.ok) {
@@ -25,54 +48,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.error("Fetch error: ", error);
     window.location.href = "/";
   }
-
-  let currentPic = 0;
-  const leftBtn = document.getElementById("left-mrt-btn");
-  const rightBtn = document.getElementById("right-mrt-btn");
-  const indicatorDivBar = document.getElementById("indicator");
-
-  spotDisplay(picDataAll);
-  leftBtn.addEventListener("click", function () {
-    currentPic -= 1;
-    picAndDisplay(currentPic, picDataAll);
-  });
-  rightBtn.addEventListener("click", function () {
-    currentPic += 1;
-    picAndDisplay(currentPic, picDataAll);
-  });
-
-  indicatorDivBar.addEventListener("click", async function () {
-    currentPic = await spotsClick(); // 等待 spotsClick 的 currentPic 所以這整個函數會是異步的
-    console.log("spotsClick func., currentPic value: " + currentPic);
-    picAndDisplay(Number(currentPic), picDataAll);
-  });
-});
-
+}
 function picAndDisplay(currentPic, picDataAll) {
-  //處理variable傳遞的問題，最快的方式就是丟進()傳遞
   const theLength = picDataAll.length;
-  console.log("picAndDisplay func. theLength value:", theLength);
-  console.log("picAndDisplay func. currentPic value:", currentPic);
+  let theNumToDisplay = ((currentPic % theLength) + theLength) % theLength;
 
-  let theNum = 0;
-  if (currentPic >= 0) {
-    theNum = currentPic % theLength;
-  } else {
-    theNum = (currentPic % theLength) + theLength;
-    if (theNum === 6) {
-      theNum = 0;
-    } // 處理 -6 的於數會是 0 , 這時再加上theLength，theNum會變成6
-  }
-  currentPic = theNum;
-  console.log("picAndDisplay func. theNum value:", theNum);
+  currentPic = theNumToDisplay;
+  console.log("picAndDisplay func. theNumToDisplay value:", theNumToDisplay);
+
   let describePic = document.getElementById("pic-on-left");
-  describePic.style.backgroundImage = `url(${picDataAll[theNum]})`;
+  describePic.style.backgroundImage = `url(${picDataAll[theNumToDisplay]})`;
 
   let boxElements = document.querySelectorAll(".choose-all-box");
   boxElements.forEach(function (boxElements) {
     boxElements.className = "box-1 choose-all-box";
   });
-  document.getElementById(`dot-id-${theNum}`).className = "box-2 choose-all-box";
+  document.getElementById(`dot-id-${theNumToDisplay}`).className = "box-2 choose-all-box";
   //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
 
@@ -147,14 +138,8 @@ function spotDisplay(picDataAll) {
   document.getElementById(`dot-id-0`).className = "box-2 choose-all-box";
   //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
+// 家載日期
 window.onload = function () {
   var today = new Date().toISOString().split("T")[0];
   document.getElementById("date").value = today;
 };
-
-// function backtoMain() {
-//   let titleElement = document.getElementById("title");
-//   titleElement.addEventListener("click", function () {
-//     window.location.href = "/";
-//   });
-// }

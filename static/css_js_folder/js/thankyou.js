@@ -34,6 +34,10 @@ async function orderGet() {
 }
 
 function displayThankYouPage(d) {
+  const bookInfoPic = document.getElementById("att-img-div");
+  bookInfoPic.innerHTML = `
+  <img class="att-img" src="${d.trip.attraction.image}" />`;
+
   const payState = document.getElementById("thepay");
   payState.textContent = d.status === 1 ? "已完成結帳" : "尚未付款";
   payState.className = d.status === 1 ? "sstate-c" : "sstate-type2";

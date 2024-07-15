@@ -29,20 +29,21 @@ async function renderUserName() {
 
 // render Journey to page, only if it pass the token check inside the bookingGet()
 async function renderJourneyVerified() {
-  // ! 這部份應該要改成不是存localStorage
   const verData = JSON.parse(localStorage.getItem("journeyVerified"));
-  console.log(verData);
   const bookInfoDiv = document.getElementById("book-info-div");
   bookInfoDiv.innerHTML = `
     <p class="book-info-title">台北一日遊：${verData.attraction.name}</p>
     <p class="book-info-text"><span class="custom-bold">日期：</span>${verData.date}</p>
-    <p class="book-info-text"><span class="custom-bold">時間：</span>${verData.time}</p>
+    <p class="book-info-text" id='morning-or-evening'><span class="custom-bold">時間：</span>${verData.time}</p>
     <p class="book-info-text"><span class="custom-bold">費用：</span>新台幣${verData.price}元</p>
     <p class="book-info-text"><span class="custom-bold">地點：</span>${verData.attraction.address}</p>
   `;
   const bookInfoPic = document.getElementById("book-info-div-pic");
   bookInfoPic.innerHTML = `
   <img src="${verData.attraction.image}"  alt="Booking Image" class="booking-pic" />`;
+
+  const finalPrice = document.getElementById("finalPrice");
+  finalPrice.textContent = `總價：新台幣 ${verData.price} 元`;
 }
 
 // ! bookingGet()
@@ -82,12 +83,10 @@ async function footerCreator(typeState) {
     </footer>
     `;
   }
-  //解決 hidden 會有元素沒有在畫面中無法選取的問題
 }
 
 // ! deleteCurrentData
 async function bookingDelete() {
-  // const token = localStorage.getItem("authToken");
   const response = await fetch("/api/booking", {
     method: "DELETE",
     credentials: "include",
@@ -101,54 +100,3 @@ async function bookingDelete() {
     alert("Cannot delete current journey, please retry");
   }
 }
-
-// document.getElementById("book-personal-info-place-tel").addEventListener("input", function (e) {
-//   var value = e.target.value.replace(/\D/g, "");
-//   var formattedValue = "";
-//   if (value.length > 0) {
-//     formattedValue = value.slice(0, 4);
-//   }
-//   if (value.length > 4) {
-//     formattedValue += "-" + value.slice(4, 7);
-//   }
-//   if (value.length > 7) {
-//     formattedValue += "-" + value.slice(7, 10);
-//   }
-//   e.target.value = formattedValue;
-// });
-// document.getElementById("book-personal-info-place-card-number").addEventListener("input", function (e) {
-//   var value = e.target.value.replace(/\D/g, ""); // 一除非數字的任何字母
-//   var formattedValue = value.match(/.{1,4}/g)?.join(" ") || ""; // 確保空字串，跟之前一樣
-//   e.target.value = formattedValue;
-// });
-// document.getElementById("book-personal-info-place-expiry").addEventListener("input", function (e) {
-//   var value = e.target.value.replace(/\D/g, "").slice(0, 4);
-//   if (value.length > 2) {
-//     value = value.slice(0, 2) + "/" + value.slice(2);
-//   }
-//   e.target.value = value;
-// });
-// document.getElementById("book-personal-info-place-CVV").addEventListener("input", function (e) {
-//   var value = e.target.value.replace(/\D/g, "").slice(0, 3);
-//   e.target.value = value;
-// });
-
-// async function bookingGet() {
-//   const response = await fetch("/api/booking", {
-//     method: "GET",
-//     credentials: "include",
-//   });
-//   const result = await response.json();
-//   if (response.ok) {
-//     localStorage.setItem("journeyVerified", JSON.stringify(result.data));
-//     if (result.data !== null) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   } else {
-//     console.log(result.message);
-//     window.location.href = "/";
-//     return false;
-//   }
-// }

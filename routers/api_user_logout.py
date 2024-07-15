@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Request, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
-import mysql.connector
 from utils.token_verify_creator import token_verifier
 import redis
 import json
 import aiomysql
-import asyncio
+import redis.asyncio as aioredis 
 
 
 router = APIRouter()
@@ -15,19 +14,25 @@ headers = {"Content-Type": "application/json; charset=utf-8"}
 async def logout(request: Request, bt:BackgroundTasks):  # request: Request 刪除不需要。request.cookies.get("access_token") 所以直接response
     try:
         token = request.cookies.get("access_token")
-        if not token:
-            content_data = {"error": True, "message": "You did not got the token in cookies, how to you even came to the log-out step???"}
-            return JSONResponse(status_code=403,content=content_data, headers=headers)
-        
-        token_output = token_verifier(token)
+        token_response = token_verifier(token)
+        if isinstance(token_response, JSONResponse):
+            return token_response
+        token_output = token_response
+
         if token_output:
-            redis_pool = request.state.redis_db_pool.get("default") 
-            r = redis.Redis(connection_pool=redis_pool)
-            b = r.get(f"user:{token_output['id']}:booking")
 
+            async def delete_user_r(request, id):
+                redis_pool = request.state.async_redis_pool
+                async with aioredis.Redis(connection_pool=redis_pool) as r:
+                    b = await r.get(f"user:{id}:booking")
+                    await r.delete(f"user:{id}:booking")
+                    await r.delete(f"user:{id}:booking_trigger_key")
+                    # await r.delete(f"user:{id}:booking_history")
+                    return b
+            redis_data = await delete_user_r(request,token_output['id'])
 
-            async def db_task(b):
-                sql_pool = request.state.async_sql_db_pool 
+            async def redis_to_sql(request,b):
+                sql_pool = request.state.async_sql_pool 
                 async with sql_pool.acquire() as connection:
                     async with connection.cursor(aiomysql.DictCursor) as cursor:
                         if b:
@@ -44,9 +49,7 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request 刪�
                             print('User logout, with nothing to add to sql. Cleaning up sql...')
                             await cursor.execute("DELETE FROM user_booking_tentative WHERE creator_id = %s;", (token_output['id'],))
                         await connection.commit()
-            bt.add_task(db_task, b)
-
-            r.delete(f"user:{token_output['id']}:booking")
+            bt.add_task(redis_to_sql, request, redis_data)
 
             response = JSONResponse(status_code=200, content={"message": "Logged out successfully"})
             response.delete_cookie(key="access_token")
@@ -56,7 +59,7 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request 刪�
             content_data = {"error": True, "message": "Token verification failed"}
             return JSONResponse(status_code=403, content=content_data, headers=headers)
  
-    except (mysql.connector.Error, redis.RedisError) as err:
+    except (aiomysql.Error, redis.RedisError) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
     except (ValueError, Exception) as err:
         return JSONResponse(status_code=400,content={"error": True, "message": str(err)},headers=headers)

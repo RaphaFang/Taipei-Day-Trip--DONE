@@ -94,3 +94,12 @@ CREATE TABLE user_booking_finalized (
 
 -- -----------------------------------------------------------------------------
 CREATE INDEX order_number_search ON user_booking_finalized(order_number);
+
+
+
+ALTER TABLE user_info MODIFY password VARCHAR(255) COMMENT 'User password';
+
+ALTER TABLE user_info
+ADD COLUMN auth_provider VARCHAR(50) COMMENT 'Authentication provider',
+ADD COLUMN provider_id VARCHAR(255) COMMENT 'Provider user ID',
+ADD COLUMN profile_picture TEXT COMMENT 'Profile picture URL';

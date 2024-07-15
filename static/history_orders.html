@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thank you</title>
+    <title>history_orders</title>
     <link rel="stylesheet" href="/static/css_js_folder/css/attraction_style.css" />
     <link rel="stylesheet" href="/static/css_js_folder/css/signin_signout_section.css" />
     <link rel="stylesheet" href="/static/css_js_folder/css/thankyou_style.css" />
+    <link rel="stylesheet" href="/static/css_js_folder/css/history_orders.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
 
@@ -16,8 +17,7 @@
     <!-- <script src="/static/css_js_folder/js/signin_signout_section.js" defer></script> -->
     <script src="/static/css_js_folder/js/signin_signout_section_TESTING.js" defer></script>
     <script src="/static/css_js_folder/js/before_booking.js" defer></script>
-    <script src="/static/css_js_folder/js/thankyou.js" defer></script>
-    <script src="/static/css_js_folder/js/history_order_before.js" defer></script>
+    <script src="/static/css_js_folder/js/history_orders_after.js" defer></script>
   </head>
   <body>
     <div class="content">
@@ -93,38 +93,8 @@
         </form>
       </div>
       <div class="without-nav-bar">
-        <div class="result-display-ddiv">
-          <div class="result-display">
-            <div id="att-img-div"><img class="att-img" src="" /></div>
-            <div class="contain-inf">
-              <div class="ttitle">
-                <p class="sstate">行程預定狀態：</p>
-                <p class="sstate-c" id="thepay"></p>
-              </div>
-              <div class="divider-div">
-                <div class="divider"></div>
-              </div>
-              <div class="">
-                <p class="sstate-2">訂單編碼：</p>
-              </div>
-              <div class="thenumber-div">
-                <p class="thenumber" id="thenumber"></p>
-              </div>
-              <div class="divider-div">
-                <div class="divider"></div>
-              </div>
-              <div class="theattr-div" id="theattr-div"></div>
-              <div class="divider-div">
-                <div class="divider"></div>
-              </div>
-              <div class="theattr-div" id="theattr-div-2"></div>
-              <!-- <div class="divider-div">
-                <div class="divider"></div>
-              </div> -->
-              <div class="final-part">
-                <p class="final-part-p">請記住此訂單編碼，以便未來查詢訂單</p>
-              </div>
-            </div>
+        <div class="result-display-ddiv" id="result-display-target">
+
           </div>
         </div>
       </div>

@@ -55,30 +55,3 @@ function bookingDisplaySignIn() {
   signinForm.hidden = false;
   overlay.hidden = false;
 }
-
-// async function bookingPost() {
-//   const dateInput = document.getElementById("date").value;
-//   const timeInput = document.querySelector('input[name="time"]:checked').value;
-//   const charge = timeInput === "morning" ? 2000 : 2500;
-//   let journeyForm = { attractionId: urlAttractionId, date: dateInput, time: timeInput, price: charge };
-
-//   console.log(journeyForm);
-//   const response = await fetch("/api/booking", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(journeyForm),
-//   });
-//   const result = await response.json();
-//   if (response.ok) {
-//     console.log("bookingPost() -> success:", result);
-//   } else {
-//     if (response.status === 403) {
-//       bookingDisplaySignIn();
-//     } else if (response.status === 400) {
-//       alert("Facing error booking this trip, please check the submission formate.");
-//     }
-//     console.log(result.message);
-//   }
-// }

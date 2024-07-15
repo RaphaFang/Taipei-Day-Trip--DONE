@@ -3,7 +3,6 @@ import re
 from typing import Optional
 from datetime import date
 
-
 class SignUpDataModel(BaseModel):
     name: str
     email: EmailStr
@@ -61,3 +60,10 @@ class ContactAndPrimeDM(BaseModel):
     name: str
     email: EmailStr
     phone: str
+    price: int
+
+class ResetPasswordEmailRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordNewPassword(BaseModel):
+    password: str
