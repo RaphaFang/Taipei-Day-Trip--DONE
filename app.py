@@ -26,7 +26,7 @@ async def startup_event():
 
 @app.on_event("shutdown")  
 async def shutdown_event():
-	app.state.handle_expired_keys_task.cancel()  # 關閉ttl監聽
+	app.state.handle_expired_keys_task.cancel() 
 	await app.state.handle_expired_keys_task
 	
 	app.state.async_sql_pool.close()
@@ -44,27 +44,27 @@ GOOGLE_SESSION_SECRET_KEY= os.getenv('GOOGLE_SESSION_SECRET_KEY')
 app.add_middleware(SessionMiddleware, secret_key=GOOGLE_SESSION_SECRET_KEY, same_site="lax", https_only=False)
 
 # !-----------------------------------------
-app.include_router(api_at_mrts.router, tags=["attraction"], prefix="/api/v1")
-app.include_router(api_attraction.router, tags=["attraction"], prefix="/api/v1")
-app.include_router(api_attractions.router, tags=["attraction"], prefix="/api/v1")
+app.include_router(api_at_mrts.router, tags=["attraction"], prefix="/tdt/v1")
+app.include_router(api_attraction.router, tags=["attraction"], prefix="/tdt/v1")
+app.include_router(api_attractions.router, tags=["attraction"], prefix="/tdt/v1")
 
-app.include_router(api_user_post.router, tags=["user"], prefix="/api/v1")
-app.include_router(api_user_put.router, tags=["user"], prefix="/api/v1")
-app.include_router(api_user_get.router, tags=["user"], prefix="/api/v1")
-app.include_router(api_user_logout.router, tags=["user"], prefix="/api/v1")
-app.include_router(api_user_google.router, tags=["user"], prefix="/api/v1")
+app.include_router(api_user_post.router, tags=["user"], prefix="/tdt/v1")
+app.include_router(api_user_put.router, tags=["user"], prefix="/tdt/v1")
+app.include_router(api_user_get.router, tags=["user"], prefix="/tdt/v1")
+app.include_router(api_user_logout.router, tags=["user"], prefix="/tdt/v1")
+app.include_router(api_user_google.router, tags=["user"], prefix="/tdt/v1")
 
-app.include_router(api_booking_post.router, tags=["booking"], prefix="/api/v1")
-app.include_router(api_booking_get.router, tags=["booking"], prefix="/api/v1")
-app.include_router(api_booking_delete.router, tags=["booking"], prefix="/api/v1")
+app.include_router(api_booking_post.router, tags=["booking"], prefix="/tdt/v1")
+app.include_router(api_booking_get.router, tags=["booking"], prefix="/tdt/v1")
+app.include_router(api_booking_delete.router, tags=["booking"], prefix="/tdt/v1")
 
-app.include_router(api_orders_post.router, tags=["order"], prefix="/api/v1")
-app.include_router(api_order_get.router, tags=["order"], prefix="/api/v1")
-app.include_router(api_orders_all.router, tags=["order"], prefix="/api/v1")
+app.include_router(api_orders_post.router, tags=["order"], prefix="/tdt/v1")
+app.include_router(api_order_get.router, tags=["order"], prefix="/tdt/v1")
+app.include_router(api_orders_all.router, tags=["order"], prefix="/tdt/v1")
 
-app.include_router(api_user_reset_password.router, tags=["reset_password"], prefix="/api/v1")
-app.include_router(api_user_reset_send_email.router, tags=["reset_password"], prefix="/api/v1")
-app.include_router(api_user_reset_url.router, tags=["reset_password"], prefix="/api/v1")
+app.include_router(api_user_reset_password.router, tags=["reset_password"], prefix="/tdt/v1")
+app.include_router(api_user_reset_send_email.router, tags=["reset_password"], prefix="/tdt/v1")
+app.include_router(api_user_reset_url.router, tags=["reset_password"], prefix="/tdt/v1")
 
 
 @app.get("/", include_in_schema=False)
@@ -82,8 +82,3 @@ async def thankyou(request: Request):
 @app.get("/history_orders", include_in_schema=False)
 async def history_orders(request: Request):
 	return FileResponse("./static/history_orders.html", media_type="text/html")
-
-# uvicorn app:app --host 127.0.0.1 --port 8000 --ssl-keyfile /Users/fangsiyu/Desktop/secrets/privkey.pem --ssl-certfile /Users/fangsiyu/Desktop/secrets/fullchain.pem --reload
-# cd /Users/fangsiyu/Desktop/taipei-day-trip
-# nano ~/.zshrc
-# source ~/.zshrc
