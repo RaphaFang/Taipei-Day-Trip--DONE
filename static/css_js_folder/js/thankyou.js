@@ -16,7 +16,7 @@ const orderNum = getQueryParams();
 console.log(orderNum);
 
 async function orderGet() {
-  const response = await fetch(`/api/order/${orderNum}`, {
+  const response = await fetch(`/tdt/v1/api/order/${orderNum}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

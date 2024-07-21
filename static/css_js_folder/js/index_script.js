@@ -3,7 +3,7 @@ let nextPage = 0;
 let nextKeyword = "";
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    let response = await fetch("/api/mrts");
+    let response = await fetch("/tdt/v1/api/mrts");
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.error("Fetch error: ", error);
   }
   try {
-    let response = await fetch(`/api/attractions?page=0`);
+    let response = await fetch(`/tdt/v1/api/attractions?page=0`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -76,7 +76,7 @@ function waitForDivLoaded() {
     const container = event.target.closest(".background-image-container");
     if (container) {
       const attractionId = container.getAttribute("data-id");
-      window.location.href = `/attraction/${attractionId}`;
+      window.location.href = `/tdt/v1/attraction/${attractionId}`;
       // 我原先是絕對路徑，只會導向api
     }
   });
@@ -92,7 +92,7 @@ function waitForMrtLoaded() {
       document.getElementById("search-place").value = newKeyword;
 
       try {
-        let response = await fetch(`/api/attractions?page=0&keyword=${newKeyword}`);
+        let response = await fetch(`/tdt/v1/api/attractions?page=0&keyword=${newKeyword}`);
         console.log("Response status: ", response.status);
         if (!response.ok) {
           throw new Error("Network response was not ok " + response.statusText);
@@ -120,7 +120,7 @@ function waitForMrtLoaded() {
 async function startSearch() {
   try {
     let searchedAttrac = document.getElementById("search-place").value;
-    let response = await fetch(`/api/attractions?page=0&keyword=${searchedAttrac}`);
+    let response = await fetch(`/tdt/v1/api/attractions?page=0&keyword=${searchedAttrac}`);
     console.log("Response status: ", response.status);
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
@@ -178,7 +178,7 @@ function displayHtmlMrt(data) {
   }
 }
 async function addUpFetch(page) {
-  const url = `/api/attractions?page=${page}&keyword=${nextKeyword}`;
+  const url = `/tdt/v1/api/attractions?page=${page}&keyword=${nextKeyword}`;
   let response = await fetch(url);
   console.log("Response status: ", response.status);
   if (!response.ok) {

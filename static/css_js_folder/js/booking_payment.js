@@ -84,10 +84,10 @@ function onSubmit(event) {
   }
   TPDirect.card.getPrime(function (cardResult) {
     if (cardResult.status !== 0) {
-      console.log("get card prime error " + cardResult.msg);
+      console.log("get card prime error, " + cardResult.msg);
       return;
     }
-    console.log("get card prime 成功，prime: " + cardResult.card.prime);
+    console.log("get card prime successfully, prime: " + cardResult.card.prime);
     orderPost(cardResult.card.prime);
   });
 }
@@ -107,7 +107,7 @@ async function orderPost(prime) {
   };
   console.log(contactAndPrimeForm);
 
-  const response = await fetch("/api/orders", {
+  const response = await fetch("/tdt/v1/api/orders", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -120,7 +120,7 @@ async function orderPost(prime) {
   if (response.ok) {
     console.log("bookingPost() -> success:", result.data);
     if (result.data.number) {
-      window.location.href = `/thankyou?number=${result.data.number}`;
+      window.location.href = `/tdt/v1/thankyou?number=${result.data.number}`;
     }
   } else {
     if (response.status === 403) {

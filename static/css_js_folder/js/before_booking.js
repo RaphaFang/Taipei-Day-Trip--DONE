@@ -2,7 +2,7 @@
 function stateCheckBeforeBooking() {
   const userInfo = localStorage.getItem("userInfo");
   if (userInfo) {
-    window.location.href = "/booking";
+    window.location.href = "/tdt/v1/booking";
   } else {
     bookingDisplaySignIn();
   }
@@ -24,7 +24,7 @@ async function bookingPost() {
   };
   console.log(journeyForm);
 
-  const response = await fetch("/api/booking", {
+  const response = await fetch("/tdt/v1/api/booking", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -36,7 +36,7 @@ async function bookingPost() {
   console.log(response.ok);
   if (response.ok) {
     console.log("bookingPost() -> success:", result);
-    window.location.href = "/booking";
+    window.location.href = "/tdt/v1/booking";
     console.log("應該到新的頁面了");
   } else {
     if (response.status === 403) {

@@ -19,7 +19,7 @@ async def init_oauth():
         name='google',
         client_id=os.getenv('GOOGLE_CLIENT_ID'),
         client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
-        redirect_uri='https://raphaelfang.com/auth/callback',
+        redirect_uri='https://raphaelfang.com/tdt/v1/auth/callback',
         client_kwargs={'scope': 'openid email profile'},
 
         jwks_uri='https://www.googleapis.com/oauth2/v3/certs',
@@ -36,11 +36,11 @@ async def auth_login(request: Request):
         state = secrets.token_urlsafe(16)
         request.session.clear()  # 解決CSRF非同源問題，清除掉之前的cookie
         request.session['state'] = state
-        redirect_uri = 'https://raphaelfang.com/auth/callback'  
+        redirect_uri = 'https://raphaelfang.com/tdt/v1/auth/callback'  
         return await oauth.google.authorize_redirect(request, redirect_uri, state=state)
     
     except (ValueError, Exception) as err:
-        url = "/?status=error&message=" + str(err)
+        url = "/tdt/v1/?status=error&message=" + str(err)
         return RedirectResponse(url=url)
 
 
@@ -49,7 +49,7 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
     error = request.query_params.get('error')
     print(error)
     if error == 'access_denied':
-        return RedirectResponse( url = "/?status=error&message=Access+Denied") # 好怪，在這邊加上status_code就會報錯，GPT的回復：在处理FastAPI的RedirectResponse时，不能直接在创建响应时设置status_code。RedirectResponse默认使用302重定向状态码。如果要更改状态码，需要在响应对象创建后进行修改。
+        return RedirectResponse(url = "/tdt/v1/?status=error&message=Access+Denied") # 好怪，在這邊加上status_code就會報錯，GPT的回復：在处理FastAPI的RedirectResponse时，不能直接在创建响应时设置status_code。RedirectResponse默认使用302重定向状态码。如果要更改状态码，需要在响应对象创建后进行修改。
     
     try:
         oauth = await init_oauth()
@@ -131,17 +131,17 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
         if user: # 原本一直想不到該怎麼傳遞這部份的資訊，畢竟是直接回到主畫面，但是想到可以打資料加到url送回去
             access_token, last_d = await search_user_login(request,user.get('sub'), user.get('email'), user.get('name'), user.get('picture'))
             bt.add_task(booking_data_r, request, last_d)
-            response = RedirectResponse(url="/?status=success")
+            response = RedirectResponse(url="/tdt/v1/?status=success")
             response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict",expires=timedelta(days=1).total_seconds())
             return response
         else:
-            response = RedirectResponse(url="/?status=error&message=Missing correct token response from Google")
+            response = RedirectResponse(url="/tdt/v1/?status=error&message=Missing+correct+token+response+from+Google")
             return response         
 
     except (aiomysql.Error, redis.RedisError) as err:
-        url = "/?status=error&message=" + str(err)
+        url = "/tdt/v1/?status=error&message=" + str(err)
         return RedirectResponse(url=url)
     except (ValueError, Exception) as err:
-        url = "/?status=error&message=" + str(err)
+        url = "/tdt/v1/?status=error&message=" + str(err)
         return RedirectResponse(url=url)
 

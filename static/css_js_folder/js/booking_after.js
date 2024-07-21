@@ -48,14 +48,13 @@ async function renderJourneyVerified() {
 
 // ! bookingGet()
 async function bookingGet() {
-  const response = await fetch("/api/booking", {
+  const response = await fetch("/tdt/v1/api/booking", {
     method: "GET",
     credentials: "include",
   });
   const result = await response.json();
   if (response.ok) {
     localStorage.setItem("journeyVerified", JSON.stringify(result.data));
-    console.log(111);
     if (result.data !== null) {
       return true;
     } else {
@@ -63,7 +62,7 @@ async function bookingGet() {
     }
   } else {
     console.log(result.message);
-    window.location.href = "/";
+    window.location.href = "/tdt/v1/";
     return false;
   }
 }
@@ -87,14 +86,14 @@ async function footerCreator(typeState) {
 
 // ! deleteCurrentData
 async function bookingDelete() {
-  const response = await fetch("/api/booking", {
+  const response = await fetch("/tdt/v1/api/booking", {
     method: "DELETE",
     credentials: "include",
   });
   const result = await response.json();
   if (response.ok) {
     console.log(result);
-    window.location.href = "/booking";
+    window.location.href = "/tdt/v1/booking";
   } else {
     console.log(result.message);
     alert("Cannot delete current journey, please retry");

@@ -1,7 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const response = await fetch("/api/orders/history", {
+  const response = await fetch("/tdt/v1/api/orders/history", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     renderInfo(result);
   } else {
     if (response.status === 403) {
-      window.location.href = "/";
+      window.location.href = "/tdt/v1/";
     } else if (response.status === 400) {
       alert("Facing error display history orders.");
     }

@@ -35,9 +35,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 async function firstVisitPageCheck() {
   urlAttractionId = Number(pathSegments[pathSegments.length - 1]);
   try {
-    let response = await fetch(`/api/attraction/${urlAttractionId}`);
+    let response = await fetch(`/tdt/v1/api/attraction/${urlAttractionId}`);
     if (!response.ok) {
-      window.location.href = "/";
+      window.location.href = "/tdt/v1/";
     } else {
       let data = await response.json();
       console.log(data["data"]);
@@ -46,7 +46,7 @@ async function firstVisitPageCheck() {
     }
   } catch (error) {
     console.error("Fetch error: ", error);
-    window.location.href = "/";
+    window.location.href = "/tdt/v1/";
   }
 }
 function picAndDisplay(currentPic, picDataAll) {
@@ -138,7 +138,7 @@ function spotDisplay(picDataAll) {
   document.getElementById(`dot-id-0`).className = "box-2 choose-all-box";
   //   只要在每次更新全部class name時，同時也附加上choose-all-box就可以解決全部取代，後面選不上的問題
 }
-// 家載日期
+// 加載日期
 window.onload = function () {
   var today = new Date().toISOString().split("T")[0];
   document.getElementById("date").value = today;

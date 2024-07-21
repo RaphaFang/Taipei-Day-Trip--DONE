@@ -4,10 +4,10 @@ from starlette.responses import RedirectResponse
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path.startswith("/static/") or request.url.path.startswith("/api") :
+        if request.url.path.startswith("/tdt/v1/static/") or request.url.path.startswith("/tdt/v1/api") :
             return await call_next(request)
-        if request.url.path.startswith("/attraction/") or request.url.path.startswith("/auth/") : 
+        if request.url.path.startswith("/tdt/v1/attraction/") or request.url.path.startswith("/tdt/v1/auth/") : 
             return await call_next(request)
-        if request.url.path not in ["/", "/booking", "/thankyou", '/history_orders', '/docs']:
-            return RedirectResponse(url='/')
+        if request.url.path not in ["/tdt/v1/", "/tdt/v1/booking", "/tdt/v1/thankyou", '/tdt/v1/history_orders', '/tdt/v1/docs']:
+            return RedirectResponse(url='/tdt/v1/')
         return await call_next(request)

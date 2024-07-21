@@ -19,7 +19,7 @@ async function submitSignUpForm() {
     const form = document.getElementById("signup-form");
     const signupFormData = new FormData(form);
     const jsonData = convertToJson(signupFormData);
-    const response = await fetch("/api/user", {
+    const response = await fetch("/tdt/v1/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ async function submitSignUpForm() {
 
 // ! tokenPut
 async function tokenPut(inputJsonHere) {
-  const response = await fetch("/api/user/auth", {
+  const response = await fetch("/tdt/v1/api/user/auth", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -60,7 +60,7 @@ async function tokenPut(inputJsonHere) {
 
 // !  tokenGet
 async function tokenGet(successMessage) {
-  const response = await fetch("/api/user/auth", {
+  const response = await fetch("/tdt/v1/api/user/auth", {
     method: "GET",
     credentials: "include",
   });
@@ -132,7 +132,7 @@ function signinOutSwitch() {
 }
 // if user state wasn't correct
 async function deleteUserInfo() {
-  const response = await fetch("/api/user/logout", {
+  const response = await fetch("/tdt/v1/api/user/logout", {
     method: "POST",
     credentials: "include",
   });
@@ -140,7 +140,7 @@ async function deleteUserInfo() {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("journeyRaw");
     localStorage.removeItem("journeyVerified");
-    window.location.href = "/";
+    window.location.href = "/tdt/v1/";
   } else {
     console.error("Failed to log out:", await response.json());
   }
@@ -257,7 +257,7 @@ async function sendVerifyToken() {
   const data = {
     email: document.getElementById("change_password").value,
   };
-  const response = await fetch("/api/user/reset_request", {
+  const response = await fetch("/tdt/v1/api/user/reset_request", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -301,7 +301,7 @@ async function resetPassword() {
     const changePassFormData = new FormData(form);
     const jsonData = convertToJson(changePassFormData);
     const errorCatcher = document.getElementById("submit-password-error-catcher");
-    const response = await fetch("/api/user/reset_password", {
+    const response = await fetch("/tdt/v1/api/user/reset_password", {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -315,7 +315,7 @@ async function resetPassword() {
       errorCatcher.hidden = false;
       errorCatcher.innerText = result.message;
       alert(result.message);
-      window.location.href = "/";
+      window.location.href = "/tdt/v1/";
     } else {
       errorCatcher.hidden = false;
       errorCatcher.innerText = result.message;

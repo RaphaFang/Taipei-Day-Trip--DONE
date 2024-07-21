@@ -11,8 +11,8 @@ import os
 from utils.ttl import handle_expired_keys
 import asyncio
 
-app=FastAPI()
-app.mount("/static", StaticFiles(directory='static'), name="static")
+app=FastAPI(docs_url="/tdt/v1/docs")
+app.mount("/tdt/v1/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
 
@@ -67,18 +67,23 @@ app.include_router(api_user_reset_send_email.router, tags=["reset_password"], pr
 app.include_router(api_user_reset_url.router, tags=["reset_password"], prefix="/tdt/v1")
 
 
-@app.get("/", include_in_schema=False)
+# !-----------------------------------------
+html_router = APIRouter(prefix="/tdt/v1")
+
+@html_router.get("/", include_in_schema=False)
 async def index(request: Request):
 	return FileResponse("./static/index.html", media_type="text/html")
-@app.get("/attraction/{id}", include_in_schema=False)
+@html_router.get("/attraction/{id}", include_in_schema=False)
 async def api_attraction(request: Request, id: int):
 	return FileResponse("./static/attraction.html", media_type="text/html")
-@app.get("/booking", include_in_schema=False)
+@html_router.get("/booking", include_in_schema=False)
 async def booking(request: Request):
 	return FileResponse("./static/booking.html", media_type="text/html")
-@app.get("/thankyou", include_in_schema=False)
+@html_router.get("/thankyou", include_in_schema=False)
 async def thankyou(request: Request):
 	return FileResponse("./static/thankyou.html", media_type="text/html")
-@app.get("/history_orders", include_in_schema=False)
+@html_router.get("/history_orders", include_in_schema=False)
 async def history_orders(request: Request):
 	return FileResponse("./static/history_orders.html", media_type="text/html")
+
+app.include_router(html_router)
