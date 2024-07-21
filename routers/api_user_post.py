@@ -17,7 +17,7 @@ async def api_user_signup(request: Request, signup_data: SignUpDataModel,bt:Back
             sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
                 async with connection.cursor() as cursor:
-                    await cursor.execute("SELECT EXISTS(SELECT 1 FROM user_info WHERE email = %s AND auth_provider IS NULL;);",(sd.email,)) 
+                    await cursor.execute("SELECT EXISTS(SELECT 1 FROM user_info WHERE email = %s AND auth_provider IS NULL);",(sd.email,)) 
                     exists = await cursor.fetchone()  # 要注意，這邊沒辦法直接在後面加上[0]的index去呼叫，也沒辦法直接作為條件具
 
                     if exists[0]==0:

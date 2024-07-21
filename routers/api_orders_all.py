@@ -20,7 +20,7 @@ async def prime_order(request: Request):  # 這邊多試試看BackgroundTasks
             sql_pool = request.state.async_sql_pool 
             async with sql_pool.acquire() as connection:
                 async with connection.cursor(aiomysql.DictCursor) as cursor:
-                    await cursor.execute("SELECT * FROM user_booking_finalized WHERE creator_id = %s AND given_status = 'PAID' ORDER BY created_at LIMIT 10;", (id,)) 
+                    await cursor.execute("SELECT * FROM user_booking_finalized WHERE creator_id = %s AND given_status = 'PAID' ORDER BY created_at DESC LIMIT 10;", (id,)) 
                     return await cursor.fetchall()
         content_data = await search_user_booking_history(request,token_output['id'])
 
