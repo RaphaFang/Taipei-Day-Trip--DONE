@@ -120,14 +120,14 @@ function signinOutSwitch() {
   if (userInfo) {
     login.hidden = true;
     logout.hidden = false;
-    logout.textContent = "Sign-in";
+    logout.textContent = "Sign-out";
     switchFormDiv.forEach((element) => {
       element.hidden = true;
     });
   } else {
     login.hidden = false;
     logout.hidden = true;
-    login.textContent = "Sign-out";
+    login.textContent = "Sign-in";
   }
 }
 // if user state wasn't correct
