@@ -11,7 +11,10 @@ import os
 from utils.ttl import handle_expired_keys
 import asyncio
 
-app=FastAPI(docs_url="/tdt/v1/docs")
+app = FastAPI(
+    docs_url="/tdt/v1/docs",
+    openapi_url="/tdt/v1/openapi.json"
+)
 app.mount("/tdt/v1/static", StaticFiles(directory='static'), name="static")
 app.add_middleware(AuthMiddleware)
 setup_cors(app)
