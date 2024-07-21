@@ -54,53 +54,60 @@
         </div>
         <!-- ! signin-form hidden -->
         <div hidden class="submit-password-form" id="submit-password-div">
-          <p class="form-text">更新會員密碼</p>
+          <p class="form-text">Update password</p>
           <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
             <img src="/tdt/v1/static/css_js_folder/pic/X.png" alt="Image Button" />
           </button>
           <form id="submit-password-form" action="javascript:void(0);" onsubmit="resetPassword()">
             <div class="form-group">
-              <input id="submit-password-first" name="email" placeholder="輸入密碼" required class="for-input-padding" />
+              <input id="submit-password-first" name="email" placeholder="new password" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input type="password" id="submit-password-second" name="password" placeholder="再次輸入密碼" required class="for-input-padding" />
+              <input
+                type="password"
+                id="submit-password-second"
+                name="password"
+                placeholder="confirm new password"
+                required
+                class="for-input-padding"
+              />
             </div>
             <div class="form-group-last">
-              <button type="submit" class="form-btn">更新密碼</button>
+              <button type="submit" class="form-btn">Update password</button>
             </div>
             <div hidden class="error-catcher" id="submit-password-error-catcher"></div>
           </form>
         </div>
         <!-- ! signin-form -->
         <div hidden class="signin-form-div" id="signin-form-div">
-          <p class="form-text">登入會員帳號</p>
+          <p class="form-text">User Sign-in</p>
           <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
             <img src="/tdt/v1/static/css_js_folder/pic/X.png" alt="Image Button" />
           </button>
           <form id="signin-form" action="javascript:void(0);" onsubmit="submitSigninForm()">
             <div class="form-group">
-              <input type="email" id="signin_email" name="email" placeholder="輸入電子信箱" required class="for-input-padding" />
+              <input type="email" id="signin_email" name="email" placeholder="email" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input type="password" id="signin_password" name="password" placeholder="輸入密碼" required class="for-input-padding" />
+              <input type="password" id="signin_password" name="password" placeholder="password" required class="for-input-padding" />
             </div>
             <div class="form-group-last">
-              <button type="submit">登入帳戶</button>
+              <button type="submit">Sign-in</button>
             </div>
             <div class="form-group-last">
-              <button type="submit" onclick="googleLogin()">Google 登入</button>
+              <button type="submit" onclick="googleLogin()">Google account Sign-in</button>
             </div>
             <div class="switch-form" id="switch-form">
-              <a onclick="signUpInSwitch()">還沒有帳戶？點此註冊</a>
+              <a onclick="signUpInSwitch()">Click here to sign-up</a>
             </div>
             <div hidden class="error-catcher" id="error-catcher"></div>
           </form>
           <div class="switch-form" id="forget-password">
-            <a href="javascript:void(0)" onclick="forgetPassword()">忘記密碼？</a>
+            <a href="javascript:void(0)" onclick="forgetPassword()">Forget password?</a>
           </div>
           <div id="fieldin-email" class="form-group form-group-last" hidden>
-            <input type="email" id="change_password" name="password" placeholder="輸入註冊信箱" required class="for-input-padding" />
-            <button type="submit" id="email-verify" onclick="sendVerifyToken()">寄送驗證url至信箱</button>
+            <input type="email" id="change_password" name="password" placeholder="Sign-up Email Address" required class="for-input-padding" />
+            <button type="submit" id="email-verify" onclick="sendVerifyToken()">Send verification url to email</button>
             <div>
               <p class="fieldin-email-p" id="fieldin-email-p">&nbsp;&nbsp;</p>
             </div>
@@ -108,28 +115,28 @@
         </div>
         <!-- ! signup form -->
         <div hidden class="signup-form-div" id="signup-form-div">
-          <p class="form-text">註冊會員帳號</p>
+          <p class="form-text">User Sign-up</p>
           <button class="log-img-button" id="log-in-img-button" onclick="cancelFormDisplay()">
             <img src="/tdt/v1/static/css_js_folder/pic/X.png" alt="Image Button" />
           </button>
           <form id="signup-form" action="javascript:void(0);" onsubmit="submitSignUpForm()">
             <div class="form-group">
-              <input type="text" id="signup_username" name="name" placeholder="輸入姓名" required class="for-input-padding" />
+              <input type="text" id="signup_username" name="name" placeholder="username" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input type="email" id="signup_user_email" name="email" placeholder="輸入電子郵件" required class="for-input-padding" />
+              <input type="email" id="signup_user_email" name="email" placeholder="email" required class="for-input-padding" />
             </div>
             <div class="form-group">
-              <input type="password" id="signup_password" name="password" placeholder="輸入密碼" required class="for-input-padding" />
+              <input type="password" id="signup_password" name="password" placeholder="password" required class="for-input-padding" />
             </div>
             <div class="form-group-last">
-              <button type="submit" class="form-btn">註冊新帳戶</button>
+              <button type="submit" class="form-btn">Sign-up New Account</button>
             </div>
             <div class="form-group-last">
-              <button type="submit" onclick="googleLogin()">Google 登入</button>
+              <button type="submit" onclick="googleLogin()">Google account Sign-in</button>
             </div>
             <div class="switch-form" id="switch-form">
-              <a onclick="signUpInSwitch()">已經有帳戶了？點此登入</a>
+              <a onclick="signUpInSwitch()">Click here to sign-in</a>
             </div>
             <div hidden class="error-catcher" id="error-catcher"></div>
           </form>
