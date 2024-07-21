@@ -94,14 +94,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   morningRadio.addEventListener("change", function () {
     if (morningRadio.checked) {
-      chargeP.textContent = "新台幣 2000 元";
+      chargeP.textContent = "2000 NTD";
       morningRadio.checked = true;
       afternoonRadio.checked = false;
     }
   });
   afternoonRadio.addEventListener("change", function () {
     if (afternoonRadio.checked) {
-      chargeP.textContent = "新台幣 2500 元";
+      chargeP.textContent = "2500 NTD";
       morningRadio.checked = false;
       afternoonRadio.checked = true;
     }
@@ -112,9 +112,9 @@ function displayDescribe(data) {
   let describeBlock = document.getElementById("describe-block");
   describeBlock.innerHTML += `
     <div class="the-discribe-text">${data["description"]}</div>
-    <div class="location-title">景點地址：</div>
+    <div class="location-title">Attraction address:</div>
     <div class="location" id='location-id'>${data["address"]}</div>
-    <div class="transport-title">交通方式：</div>
+    <div class="transport-title">Transportation:</div>
     <div class="transport-text">${data["transport"]}</div>
     `;
 

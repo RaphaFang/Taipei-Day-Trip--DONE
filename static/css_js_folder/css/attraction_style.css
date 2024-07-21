@@ -365,7 +365,7 @@ body {
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
-  background: url("https://raw.githubusercontent.com/RaphaFang/taipei-day-trip/develop/static/css_js_folder/pic/date.png") no-repeat center center;
+  background: url("https://raw.githubusercontent.com/RaphaFang/Taipei-day-trip--DONE/main/static/css_js_folder/pic/date.png") no-repeat center center;
   background-size: contain;
   pointer-events: none;
 }
@@ -385,7 +385,7 @@ body {
 }
 
 .time-selection-p {
-  width: 81px;
+  /* width: 81px; */
   height: 22px;
   font-family: Noto Sans TC;
   font-size: 16px;
@@ -401,7 +401,7 @@ body {
 .time-selection-radio-first,
 .time-selection-radio-second {
   display: inline-block;
-  width: 87px;
+  /* width: 87px; */
   height: 22px;
   font-family: Noto Sans TC;
   font-size: 16px;
@@ -417,8 +417,8 @@ body {
   margin-right: 5px;
 }
 .time-selection input[type="radio"] {
-  width: 22px; /* 调整圆圈的宽度 */
-  height: 22px; /* 调整圆圈的高度 */
+  width: 22px;
+  height: 22px;
 
   appearance: none;
   -webkit-appearance: none;

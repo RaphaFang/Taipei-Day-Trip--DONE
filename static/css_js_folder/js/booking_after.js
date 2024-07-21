@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   } else {
     await renderUserName();
     nullDiv.hidden = false;
-    nullP.textContent = `目前沒有任何待預訂的行程`;
+    nullP.textContent = `There are currently no pending itineraries.`;
   }
   await footerCreator(startRender);
 });
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 async function renderUserName() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const welcomeParagraph = document.getElementById("wel-booking-p");
-  welcomeParagraph.textContent = `您好，${userInfo.name}，待預訂的行程如下：`;
+  welcomeParagraph.textContent = `Hello, ${userInfo.name}, the itinerary to be booked is as follows:`;
 }
 
 // render Journey to page, only if it pass the token check inside the bookingGet()
@@ -32,18 +32,18 @@ async function renderJourneyVerified() {
   const verData = JSON.parse(localStorage.getItem("journeyVerified"));
   const bookInfoDiv = document.getElementById("book-info-div");
   bookInfoDiv.innerHTML = `
-    <p class="book-info-title">台北一日遊：${verData.attraction.name}</p>
-    <p class="book-info-text"><span class="custom-bold">日期：</span>${verData.date}</p>
-    <p class="book-info-text" id='morning-or-evening'><span class="custom-bold">時間：</span>${verData.time}</p>
-    <p class="book-info-text"><span class="custom-bold">費用：</span>新台幣${verData.price}元</p>
-    <p class="book-info-text"><span class="custom-bold">地點：</span>${verData.attraction.address}</p>
+    <p class="book-info-title">Taipei Day Trip : ${verData.attraction.name}</p>
+    <p class="book-info-text"><span class="custom-bold">Date :</span>${verData.date}</p>
+    <p class="book-info-text" id='morning-or-evening'><span class="custom-bold">Time : </span>${verData.time}</p>
+    <p class="book-info-text"><span class="custom-bold">Cost : </span>${verData.price} NTD</p>
+    <p class="book-info-text"><span class="custom-bold">Location : </span>${verData.attraction.address}</p>
   `;
   const bookInfoPic = document.getElementById("book-info-div-pic");
   bookInfoPic.innerHTML = `
   <img src="${verData.attraction.image}"  alt="Booking Image" class="booking-pic" />`;
 
   const finalPrice = document.getElementById("finalPrice");
-  finalPrice.textContent = `總價：新台幣 ${verData.price} 元`;
+  finalPrice.textContent = `Total price : ${verData.price} NTD`;
 }
 
 // ! bookingGet()
