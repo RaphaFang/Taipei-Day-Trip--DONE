@@ -73,12 +73,12 @@ async function footerCreator(typeState) {
   if (typeState) {
     footer2.innerHTML = `  
     <footer hidden class="foot foot-v2" id="footer-v2">
-      <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
+      <p class="foot-p">COPYRIGHT © 2024 Taipei-Day-Trip</p>
     </footer>`;
   } else {
     footer1.innerHTML = `
     <footer class="foot" id="foot">
-      <p class="foot-p">COPYRIGHT © 2021 台北一日遊</p>
+      <p class="foot-p">COPYRIGHT © 2024 Taipei-Day-Trip</p>
     </footer>
     `;
   }
