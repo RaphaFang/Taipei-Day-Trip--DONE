@@ -5,10 +5,10 @@ from fastapi.responses import JSONResponse
 
 
 ALGORITHM = "RS256"
-private_key_path = os.getenv("PRIVATE_KEY_PATH")
+private_key_path = "/app/secrets/private_key.pem"
 with open(private_key_path, 'r') as file:
     PRIVATE_KEY = file.read()
-public_key_path = os.getenv("PUBLIC_KEY_PATH")
+public_key_path = "/app/secrets/public_key.pem"
 with open(public_key_path, 'r') as file:
     PUBLIC_KEY = file.read()
 

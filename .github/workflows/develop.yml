@@ -16,8 +16,8 @@ jobs:
 
       - name: Pull from GitHub on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@52.4.229.207 << EOF
-            cd /home/ubuntu/WH/TDT
+          ssh -o StrictHostKeyChecking=no ubuntu@52.21.89.179 << EOF
+            cd /home/ubuntu/WH/tdt
             git checkout main
             git pull origin main
           EOF
@@ -70,8 +70,8 @@ jobs:
           PERSONAL_GMAIL_PASSWORD: ${{ secrets.PERSONAL_GMAIL_PASSWORD }}
 
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@52.4.229.207 << EOF
-            cd /home/ubuntu/WH/TDT
+          ssh -o StrictHostKeyChecking=no ubuntu@52.21.89.179 << EOF
+            cd /home/ubuntu/WH/tdt
 
             export SQL_USER=${SQL_USER}
             export SQL_PASSWORD=${SQL_PASSWORD}
