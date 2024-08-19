@@ -20,7 +20,7 @@ services:
       - PERSONAL_GMAIL_PASSWORD=${PERSONAL_GMAIL_PASSWORD}
 
     volumes:
-      - /home/ubuntu/WH/tdt/secrets:/app/secrets
+      - /home/ubuntu/tdt/secrets:/app/secrets
     depends_on:
       - redis
     restart: always
