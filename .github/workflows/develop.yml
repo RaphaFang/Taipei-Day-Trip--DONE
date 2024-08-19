@@ -17,7 +17,7 @@ jobs:
       - name: Pull from GitHub on EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@52.21.89.179 << EOF
-            cd /home/ubuntu/WH/tdt
+            cd /home/ubuntu/tdt
             git checkout main
             git pull origin main
           EOF
@@ -71,7 +71,7 @@ jobs:
 
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@52.21.89.179 << EOF
-            cd /home/ubuntu/WH/tdt
+            cd /home/ubuntu/tdt
 
             export SQL_USER=${SQL_USER}
             export SQL_PASSWORD=${SQL_PASSWORD}
