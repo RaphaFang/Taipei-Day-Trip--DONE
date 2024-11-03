@@ -4,7 +4,11 @@ Taipei Day Trip is a web application for travelers exploring Taipei, providing f
 
 This project showcases my skills in both **frontend and backend development**, as well as my proficiency with **AWS services**. The complete development and learning period for this project spanned from July to September 2024.
 
+🔗 [https://raphaelfang.com/tdt/v1/](https://raphaelfang.com/tdt/v1/)
+
 ## 🎥 Demo
+
+![the gif demo for Taipei-Day-Trip project](https://i.imgur.com/vQCUmY1.gif)
 
 ## 🛠️ System Architecture Diagram
 
