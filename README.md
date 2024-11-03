@@ -8,7 +8,7 @@ This project showcases my skills in both **frontend and backend development**, a
 
 ## 🎥 Demo
 
-![the gif demo for Taipei-Day-Trip project](https://i.imgur.com/vQCUmY1.gif)
+![the gif demo for Taipei-Day-Trip project](https://github.com/user-attachments/assets/c5b6f036-1ddf-472c-be1c-884278f849eb)
 
 ## 🛠️ System Architecture Diagram
 
