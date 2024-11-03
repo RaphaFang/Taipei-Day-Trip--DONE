@@ -33,10 +33,8 @@ async def api_booking_post_redis(request: Request, j_data:BookingDataMode, bt:Ba
                         "price": j.price
                     }
                     await r.set(f"user:{id}:booking", json.dumps(booking_data))
-                    # await r.set(f"user:{id}:booking_trigger_key", 'trigger_key', ex=5)
-            # await post_user_r(request,input_token['id'], j_data)
+
             bt.add_task(post_user_r, request, input_token['id'], j_data)
-# 
             content_data={"ok": True}
             return JSONResponse(status_code=200,content=content_data, headers=headers)
 
@@ -46,6 +44,3 @@ async def api_booking_post_redis(request: Request, j_data:BookingDataMode, bt:Ba
         return JSONResponse(status_code=422,content={"error": True, "message": err.errors()},headers=headers)   
     except (ValueError,Exception) as err:
         return JSONResponse(status_code=400,content={"error": True, "message": str(err)},headers=headers)
-    
-    # 如果資料放在 header ，ValidationError 的驗證會搶在所有api運作邏輯之前執行，解決方式是把資料放在body，不放在header
-    # 原先放在header，還是要注意 data 要在 token 前面，因為 token有默認值，前者沒有...

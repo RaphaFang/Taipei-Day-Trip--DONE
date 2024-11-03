@@ -86,21 +86,3 @@ async def prime_order(request: Request, cp:ContactAndPrimeDM, bt:BackgroundTasks
         return JSONResponse(status_code=400, content={"error": True, "message": f"Missing key: {str(err)}"}, headers=headers)
     except (ValueError, Exception) as err:
         return JSONResponse(status_code=500,content={"error": True, "message": str(err)},headers=headers)
-   
-
-
-            # 如果要提供用戶「未登入」查詢，那麼存到redis就不必做了，因為沒有token，沒token就沒有id
-               # prime_return_data = {"data": {
-            #                 "number": generate_order_id,
-            #                 "price": b['price'],
-            #                 "trip": {
-            #                 "attraction": {"id": b['attraction_id'],"name": b['name'],"address":b['address'],"image":b['image']                            },
-            #                 "date":b['date'],
-            #                 "time":b['time']
-            #                 },
-            #                 "contact": {"name": cp.name,"email": cp.email,"phone": cp.phone},
-            #                 "status": result.get('status')}}
-    
-
-                    # r.set(f"user:{token_output['id']}:booking_result", json.dumps(prime_return_data))
-

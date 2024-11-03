@@ -4,7 +4,6 @@ import aiomysql
 
 router = APIRouter()
 headers = {"Content-Type": "application/json; charset=utf-8"}
-# ! 後續將資料緩存進redis
 
 @router.get("/api/mrts")
 async def api_mrts(request: Request):

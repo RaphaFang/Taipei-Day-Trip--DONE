@@ -28,9 +28,6 @@ async def api_user_put(request: Request, login_data: SignInDataModel,bt:Backgrou
                         await cursor.execute("SELECT * FROM user_booking_tentative WHERE creator_id = %s;", (data['id'],)) 
                         last_d = await cursor.fetchone()
 
-                        # await cursor.execute("SELECT * FROM user_booking_finalized WHERE creator_id = %s AND given_status = 'PAID' ORDER BY created_at LIMIT 10;", (data['id'],))
-                        # history_d = await cursor.fetchall()
-
                         return access_token, last_d
                     else:
                         return JSONResponse(status_code=400,content={"error": True, "message": 'Invalid user info, please make sure the email and password are correct.'}, headers=headers)
@@ -50,32 +47,6 @@ async def api_user_put(request: Request, login_data: SignInDataModel,bt:Backgrou
                         }
                 await r.set(f"user:{last_d['creator_id']}:booking", json.dumps(booking_data))
                 await r.set(f"user:{last_d['creator_id']}:booking_trigger_key", 'trigger_key', ex=86400)
-
-                # if history_d:
-                #     booking_data_history = []
-                #     for n in history_d:
-                #         con = {"data": {
-                #             "number": n['order_number'],
-                #             "price": int(n['price']),
-                #             "trip": {
-                #             "attraction": {
-                #                 "id": n['attr_id'],
-                #                 "name": n['attr_name'],
-                #                 "address": n['attr_address'],
-                #                 "image": n['attr_image']
-                #             },
-                #             "date": n['attr_date'].strftime("%Y-%m-%d"),
-                #             "time":n['attr_time']
-                #             },
-                #             "contact": {
-                #             "name": n['contact_name'],
-                #             "email": n['contact_email'],
-                #             "phone": n['contact_phone']
-                #             },
-                #             "status": 1 if n['given_status']=='PAID' else 0
-                #             }}
-                #         booking_data_history.append(con)
-                #     await r.set(f"user:{last_d['creator_id']}:booking_history", json.dumps(booking_data_history))
 
         result = await search_user_login(request,login_data.email,login_data.password)
         if isinstance(result, JSONResponse):

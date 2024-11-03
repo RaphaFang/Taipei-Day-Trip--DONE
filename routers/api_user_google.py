@@ -70,10 +70,8 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
                         await cursor.execute("SELECT * FROM user_booking_tentative WHERE creator_id = %s;", (data['id'],)) 
                         last_d = await cursor.fetchone()
 
-                        # await cursor.execute("SELECT * FROM user_booking_finalized WHERE creator_id = %s AND given_status = 'PAID' ORDER BY created_at LIMIT 10;", (data['id'],))
-                        # history_d = await cursor.fetchall()
-
                         return access_token, last_d
+                    
                     else:
                         await cursor.execute("INSERT INTO user_info (provider_id, email, username, auth_provider, profile_picture) VALUES (%s, %s, %s, 'Google', %s)", (sub,email,name,pic)) 
                         await connection.commit()
@@ -100,33 +98,6 @@ async def auth_callback(request: Request, bt:BackgroundTasks):
                         }
                 await r.set(f"user:{last_d['creator_id']}:booking", json.dumps(booking_data))
                 await r.set(f"user:{last_d['creator_id']}:booking_trigger_key", 'trigger_key', ex=86400)
-
-                # if history_d:
-                #     booking_data_history = []
-                #     for n in history_d:
-                #         con = {"data": {
-                #             "number": n['order_number'],
-                #             "price": int(n['price']),
-                #             "trip": {
-                #             "attraction": {
-                #                 "id": n['attr_id'],
-                #                 "name": n['attr_name'],
-                #                 "address": n['attr_address'],
-                #                 "image": n['attr_image']
-                #             },
-                #             "date": n['attr_date'].strftime("%Y-%m-%d"),
-                #             "time":n['attr_time']
-                #             },
-                #             "contact": {
-                #             "name": n['contact_name'],
-                #             "email": n['contact_email'],
-                #             "phone": n['contact_phone']
-                #             },
-                #             "status": 1 if n['given_status']=='PAID' else 0
-                #             }}
-                #         booking_data_history.append(con)
-                #     await r.set(f"user:{last_d['creator_id']}:booking_history", json.dumps(booking_data_history))
-
         
         if user: # 原本一直想不到該怎麼傳遞這部份的資訊，畢竟是直接回到主畫面，但是想到可以打資料加到url送回去
             access_token, last_d = await search_user_login(request,user.get('sub'), user.get('email'), user.get('name'), user.get('picture'))

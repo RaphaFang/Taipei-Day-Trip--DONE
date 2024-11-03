@@ -37,9 +37,3 @@ async def api_booking_get(request: Request):
     except (ValueError,Exception) as err:
         return JSONResponse(status_code=400,content={"error": True, "message": str(err)},headers=headers)
     
-    # get 資料只能放在header，不能放在body
-    # 我之前在後端用post，可以把資料型態審核交給signup_data: SignUpDataModel，api那邊就不必多寫json.loads()，現在需要多寫這個識別機制
-
-            # redis_pool = request.state.redis_db_pool.get("default") 
-            # r = redis.Redis(connection_pool=redis_pool)
-            # b = r.get(f"user:{token_output['id']}:booking")

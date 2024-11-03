@@ -27,7 +27,6 @@ async def logout(request: Request, bt:BackgroundTasks):  # request: Request åˆªé
                     b = await r.get(f"user:{id}:booking")
                     await r.delete(f"user:{id}:booking")
                     await r.delete(f"user:{id}:booking_trigger_key")
-                    # await r.delete(f"user:{id}:booking_history")
                     return b
             redis_data = await delete_user_r(request,token_output['id'])
 

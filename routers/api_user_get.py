@@ -17,8 +17,6 @@ async def api_user_get(request: Request):
             return token_response
         token_output = token_response
 
-
-        
         input_data = {"data": {"id": token_output['id'],"name": token_output['username'],"email": token_output['email']}}
         return JSONResponse(status_code=200, content=input_data, headers=headers)
 
