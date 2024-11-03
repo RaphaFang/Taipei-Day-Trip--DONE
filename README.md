@@ -1,14 +1,14 @@
-# Taipei-Day-Trip
+# 🌆 Taipei-Day-Trip
 
 Taipei Day Trip is a web application for travelers exploring Taipei, providing features for attraction booking, itinerary planning, and more. Users can browse attractions along Taipei's MRT lines, login/register, add trips to a shopping cart, proceed with credit card payments, and confirm their itinerary upon successful payment.
 
 This project showcases my skills in both **frontend and backend development**, as well as my proficiency with **AWS services**. The complete development and learning period for this project spanned from July to September 2024.
 
-## Demo
+## 🎥 Demo
 
-## System Architecture Diagram
+## 🛠️ System Architecture Diagram
 
-## Tech Stack
+## 🧰 Tech Stack
 
 - **Backend Framework**: FastAPI - following RESTful API principles, asynchronous
 - **Database**: MySQL - connection pool, asynchronous
@@ -21,7 +21,7 @@ This project showcases my skills in both **frontend and backend development**, a
 - **Containerization**: Docker
 - **CI/CD Pipeline**: GitHub Actions
 
-## User Flow
+## 👤 User Flow
 
 1. **Browse Attractions**: Users can browse attraction details and search by attraction's keywords.
 2. **Log In / Register / Reset Password**: Users can log in or register to access additional features.
