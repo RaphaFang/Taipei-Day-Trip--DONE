@@ -11,6 +11,8 @@ This project showcases my skills in both **frontend and backend development**, a
 ![the gif demo for Taipei-Day-Trip project](https://github.com/user-attachments/assets/c5b6f036-1ddf-472c-be1c-884278f849eb)
 
 ## 🛠️ System Architecture Diagram
+![SysArch](https://github.com/user-attachments/assets/8d2032d2-19cf-4581-8553-2c87e05fadf5)
+
 
 ## 🧰 Tech Stack
 
@@ -24,6 +26,7 @@ This project showcases my skills in both **frontend and backend development**, a
 - **Authentication Management**: uses Cookies to handle JWT token
 - **Containerization**: Docker
 - **CI/CD Pipeline**: GitHub Actions
+- **ENV**: GitHub Secrets
 
 ## 👤 User Flow
 
