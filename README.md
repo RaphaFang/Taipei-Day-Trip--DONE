@@ -2,7 +2,7 @@
 
 Taipei Day Trip is a web application for travelers exploring Taipei, providing features for attraction booking, itinerary planning, and more. Users can browse attractions along Taipei's MRT lines, login/register, add trips to a shopping cart, proceed with credit card payments, and confirm their itinerary upon successful payment.
 
-This project showcases my skills in both **frontend and backend development**, as well as my proficiency with **AWS services**. The complete development and learning period for this project spanned from July to September 2024.
+This project showcases my skills in both **frontend and backend development**, as well as my proficiency with **AWS services**. The complete development and learning period for this project spanned from June to July 2024.
 
 🔗 [https://raphaelfang.com/tdt/v1/](https://raphaelfang.com/tdt/v1/)
 
